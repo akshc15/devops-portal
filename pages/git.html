@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Git + GitHub — My DevOps Portal</title>
+<link rel="stylesheet" href="../style.css">
+<style>
+.git-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+  margin: 20px 0;
+}
+.git-flow::before {
+  content: '';
+  position: absolute;
+  left: 20px;
+  top: 0; bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, var(--blue), var(--green));
+  border-radius: 2px;
+}
+.gf-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 16px 0;
+  position: relative;
+}
+.gf-dot {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+  border: 2px solid var(--border);
+  background: var(--bg-base);
+}
+.gf-dot.blue   { border-color: var(--blue);   background: var(--blue-dim); }
+.gf-dot.green  { border-color: var(--green);  background: var(--green-dim); }
+.gf-dot.yellow { border-color: var(--yellow); background: var(--yellow-dim); }
+.gf-dot.purple { border-color: var(--purple); background: var(--purple-dim); }
+.gf-content h4 { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+.gf-content p  { font-size: 13px; color: var(--text-secondary); line-height: 1.7; }
+.gf-content code { font-size: 12px; }
+
+.branch-visual {
+  background: #0d1117;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 2;
+  margin: 12px 0;
+  overflow-x: auto;
+}
+.bv-main   { color: var(--blue); }
+.bv-feat   { color: var(--green); }
+.bv-commit { color: var(--text-secondary); }
+.bv-tag    { color: var(--yellow); }
+.bv-merge  { color: var(--purple); }
+
+.git-areas {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin: 16px 0;
+}
+.ga-zone {
+  background: var(--bg-surface);
+  padding: 20px 16px;
+  text-align: center;
+}
+.ga-icon { font-size: 1.8rem; margin-bottom: 8px; }
+.ga-name { font-weight: 700; font-size: 14px; margin-bottom: 6px; }
+.ga-desc { font-size: 12px; color: var(--text-tertiary); line-height: 1.5; margin-bottom: 10px; }
+.ga-cmd  { font-family: var(--font-mono); font-size: 11px; color: var(--green); background: var(--bg-elevated); padding: 4px 8px; border-radius: 4px; display: inline-block; }
+.ga-arrow { font-size: 1.4rem; color: var(--text-tertiary); display: flex; align-items: center; justify-content: center; background: var(--bg-base); }
+</style>
+</head>
+<body>
+
+<!-- SHARED BANNER -->
+<div class="site-banner">
+  <div class="brand"><span class="dot"></span><span>My DevOps Portal</span></div>
+  <nav class="banner-nav">
+    <a href="../index.html">🏠 Home</a>
+    <a href="../devops-bible.html">📖 Bible</a>
+    <a href="linux.html">🐧 Linux</a>
+    <a href="git.html" class="active">🐙 Git</a>
+    <a href="docker.html">🐳 Docker</a>
+  </nav>
+</div>
+
+<!-- PAGE NAV -->
+<div class="page-nav">
+  <span class="page-nav-title">🐙 Git + GitHub — Complete Guide</span>
+  <div class="page-nav-links">
+    <a href="#story">Story</a>
+    <a href="#concepts">Concepts</a>
+    <a href="#install">Install</a>
+    <a href="#basics">Basics</a>
+    <a href="#branches">Branches</a>
+    <a href="#github">GitHub</a>
+    <a href="#workflow">Workflow</a>
+    <a href="#undo">Undo</a>
+    <a href="#errors">Errors</a>
+    <a href="#interview">Interview</a>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="page-hero" id="story">
+  <div class="hero-eyebrow">Chapter 02 · Version Control</div>
+  <h1 class="hero-title">🐙 Git + GitHub<br><span class="accent">Never Lose</span> Your <span class="accent-green">Work Again</span></h1>
+  <p class="hero-sub">Git is the time machine for your code. GitHub is where you store it online. Every company on the planet uses both. This is not optional — this is the foundation of how software is built.</p>
+</div>
+
+<!-- ═══════════════════════════════════
+     THE STORY
+═══════════════════════════════════ -->
+<section class="section" id="story">
+  <div class="section-label">// why git was invented</div>
+  <div class="section-title">The Story — A Problem Every Developer Had</div>
+
+  <div class="story-box animate-fade-up">
+    <span class="story-icon">😩</span>
+    <strong>Before Git existed, developers had this nightmare:</strong><br><br>
+    You're building a feature. It works perfectly. You add more code. Now it's broken. You try to go back — but you can't. You overwrote the old version. It's gone.<br><br>
+    Teams had folders named: <code>project_final.zip</code>, <code>project_final_v2.zip</code>, <code>project_ACTUAL_final.zip</code>, <code>project_use_this_one.zip</code>. Two developers editing the same file at the same time? One person's work gets deleted.<br><br>
+    <strong>In 2005, Linus Torvalds (same person who built Linux) built Git in 10 days</strong> to manage the Linux kernel — which had 1,000+ developers changing code simultaneously. Git solved every one of these problems. Today, 95%+ of software companies use Git. No exceptions.
+  </div>
+
+  <div class="analogy-box animate-fade-up-1">
+    <div class="analogy-label">🧒 Explain Like I'm 5</div>
+    <p>Imagine you're writing a school essay. Git is like having a <b>magical Save button</b> — but instead of replacing your old save, it keeps <b>every single save forever</b>. You can go back to how the essay looked on Monday. On Tuesday. On any day. You can create a <b>parallel copy</b> of the essay, try crazy changes, and if they're bad — throw that copy away. Your original is completely safe. GitHub is the <b>Google Drive</b> where all these saves are stored online.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════
+     CORE CONCEPTS
+═══════════════════════════════════ -->
+<section class="section" id="concepts">
+  <div class="section-label">// understand this before any command</div>
+  <div class="section-title">4 Concepts — Understand These First</div>
+  <div class="section-sub">Every Git command makes sense once you understand these 4 ideas.</div>
+
+  <!-- THE 3 AREAS -->
+  <div style="margin-bottom:24px;">
+    <div style="font-size:14px;font-weight:700;margin-bottom:12px;color:var(--text-secondary);">The 3 Areas Git Manages</div>
+    <div class="git-areas reveal">
+      <div class="ga-zone">
+        <div class="ga-icon">💻</div>
+        <div class="ga-name">Working Directory</div>
+        <div class="ga-desc">Your actual files on disk. Where you write code. Changes here are "unstaged" — git sees them but hasn't saved them yet.</div>
+        <div class="ga-cmd">git status</div>
+      </div>
+      <div class="ga-arrow">→</div>
+      <div class="ga-zone">
+        <div class="ga-icon">📋</div>
+        <div class="ga-name">Staging Area</div>
+        <div class="ga-desc">A "waiting room" before saving. You choose exactly which changes go into the next save. Like packing a box before shipping.</div>
+        <div class="ga-cmd">git add</div>
+      </div>
+      <div class="ga-arrow">→</div>
+      <div class="ga-zone">
+        <div class="ga-icon">📸</div>
+        <div class="ga-name">Repository</div>
+        <div class="ga-desc">The permanent history. Every commit is a snapshot saved forever. Never changes. This is your time machine.</div>
+        <div class="ga-cmd">git commit</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-grid stagger-children" style="margin-bottom:24px;">
+    <div class="card reveal">
+      <span class="badge badge-blue" style="margin-bottom:10px;">Concept 1</span>
+      <div style="font-weight:700;font-size:15px;margin-bottom:6px;">Commit</div>
+      <div style="font-size:13px;color:var(--text-secondary);line-height:1.7;">A snapshot of your files at a point in time. Like a photo. Has a unique ID (hash), author, date, and message. You create one with <code>git commit</code>. Once created, it never changes.</div>
+    </div>
+    <div class="card reveal">
+      <span class="badge badge-green" style="margin-bottom:10px;">Concept 2</span>
+      <div style="font-weight:700;font-size:15px;margin-bottom:6px;">Branch</div>
+      <div style="font-size:13px;color:var(--text-secondary);line-height:1.7;">A parallel version of your code. You branch off main to work on a feature without breaking the original. When done, you merge it back. <code>main</code> is always the stable version.</div>
+    </div>
+    <div class="card reveal">
+      <span class="badge badge-yellow" style="margin-bottom:10px;">Concept 3</span>
+      <div style="font-weight:700;font-size:15px;margin-bottom:6px;">Remote</div>
+      <div style="font-size:13px;color:var(--text-secondary);line-height:1.7;">A copy of your repo on GitHub's servers. <code>origin</code> is the default name for your GitHub remote. <code>git push</code> sends commits to GitHub. <code>git pull</code> gets changes from GitHub.</div>
+    </div>
+    <div class="card reveal">
+      <span class="badge badge-purple" style="margin-bottom:10px;">Concept 4</span>
+      <div style="font-weight:700;font-size:15px;margin-bottom:6px;">Merge / PR</div>
+      <div style="font-size:13px;color:var(--text-secondary);line-height:1.7;">Combining a branch back into main. A Pull Request (PR) is a proposal to merge — teammates review your code before it's merged. Standard in every professional team.</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════
+     INSTALL + SETUP
+═══════════════════════════════════ -->
+<section class="section" id="install">
+  <div class="section-label">// one time setup</div>
+  <div class="section-title">Install Git + Create GitHub Account</div>
+
+  <div class="steps stagger-children">
+    <div class="step-card">
+      <div class="step-head">
+        <span class="step-num sn-blue">STEP 1</span>
+        <span class="step-title">Create a GitHub Account — Free</span>
+        <span class="step-chevron">›</span>
+      </div>
+      <div class="step-body">
+        <p>GitHub is where your code lives online. Free accounts get unlimited public and private repos.</p>
+        <div class="info-box"><span class="box-icon">🖱️</span><div>Go to <b>github.com</b> → Click <b>Sign up</b> → Enter email → Create password → Choose username (keep it professional — this goes on your resume) → Verify email → Choose <b>Free plan</b> → Done.</div></div>
+        <div class="success-box"><span class="box-icon">✓</span><div>Visit <b>github.com/yourusername</b> — your profile page is live.</div></div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head">
+        <span class="step-num sn-blue">STEP 2</span>
+        <span class="step-title">Install Git on Your Cloud VM</span>
+        <span class="step-chevron">›</span>
+      </div>
+      <div class="step-body">
+        <p>Git usually comes pre-installed on Ubuntu. Let's verify and install if needed.</p>
+        <div class="terminal">
+          <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">GCP VM terminal</span><button class="terminal-copy">Copy</button></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">git --version</span></div>
+            <div class="t-line"><span class="t-ok">git version 2.43.0</span>  <span class="t-comment">  ← already installed!</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-comment"># If not installed:</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">sudo apt update && sudo apt install git -y</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head">
+        <span class="step-num sn-green">STEP 3</span>
+        <span class="step-title">Configure Git — Tell It Who You Are</span>
+        <span class="step-chevron">›</span>
+      </div>
+      <div class="step-body">
+        <p>Every commit you make gets stamped with your name and email. Do this once on every machine you use.</p>
+        <div class="terminal">
+          <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">configure git — run once</span><button class="terminal-copy">Copy</button></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-comment"># Set your name (use real name — shows on GitHub)</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">git config --global user.name "Akshay Chetule"</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-comment"># Set your email (must match your GitHub account)</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">git config --global user.email "akshay@example.com"</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-comment"># Set default branch name to "main" (modern standard)</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">git config --global init.defaultBranch main</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-comment"># Set VS Code as default editor</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">git config --global core.editor "code --wait"</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-comment"># Verify all settings</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">git config --list</span></div>
+            <div class="t-line"><span class="t-ok">user.name=Akshay Chetule</span></div>
+            <div class="t-line"><span class="t-ok">user.email=akshay@example.com</span></div>
+            <div class="t-line"><span class="t-ok">init.defaultBranch=main</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head">
+        <span class="step-num sn-green">STEP 4</span>
+        <span class="step-title">Connect to GitHub with SSH Key — Never Type Password Again</span>
+        <span class="step-chevron">›</span>
+      </div>
+      <div class="step-body">
+        <p>SSH key = a digital ID card. GitHub recognises your machine automatically. No username/password every push.</p>
+        <div class="terminal">
+          <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">generate SSH key</span><button class="terminal-copy">Copy</button></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-comment"># Generate SSH key pair (public + private)</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">ssh-keygen -t ed25519 -C "akshay@example.com"</span></div>
+            <div class="t-line"><span class="t-out">Generating public/private ed25519 key pair.</span></div>
+            <div class="t-line"><span class="t-out">Enter file in which to save the key: </span><span class="t-comment">← press Enter</span></div>
+            <div class="t-line"><span class="t-out">Enter passphrase: </span><span class="t-comment">← press Enter (no passphrase)</span></div>
+            <div class="t-line"><span class="t-ok">Your public key has been saved in ~/.ssh/id_ed25519.pub</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-comment"># Copy your PUBLIC key (share this with GitHub)</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">cat ~/.ssh/id_ed25519.pub</span></div>
+            <div class="t-line"><span class="t-info">ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAA... akshay@example.com</span></div>
+            <div class="t-line"><span class="t-comment">← copy this entire line</span></div>
+          </div>
+        </div>
+        <div class="info-box"><span class="box-icon">🖱️</span><div>Go to <b>github.com</b> → click your avatar (top right) → <b>Settings</b> → left sidebar: <b>SSH and GPG keys</b> → <b>New SSH key</b> → Title: "GCP VM" → Paste your key → <b>Add SSH key</b></div></div>
+        <div class="terminal">
+          <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">test connection</span><button class="terminal-copy">Copy</button></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">ssh -T git@github.com</span></div>
+            <div class="t-line"><span class="t-ok">Hi akshc15! You've successfully authenticated!</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════
+     BASIC COMMANDS
+═══════════════════════════════════ -->
+<section class="section" id="basics">
+  <div class="section-label">// the daily workflow</div>
+  <div class="section-title">Basic Git Commands — Used Every Single Day</div>
+  <div class="section-sub">Master these 10 commands and you can handle 90% of real work.</div>
+
+  <!-- THE FLOW -->
+  <div class="git-flow reveal">
+    <div class="gf-item">
+      <div class="gf-dot blue">📁</div>
+      <div class="gf-content">
+        <h4>1. Start or clone a project</h4>
+        <p>Either initialise a new repo with <code>git init</code> or get an existing one with <code>git clone URL</code>. Cloning copies the entire history — not just the current files.</p>
+      </div>
+    </div>
+    <div class="gf-item">
+      <div class="gf-dot yellow">✏️</div>
+      <div class="gf-content">
+        <h4>2. Make changes</h4>
+        <p>Edit files normally. Git watches everything. Run <code>git status</code> anytime to see what changed.</p>
+      </div>
+    </div>
+    <div class="gf-item">
+      <div class="gf-dot blue">📋</div>
+      <div class="gf-content">
+        <h4>3. Stage changes</h4>
+        <p><code>git add filename</code> or <code>git add .</code> for everything. This puts changes in the "waiting room" before saving.</p>
+      </div>
+    </div>
+    <div class="gf-item">
+      <div class="gf-dot green">📸</div>
+      <div class="gf-content">
+        <h4>4. Commit — save a snapshot</h4>
+        <p><code>git commit -m "what you did"</code>. This creates a permanent snapshot. Good messages = your future self thanks you.</p>
+      </div>
+    </div>
+    <div class="gf-item">
+      <div class="gf-dot purple">🚀</div>
+      <div class="gf-content">
+        <h4>5. Push to GitHub</h4>
+        <p><code>git push origin main</code>. Sends your local commits to GitHub. Now your work is safe online and visible to teammates.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="terminal reveal">
+    <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">complete daily workflow — run these in order</span><button class="terminal-copy">Copy</button></div>
+    <div class="terminal-body">
+      <div class="t-line"><span class="t-comment"># ── START: new project from scratch ────────────────────</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">mkdir taskapi && cd taskapi</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">git init</span>                          <span class="t-comment">  # initialise empty git repo</span></div>
+      <div class="t-line"><span class="t-ok">Initialized empty Git repository in /home/akshay/taskapi/.git/</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment"># ── OR: clone existing project from GitHub ─────────────</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">git clone git@github.com:akshc15/taskapi.git</span></div>
+      <div class="t-line"><span class="t-ok">Cloning into 'taskapi'...</span></div>
+      <div class="t-line"><span class="t-ok">Receiving objects: 100% (42/42), done.</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment"># ── DAILY WORK LOOP ────────────────────────────────────</span></div>
+      <div class="t-line"><span class="t-comment"># 1. See what changed</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">git status</span></div>
+      <div class="t-line"><span class="t-warn">On branch main</span></div>
+      <div class="t-line"><span class="t-warn">Changes not staged for commit:</span></div>
+      <div class="t-line"><span class="t-err">  modified:   app.py</span></div>
+      <div class="t-line"><span class="t-err">  modified:   Dockerfile</span></div>
+      <div class="t-line"><span class="t-info">Untracked files:</span></div>
+      <div class="t-line"><span class="t-info">  tests/test_app.py</span>            <span class="t-comment">  ← new file git hasn't seen</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment"># 2. See exactly what changed inside files</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">git diff</span>                      <span class="t-comment">  # shows line-by-line changes</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment"># 3. Stage ALL changes</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">git add .</span>                     <span class="t-comment">  # stage everything</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">git add app.py</span>                <span class="t-comment">  # stage only one file</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment"># 4. Commit with a good message</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">git commit -m "Add health endpoint and tests"</span></div>
+      <div class="t-line"><span class="t-ok">[main a3f2c91] Add health endpoint and tests</span></div>
+      <div class="t-line"><span class="t-ok"> 3 files changed, 47 insertions(+), 2 deletions(-)</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment"># 5. Push to GitHub</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">git push origin main</span></div>
+      <div class="t-line"><span class="t-ok">Enumerating objects: 7, done.</span></div>
+      <div class="t-line"><span class="t-ok">To github.com:akshc15/taskapi.git</span></div>
+      <div class="t-line"><span class="t-ok">   b4f1e3d..a3f2c91  main -> main</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment"># 6. View history</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">git log --oneline</span>             <span class="t-comment">  # compact history</span></div>
+      <div class="t-line"><span class="t-ok">a3f2c91 Add health endpoint and tests</span></div>
+      <div class="t-line"><span class="t-ok">b4f1e3d Add Dockerfile</span></div>
+      <div class="t-line"><span class="t-ok">c8a9d12 Initial commit</span></div>
+    </div>
+  </div>
+
+  <div class="tip-box reveal"><span class="box-icon">💡</span><div><b>Good commit message formula:</b> Start with a verb in present tense. "Add user auth" not "Added user auth". "Fix database timeout" not "Fixed stuff". Keep under 72 characters. Future you will thank current you.</div></div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════
+     BRANCHES
+═══════════════════════════════════ -->
+<section class="section" id="branches">
+  <div class="section-label">// work on features safely</div>
+  <div class="section-title">Branches — Parallel Universes for Your Code</div>
+  <div class="section-sub">main is always stable. You branch off to try things. If it works — merge it. If not — delete the branch. Main never breaks.</div>
+
+  <div class="analogy-box reveal">
+    <div class="analogy-label">🧒 Explain Like I'm 5</div>
+    <p>Imagine a river (<b>main branch</b>). You dig a side canal (<b>feature branch</b>) to test if fish can live there. You experiment freely. If the fish survive, you connect the canal back to the river (<b>merge</b>). If they don't, you fill the canal in (<b>delete branch</b>) and the main river is completely unaffected.</p>
+  </div>
+
+  <div class="branch-visual reveal">
+    <div><span class="bv-main">main    </span> <span class="bv-commit">●─────●─────────────────●─────●</span> <span class="bv-tag"> ← always stable</span></div>
+    <div><span class="bv-main">        </span> <span class="bv-commit">      │                 ↑</span></div>
+    <div><span class="bv-feat">feature </span> <span class="bv-commit">      ●───●───●───●───</span><span class="bv-merge">merge</span></div>
+    <div>                                                                          </div>
+    <div><span class="bv-commit">        ↑           ↑</span></div>
+    <div><span class="bv-commit">     commit      commit</span></div>
+  </div>
+
+  <div class="terminal reveal">
+    <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">branch workflow — used in every team</span><button class="terminal-copy">Copy</button></div>
+    <div class="terminal-body">
+      <div class="t-line"><span class="t-comment"># See all branches</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">git branch</span></div>
+      <div class="t-line"><span class="t-ok">* main</span>                         <span class="t-comment">  ← * = current branch</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment"># Create and switch to a new branch in one command</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">git checkout -b feature/add-docker</span></div>
+      <div class="t-line"><span class="t-ok">Switched to a new branch 'feature/add-docker'</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment"># Make changes, commit on the feature branch</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">touch Dockerfile</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">git add . && git commit -m "Add Dockerfile for taskapi"</span></div>
+      <div class="t-line"><span class="t-ok">[feature/add-docker f7a1b2c] Add Dockerfile for taskapi</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment"># Push feature branch to GitHub</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">git push origin feature/add-docker</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment"># Switch back to main</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">git checkout main</span></div>
+      <div class="t-line"><span class="t-ok">Switched to branch 'main'</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment"># Merge feature branch into main (after PR review)</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">git merge feature/add-docker</span></div>
+      <div class="t-line"><span class="t-ok">Updating b4f1e3d..f7a1b2c</span></div>
+      <div class="t-line"><span class="t-ok">Fast-forward</span></div>
+      <div class="t-line"><span class="t-ok"> Dockerfile | 12 ++++++++++++</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment"># Delete branch after merging (keep things clean)</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">git branch -d feature/add-docker</span></div>
+      <div class="t-line"><span class="t-ok">Deleted branch feature/add-docker</span></div>
+    </div>
+  </div>
+
+  <div class="info-box reveal"><span class="box-icon">💡</span><div><b>Branch naming conventions used by real teams:</b><br>
+  <code>feature/add-login</code> — new feature<br>
+  <code>fix/database-timeout</code> — bug fix<br>
+  <code>hotfix/critical-security-patch</code> — urgent production fix<br>
+  <code>release/v2.0.0</code> — release preparation</div></div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════
+     GITHUB
+═══════════════════════════════════ -->
+<section class="section" id="github">
+  <div class="section-label">// from local to the world</div>
+  <div class="section-title">GitHub — Create Repo + Pull Requests</div>
+
+  <div class="steps stagger-children">
+    <div class="step-card">
+      <div class="step-head">
+        <span class="step-num sn-blue">CREATE REPO</span>
+        <span class="step-title">Create a New Repository on GitHub</span>
+        <span class="step-chevron">›</span>
+      </div>
+      <div class="step-body">
+        <div class="info-box"><span class="box-icon">🖱️</span>
+          <div>
+            <b>1.</b> Go to <b>github.com</b> → click <b>+</b> (top right) → <b>New repository</b><br>
+            <b>2.</b> Repository name: <code>taskapi</code><br>
+            <b>3.</b> Description: "REST API deployed on Kubernetes"<br>
+            <b>4.</b> Visibility: <b>Public</b> (recruiters can see it)<br>
+            <b>5.</b> ✅ Add a README file<br>
+            <b>6.</b> Click <b>Create repository</b>
+          </div>
+        </div>
+        <div class="terminal">
+          <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">connect local project to GitHub</span><button class="terminal-copy">Copy</button></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-comment"># In your local project folder:</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">git remote add origin git@github.com:akshc15/taskapi.git</span></div>
+            <div class="t-line"><span class="t-comment"># "origin" = nickname for your GitHub URL</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">git push -u origin main</span></div>
+            <div class="t-line"><span class="t-comment"># -u = set upstream (links local main to GitHub main)</span></div>
+            <div class="t-line"><span class="t-comment"># After this first push, just use: git push</span></div>
+            <div class="t-line"><span class="t-ok">Branch 'main' set up to track remote branch 'main'</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head">
+        <span class="step-num sn-green">PULL REQUEST</span>
+        <span class="step-title">Create a Pull Request — Professional Team Workflow</span>
+        <span class="step-chevron">›</span>
+      </div>
+      <div class="step-body">
+        <p>A Pull Request (PR) is how teams review code before merging to main. Even solo projects benefit — it creates a record of every change and why it was made.</p>
+        <div class="info-box"><span class="box-icon">🖱️</span>
+          <div>
+            <b>1.</b> Push your feature branch to GitHub: <code>git push origin feature/add-docker</code><br>
+            <b>2.</b> Go to your repo on GitHub — you'll see a yellow banner: <b>"feature/add-docker had recent pushes"</b> → click <b>Compare & pull request</b><br>
+            <b>3.</b> Add a title: <b>"Add Docker support for TaskAPI"</b><br>
+            <b>4.</b> In description write what you changed and why<br>
+            <b>5.</b> Click <b>Create pull request</b><br>
+            <b>6.</b> Review the changes → click <b>Merge pull request</b> → <b>Confirm merge</b><br>
+            <b>7.</b> Delete the branch (GitHub shows a button)
+          </div>
+        </div>
+        <div class="tip-box"><span class="box-icon">💡</span><div>On your resume: "Used GitHub Pull Requests and code review workflow for all feature development". This one line shows you work like a professional team, not a solo hacker.</div></div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head">
+        <span class="step-num sn-yellow">GITIGNORE</span>
+        <span class="step-title">.gitignore — Don't Push Secrets or Junk to GitHub</span>
+        <span class="step-chevron">›</span>
+      </div>
+      <div class="step-body">
+        <p>A .gitignore file tells Git: "never track these files". Critical for keeping secrets and build files off GitHub.</p>
+        <div class="terminal">
+          <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">.gitignore for a Python DevOps project</span><button class="terminal-copy">Copy</button></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-comment"># Python</span></div>
+            <div class="t-line"><span class="t-cmd">__pycache__/</span></div>
+            <div class="t-line"><span class="t-cmd">*.pyc</span></div>
+            <div class="t-line"><span class="t-cmd">.venv/</span></div>
+            <div class="t-line"><span class="t-cmd">venv/</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-comment"># Secrets — NEVER commit these</span></div>
+            <div class="t-line"><span class="t-cmd">.env</span>                 <span class="t-comment">  ← API keys, passwords</span></div>
+            <div class="t-line"><span class="t-cmd">*.pem</span>                <span class="t-comment">  ← SSH private keys</span></div>
+            <div class="t-line"><span class="t-cmd">kubeconfig</span>           <span class="t-comment">  ← K8s cluster access</span></div>
+            <div class="t-line"><span class="t-cmd">secrets.yaml</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-comment"># Terraform</span></div>
+            <div class="t-line"><span class="t-cmd">.terraform/</span></div>
+            <div class="t-line"><span class="t-cmd">*.tfstate</span>            <span class="t-comment">  ← may contain secrets</span></div>
+            <div class="t-line"><span class="t-cmd">*.tfstate.backup</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-comment"># OS files</span></div>
+            <div class="t-line"><span class="t-cmd">.DS_Store</span>            <span class="t-comment">  ← Mac junk file</span></div>
+            <div class="t-line"><span class="t-cmd">Thumbs.db</span>            <span class="t-comment">  ← Windows junk file</span></div>
+          </div>
+        </div>
+        <div class="err-box"><span class="box-icon">🚨</span><div><b>Never commit .env files or private keys to GitHub.</b> Even private repos. Bots scan GitHub 24/7 looking for exposed API keys. If you accidentally push a secret — rotate it immediately (change the password/key), don't just delete the commit.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════
+     UNDO MISTAKES
+═══════════════════════════════════ -->
+<section class="section" id="undo">
+  <div class="section-label">// fix your mistakes</div>
+  <div class="section-title">Undo in Git — Never Panic Again</div>
+  <div class="section-sub">Git never truly deletes anything. Every mistake is fixable. Here's how.</div>
+
+  <div class="terminal reveal">
+    <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">fixing common mistakes</span><button class="terminal-copy">Copy</button></div>
+    <div class="terminal-body">
+      <div class="t-line"><span class="t-comment"># ── Unstage a file (added too soon) ────────────────────</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">git restore --staged secret.env</span>  <span class="t-comment">  # removes from staging, keeps file</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment"># ── Discard changes in a file (go back to last commit) ─</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">git restore app.py</span>              <span class="t-comment">  # WARNING: changes permanently lost</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment"># ── Fix the last commit message ────────────────────────</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">git commit --amend -m "Better message"</span>  <span class="t-comment">  # only if not pushed yet</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment"># ── Undo last commit (keep changes) ────────────────────</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">git reset HEAD~1</span>                <span class="t-comment">  # uncommits but keeps file changes</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment"># ── Go back to specific commit ─────────────────────────</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">git log --oneline</span></div>
+      <div class="t-line"><span class="t-ok">a3f2c91 Latest commit</span></div>
+      <div class="t-line"><span class="t-ok">b4f1e3d Good commit I want to go back to</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">git checkout b4f1e3d</span>            <span class="t-comment">  # time-travel to that commit</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment"># ── Safe undo after pushing (creates new "undo" commit) ─</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">git revert a3f2c91</span>              <span class="t-comment">  # safest way to undo on shared repos</span></div>
+      <div class="t-line"><span class="t-ok">[main h9k2p3] Revert "Latest commit"</span></div>
+    </div>
+  </div>
+
+  <div class="warn-box reveal"><span class="box-icon">⚠️</span><div><b>git reset --hard</b> permanently deletes uncommitted changes. <b>git push --force</b> can overwrite teammates' work. Never use these on shared branches. Use <b>git revert</b> instead — it undoes safely by adding a new commit.</div></div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════
+     ERRORS
+═══════════════════════════════════ -->
+<section class="section" id="errors">
+  <div class="section-label">// when git goes wrong</div>
+  <div class="section-title">Common Git Errors — Exact Fix</div>
+
+  <div class="steps stagger-children">
+    <div class="step-card">
+      <div class="step-head">
+        <span class="step-num sn-orange">ERR 01</span>
+        <span class="step-title">CONFLICT — Merge conflict</span>
+        <span class="step-chevron">›</span>
+      </div>
+      <div class="step-body">
+        <div class="terminal"><div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">git merge feature/login</span></div>
+            <div class="t-line"><span class="t-err">CONFLICT (content): Merge conflict in app.py</span></div>
+            <div class="t-line"><span class="t-out"># Open app.py — you'll see conflict markers:</span></div>
+            <div class="t-line"><span class="t-err">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</span></div>
+            <div class="t-line"><span class="t-ok">def login(): return "main version"</span></div>
+            <div class="t-line"><span class="t-warn">=======</span></div>
+            <div class="t-line"><span class="t-info">def login(): return "feature version"</span></div>
+            <div class="t-line"><span class="t-err">&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/login</span></div>
+            <div class="t-line"><span class="t-comment"># FIX: edit file, keep the right code, delete the markers</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">git add app.py</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">git commit -m "Resolve merge conflict in login"</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head">
+        <span class="step-num sn-orange">ERR 02</span>
+        <span class="step-title">Permission denied (publickey)</span>
+        <span class="step-chevron">›</span>
+      </div>
+      <div class="step-body">
+        <div class="terminal"><div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">git push origin main</span></div>
+            <div class="t-line"><span class="t-err">git@github.com: Permission denied (publickey)</span></div>
+            <div class="t-line"><span class="t-comment"># FIX: SSH key not added to GitHub</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">cat ~/.ssh/id_ed25519.pub</span>  <span class="t-comment">  # copy this output</span></div>
+            <div class="t-line"><span class="t-comment"># Paste at github.com → Settings → SSH keys → New SSH key</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head">
+        <span class="step-num sn-orange">ERR 03</span>
+        <span class="step-title">rejected — remote contains work you don't have</span>
+        <span class="step-chevron">›</span>
+      </div>
+      <div class="step-body">
+        <div class="terminal"><div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">git push origin main</span></div>
+            <div class="t-line"><span class="t-err">! [rejected] main -> main (fetch first)</span></div>
+            <div class="t-line"><span class="t-comment"># Someone else pushed to GitHub before you</span></div>
+            <div class="t-line"><span class="t-comment"># FIX: pull first, then push</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">git pull origin main</span>  <span class="t-comment">  # get their changes</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">git push origin main</span>  <span class="t-comment">  # now push yours</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════
+     INTERVIEW Q&A
+═══════════════════════════════════ -->
+<section class="section" id="interview">
+  <div class="section-label">// crack the interview</div>
+  <div class="section-title">Git Interview Questions — Perfect Answers</div>
+
+  <div class="qa-list stagger-children">
+    <div class="qa-card">
+      <div class="qa-q"><span class="qa-q-num">Q1</span><span class="qa-q-text">What is the difference between git merge and git rebase?</span><span class="qa-diff diff-m">Medium</span></div>
+      <div class="qa-a"><b>git merge</b> takes two branches and creates a new "merge commit" combining them. The history shows both branches. Safe for shared branches — never rewrites history.<br><br><b>git rebase</b> moves your commits to the tip of another branch, rewriting history to look like they were always there. Result: linear, clean history. But it changes commit hashes — dangerous on shared branches.<br><br>Rule of thumb: <b>merge for shared branches (main, develop), rebase for local feature branches</b> before merging to keep history clean.
+        <div class="qa-tip">🎯 Say: "I use merge for main branch integration and rebase to clean up my local feature branch history before creating a PR. I never rebase shared branches."</div>
+      </div>
+    </div>
+    <div class="qa-card">
+      <div class="qa-q"><span class="qa-q-num">Q2</span><span class="qa-q-text">What is git stash and when would you use it?</span><span class="qa-diff diff-e">Easy</span></div>
+      <div class="qa-a"><b>git stash</b> temporarily saves your uncommitted changes to a stack and reverts your working directory to the last commit — without making a commit. Use it when: you're in the middle of work and need to urgently switch to another branch, or your manager says "hotfix this NOW" but you're halfway through a feature.<br><br><code>git stash</code> — saves your work. <code>git stash pop</code> — restores it. <code>git stash list</code> — see all stashes.
+        <div class="qa-tip">🎯 Say: "git stash is my escape hatch when I need to switch context urgently. Stash, fix the hotfix, pop my stash, continue my feature."</div>
+      </div>
+    </div>
+    <div class="qa-card">
+      <div class="qa-q"><span class="qa-q-num">Q3</span><span class="qa-q-text">What is the difference between git pull and git fetch?</span><span class="qa-diff diff-e">Easy</span></div>
+      <div class="qa-a"><b>git fetch</b> downloads changes from GitHub to your local repo but does NOT merge them into your working branch. Safe to run anytime — your files don't change. Use it to preview what others pushed.<br><br><b>git pull</b> = git fetch + git merge. Downloads AND immediately merges into your current branch. Can cause merge conflicts if you have local changes.<br><br>In CI/CD pipelines, fetch is preferred because you want explicit control over when merging happens.
+        <div class="qa-tip">🎯 Say: "I prefer git fetch + git diff to see what changed before merging. git pull is convenient for solo projects but git fetch gives you more control in team settings."</div>
+      </div>
+    </div>
+    <div class="qa-card">
+      <div class="qa-q"><span class="qa-q-num">Q4</span><span class="qa-q-text">What is GitOps?</span><span class="qa-diff diff-h">Hard</span></div>
+      <div class="qa-a">GitOps is a way of doing DevOps where <b>Git is the single source of truth for everything</b> — application code AND infrastructure configuration. Instead of manually running kubectl apply or terraform apply, you commit the desired state to Git. An automated tool (ArgoCD, Flux) watches the repo and automatically syncs the cluster to match what's in Git.<br><br>Benefits: every change is auditable (who changed what, when, why). Rollback = revert a commit. Disaster recovery = apply the repo. Consistency across environments. Everything is peer-reviewed via PRs before reaching production.
+        <div class="qa-tip">🎯 Say: "GitOps means git push IS the deployment. I practise this with GitHub Actions — a push to main automatically triggers test, build, and deploy. The cluster state is always what's in the repo."</div>
+      </div>
+    </div>
+    <div class="qa-card">
+      <div class="qa-q"><span class="qa-q-num">Q5</span><span class="qa-q-text">How do you handle a situation where you accidentally committed a secret/password?</span><span class="qa-diff diff-m">Medium</span></div>
+      <div class="qa-a">Two situations: <b>Not pushed yet:</b> <code>git reset HEAD~1</code> to undo the commit, then add the file to .gitignore and recommit without it.<br><br><b>Already pushed to GitHub:</b> The secret is compromised — assume it's been seen. Step 1: <b>Rotate the secret immediately</b> (change the password/API key — the old one is now invalid). Step 2: Remove from code, add to .gitignore. Step 3: Use <code>git filter-branch</code> or <code>git-filter-repo</code> to remove from history (though this is a complex operation on shared repos). Step 4: Force push. Step 5: Notify your team.
+        <div class="qa-tip">🎯 Say: "Prevention first — I use .gitignore and environment variables. If it happens, rotate first, ask questions later. I use GitHub Secrets for CI/CD credentials — they never touch the codebase."</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- NEXT -->
+<section class="section">
+  <div class="section-label">// you're ready for containers</div>
+  <div class="section-title">What's Next?</div>
+  <div class="card-grid stagger-children">
+    <a href="docker.html" class="card" style="text-decoration:none;">
+      <div style="font-size:1.5rem;margin-bottom:10px;">🐳</div>
+      <div style="font-weight:700;margin-bottom:4px;">Docker →</div>
+      <div style="font-size:13px;color:var(--text-secondary);">Pack your app in a container. Run anywhere. The skill every DevOps job requires.</div>
+      <div style="margin-top:12px;"><span class="badge badge-blue">Next Chapter</span></div>
+    </a>
+    <a href="linux.html" class="card" style="text-decoration:none;">
+      <div style="font-size:1.5rem;margin-bottom:10px;">🐧</div>
+      <div style="font-weight:700;margin-bottom:4px;">← Linux</div>
+      <div style="font-size:13px;color:var(--text-secondary);">Revisit Linux fundamentals — the foundation under everything.</div>
+    </a>
+    <a href="../30day-challenge.html" class="card" style="text-decoration:none;">
+      <div style="font-size:1.5rem;margin-bottom:10px;">📅</div>
+      <div style="font-weight:700;margin-bottom:4px;">30-Day Plan →</div>
+      <div style="font-size:13px;color:var(--text-secondary);">Follow the daily structured challenge and build everything together.</div>
+    </a>
+  </div>
+</section>
+
+<footer>
+  My DevOps Portal · 🐙 Git + GitHub Guide ·
+  <a href="../index.html">Home</a> ·
+  <a href="linux.html">← Linux</a> ·
+  <a href="docker.html">Next: Docker →</a>
+</footer>
+
+<script src="../script.js"></script>
+</body>
+</html>
