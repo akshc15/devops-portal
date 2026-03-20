@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Money Projects — My DevOps Portal</title>
+<link rel="stylesheet" href="../style.css">
+<style>
+.project-hero {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 32px;
+  margin-bottom: 16px;
+  position: relative;
+  overflow: hidden;
+}
+.project-hero::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 300px; height: 300px;
+  border-radius: 50%;
+  pointer-events: none;
+}
+.ph-1::before { background: radial-gradient(circle, rgba(10,132,255,0.08), transparent 70%); }
+.ph-2::before { background: radial-gradient(circle, rgba(48,209,88,0.08), transparent 70%); }
+
+.ph-header { display: flex; align-items: start; gap: 20px; margin-bottom: 20px; }
+.ph-icon { font-size: 3rem; flex-shrink: 0; }
+.ph-meta { flex: 1; }
+.ph-title { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 6px; }
+.ph-sub { font-size: 14px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 12px; }
+.ph-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+
+.money-box {
+  background: var(--green-dim);
+  border: 1px solid rgba(48,209,88,0.2);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  margin: 16px 0;
+}
+.money-box .mb-title { font-weight: 700; color: var(--green); margin-bottom: 8px; font-size: 14px; }
+.money-box .mb-ways { display: flex; flex-direction: column; gap: 6px; }
+.money-box .mb-way { font-size: 13px; color: var(--text-secondary); display: flex; gap: 8px; align-items: start; line-height: 1.6; }
+.money-box .mb-way::before { content: '₹'; color: var(--green); font-family: var(--font-mono); font-size: 11px; flex-shrink: 0; margin-top: 3px; }
+
+.arch-flow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 16px;
+  background: #0d1117;
+  border-radius: var(--radius-md);
+  margin: 12px 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+.af-box {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  text-align: center;
+}
+.af-box .af-icon { font-size: 1.1rem; margin-bottom: 2px; }
+.af-box .af-name { font-size: 10px; color: var(--blue); text-transform: uppercase; letter-spacing: 0.08em; }
+.af-box .af-tech { font-size: 10px; color: var(--text-tertiary); }
+.af-arr { color: var(--text-tertiary); font-size: 1rem; }
+</style>
+</head>
+<body>
+
+<div class="site-banner">
+  <div class="brand"><span class="dot"></span><span>My DevOps Portal</span></div>
+  <nav class="banner-nav">
+    <a href="../index.html">🏠 Home</a>
+    <a href="monitoring.html">📊 Monitor</a>
+    <a href="projects.html" class="active">🚀 Projects</a>
+    <a href="../resume-guide.html">📄 Resume</a>
+    <a href="../30day-challenge.html">📅 Challenge</a>
+  </nav>
+</div>
+
+<div class="page-nav">
+  <span class="page-nav-title">🚀 Money Projects — Build & Earn</span>
+  <div class="page-nav-links">
+    <a href="#intro">Why These</a>
+    <a href="#project1">Project 1 — AI Resume</a>
+    <a href="#p1-build">Build P1</a>
+    <a href="#project2">Project 2 — K8s AI Monitor</a>
+    <a href="#p2-build">Build P2</a>
+    <a href="#deploy">Deploy Both</a>
+    <a href="#earn">How to Earn</a>
+  </div>
+</div>
+
+<div class="page-hero">
+  <div class="hero-eyebrow">Final Chapter · Real Projects · Real Money</div>
+  <h1 class="hero-title">🚀 Two Projects.<br><span class="accent">Real AI.</span><br><span class="accent-green">Real Income.</span></h1>
+  <p class="hero-sub">You've learned every tool. Now build something that earns. Both projects use your exact DevOps stack — Docker, Kubernetes, Terraform, CI/CD, Monitoring — plus AI that makes them genuinely valuable today.</p>
+</div>
+
+<!-- ═══════════════════════════════════
+     WHY THESE PROJECTS
+═══════════════════════════════════ -->
+<section class="section" id="intro">
+  <div class="section-label">// why these specifically</div>
+  <div class="section-title">Why These 2 Projects?</div>
+
+  <div class="card-grid stagger-children" style="margin-bottom:0;">
+    <div class="card reveal">
+      <div style="font-size:1.4rem;margin-bottom:10px;">🎯</div>
+      <div style="font-weight:700;margin-bottom:6px;">Use every skill you learned</div>
+      <div style="font-size:13px;color:var(--text-secondary);line-height:1.7;">Linux, Git, Docker, Kubernetes, Terraform, CI/CD, Monitoring — all used together in one real system. Your portfolio proves the full stack.</div>
+    </div>
+    <div class="card reveal">
+      <div style="font-size:1.4rem;margin-bottom:10px;">🤖</div>
+      <div style="font-weight:700;margin-bottom:6px;">AI makes them genuinely valuable</div>
+      <div style="font-size:13px;color:var(--text-secondary);line-height:1.7;">Not toy apps. Businesses pay real money for these exact tools today. You're building the product they buy, not a tutorial clone.</div>
+    </div>
+    <div class="card reveal">
+      <div style="font-size:1.4rem;margin-bottom:10px;">🆓</div>
+      <div style="font-weight:700;margin-bottom:6px;">All free to build and run</div>
+      <div style="font-size:13px;color:var(--text-secondary);line-height:1.7;">GCP $300 credit for K8s. OpenAI free tier for AI. GitHub free for CI/CD. Docker Hub free for registry. Total cost: ₹0.</div>
+    </div>
+    <div class="card reveal">
+      <div style="font-size:1.4rem;margin-bottom:10px;">💼</div>
+      <div style="font-weight:700;margin-bottom:6px;">Interview gold</div>
+      <div style="font-size:13px;color:var(--text-secondary);line-height:1.7;">Walk into any DevOps interview and say "I built an AI-powered tool running on Kubernetes with full CI/CD." That's a different conversation entirely.</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════
+     PROJECT 1
+═══════════════════════════════════ -->
+<section class="section" id="project1">
+  <div class="section-label">// project 1 of 2</div>
+
+  <div class="project-hero ph-1">
+    <div class="ph-header">
+      <div class="ph-icon">📄</div>
+      <div class="ph-meta">
+        <div class="ph-title">AI Resume Screener + Rewriter</div>
+        <div class="ph-sub">Upload any resume → AI scores it out of 100 → explains exactly what's weak → rewrites it to get past ATS scanners. Deployed on Kubernetes with CI/CD.</div>
+        <div class="ph-tags">
+          <span class="badge badge-blue">FastAPI</span>
+          <span class="badge badge-green">OpenAI API</span>
+          <span class="badge badge-blue">Docker</span>
+          <span class="badge badge-green">Kubernetes</span>
+          <span class="badge badge-yellow">Terraform</span>
+          <span class="badge badge-purple">GitHub Actions</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="money-box">
+      <div class="mb-title">💰 How This Makes Money</div>
+      <div class="mb-ways">
+        <div class="mb-way"><b style="color:var(--text);">Fiverr/Upwork gig:</b> "I'll review and rewrite your resume using AI" — ₹500–2000 per resume. 5 resumes/day = ₹10,000/day.</div>
+        <div class="mb-way"><b style="color:var(--text);">SaaS product:</b> Charge ₹99/month subscription. 100 users = ₹9,900/month passive income.</div>
+        <div class="mb-way"><b style="color:var(--text);">HR company white-label:</b> Small HR companies pay ₹15,000–50,000/month for resume screening tools.</div>
+        <div class="mb-way"><b style="color:var(--text);">College placement cells:</b> Engineering colleges pay for bulk resume screening before placements. ₹25,000–1,00,000 per contract.</div>
+      </div>
+    </div>
+
+    <div class="arch-flow">
+      <div class="af-box"><div class="af-icon">🌐</div><div class="af-name">User</div><div class="af-tech">Browser/API</div></div>
+      <div class="af-arr">→</div>
+      <div class="af-box"><div class="af-icon">🐍</div><div class="af-name">FastAPI</div><div class="af-tech">Upload handler</div></div>
+      <div class="af-arr">→</div>
+      <div class="af-box"><div class="af-icon">📄</div><div class="af-name">PDF Parser</div><div class="af-tech">PyPDF2</div></div>
+      <div class="af-arr">→</div>
+      <div class="af-box"><div class="af-icon">🤖</div><div class="af-name">OpenAI</div><div class="af-tech">GPT-4o-mini</div></div>
+      <div class="af-arr">→</div>
+      <div class="af-box"><div class="af-icon">📊</div><div class="af-name">Score + Fix</div><div class="af-tech">JSON response</div></div>
+      <div class="af-arr">→</div>
+      <div class="af-box"><div class="af-icon">☸️</div><div class="af-name">K8s</div><div class="af-tech">3 replicas</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="p1-build">
+  <div class="section-label">// build project 1 — complete code</div>
+  <div class="section-title">Build the AI Resume Screener — Step by Step</div>
+
+  <div class="steps stagger-children">
+    <div class="step-card">
+      <div class="step-head"><span class="step-num sn-blue">STEP 1</span><span class="step-title">Get OpenAI API Key — Free Tier</span><span class="step-chevron">›</span></div>
+      <div class="step-body">
+        <div class="info-box"><span class="box-icon">🖱️</span>
+          <div>
+            Go to <b>platform.openai.com</b> → Sign up (free) → Click your avatar → <b>API keys</b> → <b>Create new secret key</b> → name it "resume-screener" → Copy the key (starts with sk-...)<br><br>
+            Free tier gives $5 credit. GPT-4o-mini costs ~$0.0003 per resume analysis. Your $5 = ~16,000 free analyses.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head"><span class="step-num sn-blue">STEP 2</span><span class="step-title">Project Structure + App Code</span><span class="step-chevron">›</span></div>
+      <div class="step-body">
+        <div class="terminal">
+          <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">create project</span><button class="terminal-copy">Copy</button></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">mkdir ai-resume-screener && cd ai-resume-screener</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">mkdir app k8s tests</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">touch app/main.py app/screener.py requirements.txt Dockerfile docker-compose.yml</span></div>
+          </div>
+        </div>
+        <div class="terminal" style="margin-top:8px;">
+          <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">requirements.txt</span><button class="terminal-copy">Copy</button></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-cmd">fastapi==0.111.0</span></div>
+            <div class="t-line"><span class="t-cmd">uvicorn==0.29.0</span></div>
+            <div class="t-line"><span class="t-cmd">openai==1.30.0</span></div>
+            <div class="t-line"><span class="t-cmd">PyPDF2==3.0.1</span></div>
+            <div class="t-line"><span class="t-cmd">python-multipart==0.0.9</span></div>
+            <div class="t-line"><span class="t-cmd">pydantic==2.7.0</span></div>
+            <div class="t-line"><span class="t-cmd">prometheus-fastapi-instrumentator==6.1.0</span></div>
+          </div>
+        </div>
+        <div class="terminal" style="margin-top:8px;">
+          <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">app/screener.py — the AI brain</span><button class="terminal-copy">Copy</button></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-cmd">import os</span></div>
+            <div class="t-line"><span class="t-cmd">from openai import OpenAI</span></div>
+            <div class="t-line"><span class="t-cmd">import PyPDF2</span></div>
+            <div class="t-line"><span class="t-cmd">import io, json</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-cmd">client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-cmd">def extract_text_from_pdf(pdf_bytes: bytes) -> str:</span></div>
+            <div class="t-line"><span class="t-cmd">    reader = PyPDF2.PdfReader(io.BytesIO(pdf_bytes))</span></div>
+            <div class="t-line"><span class="t-cmd">    return " ".join(page.extract_text() for page in reader.pages)</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-cmd">def analyze_resume(resume_text: str, job_role: str = "DevOps Engineer") -> dict:</span></div>
+            <div class="t-line"><span class="t-cmd">    prompt = f"""</span></div>
+            <div class="t-line"><span class="t-cmd">You are an expert resume reviewer and career coach.</span></div>
+            <div class="t-line"><span class="t-cmd">Analyze this resume for the role: {job_role}</span></div>
+            <div class="t-line"><span class="t-cmd"> </span></div>
+            <div class="t-line"><span class="t-cmd">RESUME:</span></div>
+            <div class="t-line"><span class="t-cmd">{resume_text[:3000]}</span></div>
+            <div class="t-line"><span class="t-cmd"> </span></div>
+            <div class="t-line"><span class="t-cmd">Return ONLY valid JSON (no markdown) with this exact structure:</span></div>
+            <div class="t-line"><span class="t-cmd">{{</span></div>
+            <div class="t-line"><span class="t-cmd">  "score": 0-100,</span></div>
+            <div class="t-line"><span class="t-cmd">  "grade": "A/B/C/D/F",</span></div>
+            <div class="t-line"><span class="t-cmd">  "strengths": ["strength1", "strength2"],</span></div>
+            <div class="t-line"><span class="t-cmd">  "weaknesses": ["weakness1", "weakness2"],</span></div>
+            <div class="t-line"><span class="t-cmd">  "missing_keywords": ["keyword1", "keyword2"],</span></div>
+            <div class="t-line"><span class="t-cmd">  "improved_summary": "rewritten professional summary",</span></div>
+            <div class="t-line"><span class="t-cmd">  "ats_tips": ["tip1", "tip2", "tip3"]</span></div>
+            <div class="t-line"><span class="t-cmd">}}</span></div>
+            <div class="t-line"><span class="t-cmd">"""</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-cmd">    response = client.chat.completions.create(</span></div>
+            <div class="t-line"><span class="t-cmd">        model="gpt-4o-mini",</span>  <span class="t-comment">  # cheapest + fast</span></div>
+            <div class="t-line"><span class="t-cmd">        messages=[{"role": "user", "content": prompt}],</span></div>
+            <div class="t-line"><span class="t-cmd">        temperature=0.3</span></div>
+            <div class="t-line"><span class="t-cmd">    )</span></div>
+            <div class="t-line"><span class="t-cmd">    return json.loads(response.choices[0].message.content)</span></div>
+          </div>
+        </div>
+        <div class="terminal" style="margin-top:8px;">
+          <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">app/main.py — the API</span><button class="terminal-copy">Copy</button></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-cmd">from fastapi import FastAPI, UploadFile, File, Form, HTTPException</span></div>
+            <div class="t-line"><span class="t-cmd">from fastapi.middleware.cors import CORSMiddleware</span></div>
+            <div class="t-line"><span class="t-cmd">from prometheus_fastapi_instrumentator import Instrumentator</span></div>
+            <div class="t-line"><span class="t-cmd">from app.screener import extract_text_from_pdf, analyze_resume</span></div>
+            <div class="t-line"><span class="t-cmd">import time</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-cmd">app = FastAPI(title="AI Resume Screener", version="1.0.0")</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-cmd">app.add_middleware(CORSMiddleware, allow_origins=["*"],</span></div>
+            <div class="t-line"><span class="t-cmd">    allow_methods=["*"], allow_headers=["*"])</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-cmd">Instrumentator().instrument(app).expose(app)</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-cmd">@app.get("/health")</span></div>
+            <div class="t-line"><span class="t-cmd">def health(): return {"status": "ok", "service": "ai-resume-screener"}</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-cmd">@app.post("/analyze")</span></div>
+            <div class="t-line"><span class="t-cmd">async def analyze(</span></div>
+            <div class="t-line"><span class="t-cmd">    resume: UploadFile = File(...),</span></div>
+            <div class="t-line"><span class="t-cmd">    job_role: str = Form(default="DevOps Engineer")</span></div>
+            <div class="t-line"><span class="t-cmd">):</span></div>
+            <div class="t-line"><span class="t-cmd">    if not resume.filename.endswith(".pdf"):</span></div>
+            <div class="t-line"><span class="t-cmd">        raise HTTPException(400, "Only PDF files accepted")</span></div>
+            <div class="t-line"><span class="t-cmd">    </span></div>
+            <div class="t-line"><span class="t-cmd">    pdf_bytes = await resume.read()</span></div>
+            <div class="t-line"><span class="t-cmd">    if len(pdf_bytes) > 5 * 1024 * 1024:</span>  <span class="t-comment">  # 5MB limit</span></div>
+            <div class="t-line"><span class="t-cmd">        raise HTTPException(400, "File too large. Max 5MB.")</span></div>
+            <div class="t-line"><span class="t-cmd">    </span></div>
+            <div class="t-line"><span class="t-cmd">    start = time.time()</span></div>
+            <div class="t-line"><span class="t-cmd">    text = extract_text_from_pdf(pdf_bytes)</span></div>
+            <div class="t-line"><span class="t-cmd">    if len(text.strip()) < 100:</span></div>
+            <div class="t-line"><span class="t-cmd">        raise HTTPException(400, "Could not extract text from PDF")</span></div>
+            <div class="t-line"><span class="t-cmd">    </span></div>
+            <div class="t-line"><span class="t-cmd">    result = analyze_resume(text, job_role)</span></div>
+            <div class="t-line"><span class="t-cmd">    result["processing_time"] = round(time.time() - start, 2)</span></div>
+            <div class="t-line"><span class="t-cmd">    result["job_role"] = job_role</span></div>
+            <div class="t-line"><span class="t-cmd">    return result</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-cmd">@app.post("/rewrite")</span></div>
+            <div class="t-line"><span class="t-cmd">async def rewrite(resume: UploadFile = File(...), job_role: str = Form(...)):</span></div>
+            <div class="t-line"><span class="t-cmd">    pdf_bytes = await resume.read()</span></div>
+            <div class="t-line"><span class="t-cmd">    text = extract_text_from_pdf(pdf_bytes)</span></div>
+            <div class="t-line"><span class="t-cmd">    result = analyze_resume(text, job_role)</span></div>
+            <div class="t-line"><span class="t-cmd">    return {"original_score": result["score"], "improved_summary": result["improved_summary"],</span></div>
+            <div class="t-line"><span class="t-cmd">            "ats_tips": result["ats_tips"], "missing_keywords": result["missing_keywords"]}</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head"><span class="step-num sn-blue">STEP 3</span><span class="step-title">Dockerfile + docker-compose.yml</span><span class="step-chevron">›</span></div>
+      <div class="step-body">
+        <div class="terminal">
+          <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">Dockerfile</span><button class="terminal-copy">Copy</button></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-cmd">FROM python:3.11-slim</span></div>
+            <div class="t-line"><span class="t-cmd">WORKDIR /app</span></div>
+            <div class="t-line"><span class="t-cmd">COPY requirements.txt .</span></div>
+            <div class="t-line"><span class="t-cmd">RUN pip install --no-cache-dir -r requirements.txt</span></div>
+            <div class="t-line"><span class="t-cmd">COPY app/ ./app/</span></div>
+            <div class="t-line"><span class="t-cmd">EXPOSE 8000</span></div>
+            <div class="t-line"><span class="t-cmd">RUN adduser --disabled-password appuser && chown -R appuser /app</span></div>
+            <div class="t-line"><span class="t-cmd">USER appuser</span></div>
+            <div class="t-line"><span class="t-cmd">CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]</span></div>
+          </div>
+        </div>
+        <div class="terminal" style="margin-top:8px;">
+          <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">docker-compose.yml — local dev</span><button class="terminal-copy">Copy</button></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-cmd">version: "3.9"</span></div>
+            <div class="t-line"><span class="t-cmd">services:</span></div>
+            <div class="t-line"><span class="t-cmd">  app:</span></div>
+            <div class="t-line"><span class="t-cmd">    build: .</span></div>
+            <div class="t-line"><span class="t-cmd">    ports: ["8000:8000"]</span></div>
+            <div class="t-line"><span class="t-cmd">    environment:</span></div>
+            <div class="t-line"><span class="t-cmd">      - OPENAI_API_KEY=${OPENAI_API_KEY}</span>  <span class="t-comment">  # from .env file</span></div>
+            <div class="t-line"><span class="t-cmd">    volumes: ["./app:/app/app"]</span></div>
+          </div>
+        </div>
+        <div class="terminal" style="margin-top:8px;">
+          <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">test it locally</span><button class="terminal-copy">Copy</button></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-comment"># Create .env file (gitignored!)</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">echo "OPENAI_API_KEY=sk-your-key-here" > .env</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">docker-compose up -d</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-comment"># Test with your own resume PDF</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">curl -X POST localhost:8000/analyze \</span></div>
+            <div class="t-line"><span class="t-cmd">  -F "resume=@my-resume.pdf" \</span></div>
+            <div class="t-line"><span class="t-cmd">  -F "job_role=DevOps Engineer"</span></div>
+            <div class="t-line"><span class="t-ok">{</span></div>
+            <div class="t-line"><span class="t-ok">  "score": 72,</span></div>
+            <div class="t-line"><span class="t-ok">  "grade": "B",</span></div>
+            <div class="t-line"><span class="t-ok">  "strengths": ["Strong Linux experience", "Docker mentioned"],</span></div>
+            <div class="t-line"><span class="t-ok">  "weaknesses": ["No Kubernetes project", "Missing CI/CD experience"],</span></div>
+            <div class="t-line"><span class="t-ok">  "missing_keywords": ["Terraform", "Helm", "Prometheus"],</span></div>
+            <div class="t-line"><span class="t-ok">  "improved_summary": "DevOps engineer with 2 years..."</span></div>
+            <div class="t-line"><span class="t-ok">}</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head"><span class="step-num sn-green">STEP 4</span><span class="step-title">Kubernetes Manifests for Production</span><span class="step-chevron">›</span></div>
+      <div class="step-body">
+        <div class="terminal">
+          <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">k8s/deployment.yaml</span><button class="terminal-copy">Copy</button></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-cmd">apiVersion: apps/v1</span></div>
+            <div class="t-line"><span class="t-cmd">kind: Deployment</span></div>
+            <div class="t-line"><span class="t-cmd">metadata:</span></div>
+            <div class="t-line"><span class="t-cmd">  name: resume-screener</span></div>
+            <div class="t-line"><span class="t-cmd">spec:</span></div>
+            <div class="t-line"><span class="t-cmd">  replicas: 2</span></div>
+            <div class="t-line"><span class="t-cmd">  selector:</span></div>
+            <div class="t-line"><span class="t-cmd">    matchLabels: {app: resume-screener}</span></div>
+            <div class="t-line"><span class="t-cmd">  template:</span></div>
+            <div class="t-line"><span class="t-cmd">    metadata:</span></div>
+            <div class="t-line"><span class="t-cmd">      labels: {app: resume-screener}</span></div>
+            <div class="t-line"><span class="t-cmd">    spec:</span></div>
+            <div class="t-line"><span class="t-cmd">      containers:</span></div>
+            <div class="t-line"><span class="t-cmd">        - name: resume-screener</span></div>
+            <div class="t-line"><span class="t-cmd">          image: akshc15/resume-screener:latest</span></div>
+            <div class="t-line"><span class="t-cmd">          ports: [{containerPort: 8000}]</span></div>
+            <div class="t-line"><span class="t-cmd">          env:</span></div>
+            <div class="t-line"><span class="t-cmd">            - name: OPENAI_API_KEY</span></div>
+            <div class="t-line"><span class="t-cmd">              valueFrom:</span></div>
+            <div class="t-line"><span class="t-cmd">                secretKeyRef: {name: app-secrets, key: openai-key}</span></div>
+            <div class="t-line"><span class="t-cmd">          resources:</span></div>
+            <div class="t-line"><span class="t-cmd">            requests: {cpu: "200m", memory: "256Mi"}</span></div>
+            <div class="t-line"><span class="t-cmd">            limits: {cpu: "1000m", memory: "512Mi"}</span></div>
+            <div class="t-line"><span class="t-cmd">          livenessProbe:</span></div>
+            <div class="t-line"><span class="t-cmd">            httpGet: {path: /health, port: 8000}</span></div>
+            <div class="t-line"><span class="t-cmd">            initialDelaySeconds: 15</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-comment"># Store OpenAI key as K8s secret</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">kubectl create secret generic app-secrets \</span></div>
+            <div class="t-line"><span class="t-cmd">  --from-literal=openai-key=sk-your-key-here</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head"><span class="step-num sn-yellow">STEP 5</span><span class="step-title">CI/CD Pipeline — Auto Deploy on Push</span><span class="step-chevron">›</span></div>
+      <div class="step-body">
+        <div class="terminal">
+          <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">.github/workflows/deploy.yml</span><button class="terminal-copy">Copy</button></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-cmd">name: Deploy Resume Screener</span></div>
+            <div class="t-line"><span class="t-cmd">on:</span></div>
+            <div class="t-line"><span class="t-cmd">  push:</span></div>
+            <div class="t-line"><span class="t-cmd">    branches: [main]</span></div>
+            <div class="t-line"><span class="t-cmd">jobs:</span></div>
+            <div class="t-line"><span class="t-cmd">  deploy:</span></div>
+            <div class="t-line"><span class="t-cmd">    runs-on: ubuntu-latest</span></div>
+            <div class="t-line"><span class="t-cmd">    steps:</span></div>
+            <div class="t-line"><span class="t-cmd">      - uses: actions/checkout@v4</span></div>
+            <div class="t-line"><span class="t-cmd">      - uses: docker/login-action@v3</span></div>
+            <div class="t-line"><span class="t-cmd">        with:</span></div>
+            <div class="t-line"><span class="t-cmd">          username: ${{ secrets.DOCKERHUB_USERNAME }}</span></div>
+            <div class="t-line"><span class="t-cmd">          password: ${{ secrets.DOCKERHUB_TOKEN }}</span></div>
+            <div class="t-line"><span class="t-cmd">      - uses: docker/build-push-action@v5</span></div>
+            <div class="t-line"><span class="t-cmd">        with:</span></div>
+            <div class="t-line"><span class="t-cmd">          push: true</span></div>
+            <div class="t-line"><span class="t-cmd">          tags: ${{ secrets.DOCKERHUB_USERNAME }}/resume-screener:${{ github.sha }}</span></div>
+            <div class="t-line"><span class="t-cmd">      - name: Deploy to K8s</span></div>
+            <div class="t-line"><span class="t-cmd">        run: |</span></div>
+            <div class="t-line"><span class="t-cmd">          echo "${{ secrets.KUBECONFIG }}" | base64 -d > kube.yaml</span></div>
+            <div class="t-line"><span class="t-cmd">          kubectl --kubeconfig=kube.yaml set image deployment/resume-screener resume-screener=${{ secrets.DOCKERHUB_USERNAME }}/resume-screener:${{ github.sha }}</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════
+     PROJECT 2
+═══════════════════════════════════ -->
+<section class="section" id="project2">
+  <div class="section-label">// project 2 of 2</div>
+
+  <div class="project-hero ph-2">
+    <div class="ph-header">
+      <div class="ph-icon">🤖</div>
+      <div class="ph-meta">
+        <div class="ph-title">K8s AI Operations Assistant</div>
+        <div class="ph-sub">Ask your Kubernetes cluster questions in plain English. "Why is my pod crashing?" → AI reads kubectl output + logs → explains the root cause + gives the exact fix command.</div>
+        <div class="ph-tags">
+          <span class="badge badge-green">Python</span>
+          <span class="badge badge-blue">OpenAI API</span>
+          <span class="badge badge-green">Kubernetes Python SDK</span>
+          <span class="badge badge-blue">FastAPI</span>
+          <span class="badge badge-purple">Prometheus</span>
+          <span class="badge badge-yellow">Helm</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="money-box">
+      <div class="mb-title">💰 How This Makes Money</div>
+      <div class="mb-ways">
+        <div class="mb-way"><b style="color:var(--text);">SaaS tool for DevOps teams:</b> ₹999/month per team. 50 teams = ₹50,000/month. Companies with K8s spend this on monitoring tools.</div>
+        <div class="mb-way"><b style="color:var(--text);">Freelance DevOps consulting:</b> "I'll set up AI-powered K8s monitoring for your team" — ₹25,000–1,00,000 per project.</div>
+        <div class="mb-way"><b style="color:var(--text);">Open source + paid support:</b> Open source the tool on GitHub, charge ₹5,000/month for enterprise support. GitHub stars = credibility = clients.</div>
+        <div class="mb-way"><b style="color:var(--text);">Internal tool for your employer:</b> Build this at your DevOps job. Instant hero. Promotions follow.</div>
+      </div>
+    </div>
+
+    <div class="arch-flow">
+      <div class="af-box"><div class="af-icon">💬</div><div class="af-name">Question</div><div class="af-tech">Plain English</div></div>
+      <div class="af-arr">→</div>
+      <div class="af-box"><div class="af-icon">🐍</div><div class="af-name">FastAPI</div><div class="af-tech">Orchestrator</div></div>
+      <div class="af-arr">→</div>
+      <div class="af-box"><div class="af-icon">☸️</div><div class="af-name">K8s SDK</div><div class="af-tech">Get cluster data</div></div>
+      <div class="af-arr">+</div>
+      <div class="af-box"><div class="af-icon">📈</div><div class="af-name">Prometheus</div><div class="af-tech">Get metrics</div></div>
+      <div class="af-arr">→</div>
+      <div class="af-box"><div class="af-icon">🤖</div><div class="af-name">GPT-4o</div><div class="af-tech">Diagnose + Fix</div></div>
+      <div class="af-arr">→</div>
+      <div class="af-box"><div class="af-icon">✅</div><div class="af-name">Answer</div><div class="af-tech">Root cause + fix</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="p2-build">
+  <div class="section-label">// build project 2 — complete code</div>
+  <div class="section-title">Build the K8s AI Assistant</div>
+
+  <div class="steps stagger-children">
+    <div class="step-card">
+      <div class="step-head"><span class="step-num sn-green">STEP 1</span><span class="step-title">App Code — The AI K8s Brain</span><span class="step-chevron">›</span></div>
+      <div class="step-body">
+        <div class="terminal">
+          <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">requirements.txt</span><button class="terminal-copy">Copy</button></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-cmd">fastapi==0.111.0</span></div>
+            <div class="t-line"><span class="t-cmd">uvicorn==0.29.0</span></div>
+            <div class="t-line"><span class="t-cmd">openai==1.30.0</span></div>
+            <div class="t-line"><span class="t-cmd">kubernetes==29.0.0</span></div>
+            <div class="t-line"><span class="t-cmd">requests==2.31.0</span></div>
+            <div class="t-line"><span class="t-cmd">prometheus-fastapi-instrumentator==6.1.0</span></div>
+          </div>
+        </div>
+        <div class="terminal" style="margin-top:8px;">
+          <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">app/k8s_client.py — gather cluster context</span><button class="terminal-copy">Copy</button></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-cmd">from kubernetes import client, config</span></div>
+            <div class="t-line"><span class="t-cmd">import requests, os</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-cmd">def get_k8s_context(namespace="default") -> dict:</span></div>
+            <div class="t-line"><span class="t-cmd">    """Gather cluster state for AI analysis"""</span></div>
+            <div class="t-line"><span class="t-cmd">    try:</span></div>
+            <div class="t-line"><span class="t-cmd">        config.load_incluster_config()  # when running inside K8s</span></div>
+            <div class="t-line"><span class="t-cmd">    except:</span></div>
+            <div class="t-line"><span class="t-cmd">        config.load_kube_config()       # when running locally</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-cmd">    v1 = client.CoreV1Api()</span></div>
+            <div class="t-line"><span class="t-cmd">    apps_v1 = client.AppsV1Api()</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-cmd">    # Get all pod statuses</span></div>
+            <div class="t-line"><span class="t-cmd">    pods = v1.list_namespaced_pod(namespace)</span></div>
+            <div class="t-line"><span class="t-cmd">    pod_summary = []</span></div>
+            <div class="t-line"><span class="t-cmd">    for pod in pods.items:</span></div>
+            <div class="t-line"><span class="t-cmd">        status = pod.status.phase</span></div>
+            <div class="t-line"><span class="t-cmd">        restarts = sum(c.restart_count for c in (pod.status.container_statuses or []))</span></div>
+            <div class="t-line"><span class="t-cmd">        pod_summary.append({</span></div>
+            <div class="t-line"><span class="t-cmd">            "name": pod.metadata.name,</span></div>
+            <div class="t-line"><span class="t-cmd">            "status": status,</span></div>
+            <div class="t-line"><span class="t-cmd">            "restarts": restarts,</span></div>
+            <div class="t-line"><span class="t-cmd">            "ready": all(c.ready for c in (pod.status.container_statuses or []))</span></div>
+            <div class="t-line"><span class="t-cmd">        })</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-cmd">    # Get recent events (errors show up here)</span></div>
+            <div class="t-line"><span class="t-cmd">    events = v1.list_namespaced_event(namespace)</span></div>
+            <div class="t-line"><span class="t-cmd">    warning_events = [</span></div>
+            <div class="t-line"><span class="t-cmd">        {"type": e.type, "reason": e.reason, "message": e.message, "object": e.involved_object.name}</span></div>
+            <div class="t-line"><span class="t-cmd">        for e in events.items if e.type == "Warning"</span></div>
+            <div class="t-line"><span class="t-cmd">    ][-10:]  # last 10 warnings</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-cmd">    return {"pods": pod_summary, "events": warning_events, "namespace": namespace}</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-cmd">def get_pod_logs(pod_name: str, namespace="default", lines=50) -> str:</span></div>
+            <div class="t-line"><span class="t-cmd">    config.load_incluster_config() if os.getenv("KUBERNETES_SERVICE_HOST") else config.load_kube_config()</span></div>
+            <div class="t-line"><span class="t-cmd">    v1 = client.CoreV1Api()</span></div>
+            <div class="t-line"><span class="t-cmd">    try:</span></div>
+            <div class="t-line"><span class="t-cmd">        return v1.read_namespaced_pod_log(pod_name, namespace, tail_lines=lines)</span></div>
+            <div class="t-line"><span class="t-cmd">    except Exception as e:</span></div>
+            <div class="t-line"><span class="t-cmd">        return f"Could not get logs: {e}"</span></div>
+          </div>
+        </div>
+        <div class="terminal" style="margin-top:8px;">
+          <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">app/main.py — the AI assistant</span><button class="terminal-copy">Copy</button></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-cmd">from fastapi import FastAPI</span></div>
+            <div class="t-line"><span class="t-cmd">from pydantic import BaseModel</span></div>
+            <div class="t-line"><span class="t-cmd">from openai import OpenAI</span></div>
+            <div class="t-line"><span class="t-cmd">from app.k8s_client import get_k8s_context, get_pod_logs</span></div>
+            <div class="t-line"><span class="t-cmd">from prometheus_fastapi_instrumentator import Instrumentator</span></div>
+            <div class="t-line"><span class="t-cmd">import os, json</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-cmd">app = FastAPI(title="K8s AI Assistant")</span></div>
+            <div class="t-line"><span class="t-cmd">Instrumentator().instrument(app).expose(app)</span></div>
+            <div class="t-line"><span class="t-cmd">ai = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-cmd">class Question(BaseModel):</span></div>
+            <div class="t-line"><span class="t-cmd">    question: str</span></div>
+            <div class="t-line"><span class="t-cmd">    namespace: str = "default"</span></div>
+            <div class="t-line"><span class="t-cmd">    pod_name: str = None</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-cmd">@app.get("/health")</span></div>
+            <div class="t-line"><span class="t-cmd">def health(): return {"status": "ok"}</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-cmd">@app.post("/ask")</span></div>
+            <div class="t-line"><span class="t-cmd">def ask_cluster(q: Question):</span></div>
+            <div class="t-line"><span class="t-cmd">    # Gather real cluster context</span></div>
+            <div class="t-line"><span class="t-cmd">    context = get_k8s_context(q.namespace)</span></div>
+            <div class="t-line"><span class="t-cmd">    logs = ""</span></div>
+            <div class="t-line"><span class="t-cmd">    if q.pod_name:</span></div>
+            <div class="t-line"><span class="t-cmd">        logs = get_pod_logs(q.pod_name, q.namespace)</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-cmd">    prompt = f"""You are an expert Kubernetes SRE. Analyze this cluster state and answer the question.</span></div>
+            <div class="t-line"><span class="t-cmd"> </span></div>
+            <div class="t-line"><span class="t-cmd">CLUSTER STATE:</span></div>
+            <div class="t-line"><span class="t-cmd">{json.dumps(context, indent=2)}</span></div>
+            <div class="t-line"><span class="t-cmd"> </span></div>
+            <div class="t-line"><span class="t-cmd">POD LOGS (last 50 lines):</span></div>
+            <div class="t-line"><span class="t-cmd">{logs}</span></div>
+            <div class="t-line"><span class="t-cmd"> </span></div>
+            <div class="t-line"><span class="t-cmd">QUESTION: {q.question}</span></div>
+            <div class="t-line"><span class="t-cmd"> </span></div>
+            <div class="t-line"><span class="t-cmd">Respond with:</span></div>
+            <div class="t-line"><span class="t-cmd">1. ROOT CAUSE (1-2 sentences)</span></div>
+            <div class="t-line"><span class="t-cmd">2. EXACT FIX COMMANDS (kubectl commands to run right now)</span></div>
+            <div class="t-line"><span class="t-cmd">3. PREVENTION (how to avoid this next time)</span></div>
+            <div class="t-line"><span class="t-cmd">"""</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-cmd">    response = ai.chat.completions.create(</span></div>
+            <div class="t-line"><span class="t-cmd">        model="gpt-4o-mini",</span></div>
+            <div class="t-line"><span class="t-cmd">        messages=[{"role": "user", "content": prompt}]</span></div>
+            <div class="t-line"><span class="t-cmd">    )</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-cmd">    return {</span></div>
+            <div class="t-line"><span class="t-cmd">        "question": q.question,</span></div>
+            <div class="t-line"><span class="t-cmd">        "cluster_summary": {"total_pods": len(context["pods"]),</span></div>
+            <div class="t-line"><span class="t-cmd">            "unhealthy": sum(1 for p in context["pods"] if not p["ready"]),</span></div>
+            <div class="t-line"><span class="t-cmd">            "warnings": len(context["events"])},</span></div>
+            <div class="t-line"><span class="t-cmd">        "ai_analysis": response.choices[0].message.content</span></div>
+            <div class="t-line"><span class="t-cmd">    }</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head"><span class="step-num sn-green">STEP 2</span><span class="step-title">Deploy to K8s — With Cluster Read Access</span><span class="step-chevron">›</span></div>
+      <div class="step-body">
+        <p>This app needs to read from the Kubernetes API. We use a ServiceAccount with read-only permissions.</p>
+        <div class="terminal">
+          <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">k8s/rbac.yaml — read-only cluster access</span><button class="terminal-copy">Copy</button></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-comment"># ServiceAccount for the app</span></div>
+            <div class="t-line"><span class="t-cmd">apiVersion: v1</span></div>
+            <div class="t-line"><span class="t-cmd">kind: ServiceAccount</span></div>
+            <div class="t-line"><span class="t-cmd">metadata:</span></div>
+            <div class="t-line"><span class="t-cmd">  name: k8s-ai-assistant</span></div>
+            <div class="t-line"><span class="t-cmd">---</span></div>
+            <div class="t-line"><span class="t-comment"># ClusterRole — read-only access to pods, events, logs</span></div>
+            <div class="t-line"><span class="t-cmd">apiVersion: rbac.authorization.k8s.io/v1</span></div>
+            <div class="t-line"><span class="t-cmd">kind: ClusterRole</span></div>
+            <div class="t-line"><span class="t-cmd">metadata:</span></div>
+            <div class="t-line"><span class="t-cmd">  name: k8s-ai-reader</span></div>
+            <div class="t-line"><span class="t-cmd">rules:</span></div>
+            <div class="t-line"><span class="t-cmd">  - apiGroups: [""]</span></div>
+            <div class="t-line"><span class="t-cmd">    resources: ["pods", "pods/log", "events", "nodes", "services"]</span></div>
+            <div class="t-line"><span class="t-cmd">    verbs: ["get", "list", "watch"]</span>  <span class="t-comment">  # read only — no create/delete</span></div>
+            <div class="t-line"><span class="t-cmd">  - apiGroups: ["apps"]</span></div>
+            <div class="t-line"><span class="t-cmd">    resources: ["deployments", "replicasets"]</span></div>
+            <div class="t-line"><span class="t-cmd">    verbs: ["get", "list", "watch"]</span></div>
+            <div class="t-line"><span class="t-cmd">---</span></div>
+            <div class="t-line"><span class="t-cmd">apiVersion: rbac.authorization.k8s.io/v1</span></div>
+            <div class="t-line"><span class="t-cmd">kind: ClusterRoleBinding</span></div>
+            <div class="t-line"><span class="t-cmd">metadata:</span></div>
+            <div class="t-line"><span class="t-cmd">  name: k8s-ai-reader-binding</span></div>
+            <div class="t-line"><span class="t-cmd">subjects:</span></div>
+            <div class="t-line"><span class="t-cmd">  - kind: ServiceAccount</span></div>
+            <div class="t-line"><span class="t-cmd">    name: k8s-ai-assistant</span></div>
+            <div class="t-line"><span class="t-cmd">    namespace: default</span></div>
+            <div class="t-line"><span class="t-cmd">roleRef:</span></div>
+            <div class="t-line"><span class="t-cmd">  kind: ClusterRole</span></div>
+            <div class="t-line"><span class="t-cmd">  name: k8s-ai-reader</span></div>
+            <div class="t-line"><span class="t-cmd">  apiGroup: rbac.authorization.k8s.io</span></div>
+          </div>
+        </div>
+        <div class="terminal" style="margin-top:8px;">
+          <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">test the live assistant</span><button class="terminal-copy">Copy</button></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">kubectl port-forward svc/k8s-ai-assistant 8001:80</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">curl -X POST localhost:8001/ask \</span></div>
+            <div class="t-line"><span class="t-cmd">  -H "Content-Type: application/json" \</span></div>
+            <div class="t-line"><span class="t-cmd">  -d '{"question": "Why is my taskapi pod crashing?", "pod_name": "taskapi-6d4f9-xk2p1"}'</span></div>
+            <div class="t-line"><span class="t-ok">{</span></div>
+            <div class="t-line"><span class="t-ok">  "cluster_summary": {"total_pods": 5, "unhealthy": 1, "warnings": 3},</span></div>
+            <div class="t-line"><span class="t-ok">  "ai_analysis": "ROOT CAUSE: Your pod is crashing due to a missing environment variable</span></div>
+            <div class="t-line"><span class="t-ok">    DATABASE_URL. The logs show 'KeyError: DATABASE_URL' on startup.\n\n</span></div>
+            <div class="t-line"><span class="t-ok">    EXACT FIX: kubectl create secret generic app-secrets \n</span></div>
+            <div class="t-line"><span class="t-ok">    --from-literal=DATABASE_URL=postgres://user:pass@db:5432/taskdb\n\n</span></div>
+            <div class="t-line"><span class="t-ok">    PREVENTION: Always use K8s Secrets for env vars..."</span></div>
+            <div class="t-line"><span class="t-ok">}</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════
+     HOW TO EARN
+═══════════════════════════════════ -->
+<section class="section" id="earn">
+  <div class="section-label">// turn projects into income</div>
+  <div class="section-title">How to Start Earning This Week</div>
+
+  <div class="steps stagger-children">
+    <div class="step-card">
+      <div class="step-head"><span class="step-num sn-green">DAY 1</span><span class="step-title">Deploy + Get a Public URL</span><span class="step-chevron">›</span></div>
+      <div class="step-body">
+        <p>Deploy the Resume Screener to GKE. Expose it with a LoadBalancer service. You get a public IP. Your tool is live on the internet.</p>
+        <div class="terminal">
+          <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">expose with loadbalancer</span><button class="terminal-copy">Copy</button></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">kubectl expose deployment resume-screener --type=LoadBalancer --port=80 --target-port=8000</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">kubectl get svc resume-screener</span></div>
+            <div class="t-line"><span class="t-ok">NAME              TYPE           EXTERNAL-IP</span></div>
+            <div class="t-line"><span class="t-ok">resume-screener   LoadBalancer   34.100.200.150  ← your public IP</span></div>
+            <div class="t-line"><span class="t-comment"># Test it from anywhere:</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">curl -X POST 34.100.200.150/analyze -F "resume=@resume.pdf"</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head"><span class="step-num sn-green">DAY 2</span><span class="step-title">Create a Fiverr Gig — Start Earning Immediately</span><span class="step-chevron">›</span></div>
+      <div class="step-body">
+        <div class="info-box"><span class="box-icon">🖱️</span>
+          <div>
+            <b>1.</b> Go to <b>fiverr.com</b> → Create account → Become a Seller → Create Gig<br>
+            <b>2.</b> Title: "I will review and rewrite your DevOps/Tech resume using AI in 24 hours"<br>
+            <b>3.</b> Category: Writing & Translation → Resume Writing<br>
+            <b>4.</b> Price: Basic ₹500 (score + feedback), Standard ₹1000 (full rewrite)<br>
+            <b>5.</b> Description: mention "AI-powered tool" and "ATS optimised" — these keywords attract buyers<br>
+            <b>6.</b> Add screenshot of your tool's output as the gig image<br>
+            <b>7.</b> Submit your OWN resume through the tool first — screenshot the result as proof it works
+          </div>
+        </div>
+        <div class="success-box"><span class="box-icon">✓</span><div>First orders usually come in 48–72 hours. Respond fast, deliver quality, collect 5-star reviews. Reviews are everything on Fiverr.</div></div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head"><span class="step-num sn-green">WEEK 2</span><span class="step-title">LinkedIn Post — Get Organic Traffic</span><span class="step-chevron">›</span></div>
+      <div class="step-body">
+        <div class="info-box"><span class="box-icon">📝</span>
+          <div>
+            Post this on LinkedIn (or adapt it):<br><br>
+            <i>"I built an AI tool that scores your resume and rewrites it for ATS in 30 seconds. Deployed on Kubernetes with full CI/CD. <br><br>Drop your PDF in the comments or DM me — I'll run it through for free this week. Feedback welcome 🙏<br><br>#DevOps #AI #ResumeWriting #Kubernetes"</i>
+          </div>
+        </div>
+        <div class="tip-box"><span class="box-icon">💡</span><div>Offering free analysis for the first week builds social proof, gets you feedback to improve the tool, and generates LinkedIn engagement that makes the post visible to thousands of people.</div></div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head"><span class="step-num sn-green">WEEK 3+</span><span class="step-title">Build the SaaS — Charge Monthly</span><span class="step-chevron">›</span></div>
+      <div class="step-body">
+        <p>Once you have 10–20 paying Fiverr clients, you have proof of demand. Now build the subscription version:</p>
+        <div class="card-grid" style="margin-top:12px;">
+          <div class="card">
+            <div style="font-weight:700;margin-bottom:6px;">Add user auth</div>
+            <div style="font-size:12px;color:var(--text-secondary);">Use Clerk.dev or Auth0 — free tiers. Users sign up, get API key.</div>
+          </div>
+          <div class="card">
+            <div style="font-weight:700;margin-bottom:6px;">Add payments</div>
+            <div style="font-size:12px;color:var(--text-secondary);">Razorpay (India) or Stripe. ₹99/month subscription. 10 analyses included.</div>
+          </div>
+          <div class="card">
+            <div style="font-weight:700;margin-bottom:6px;">Rate limiting</div>
+            <div style="font-size:12px;color:var(--text-secondary);">Redis-based rate limiting. Free tier = 3 analyses. Paid = unlimited.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- FINAL SECTION -->
+<section class="section">
+  <div class="section-label">// you've built it all</div>
+  <div class="section-title">You're Done. Now What?</div>
+
+  <div class="story-box green reveal">
+    <strong>What you've built in 30 days:</strong><br><br>
+    ✅ A cloud VM running Ubuntu Linux on GCP<br>
+    ✅ A Git workflow using GitHub with branching and PRs<br>
+    ✅ A Dockerised FastAPI app with multi-stage builds<br>
+    ✅ A Kubernetes cluster (Minikube + real GKE) running your app<br>
+    ✅ Infrastructure as Code using Terraform to provision GKE<br>
+    ✅ A CI/CD pipeline with GitHub Actions — push to deploy in 90 seconds<br>
+    ✅ Prometheus + Grafana monitoring with custom /metrics and alerting<br>
+    ✅ An AI Resume Screener running on Kubernetes — live, publicly accessible<br>
+    ✅ A K8s AI Operations Assistant that diagnoses cluster issues in plain English<br><br>
+    <strong>You didn't just learn DevOps. You built production-grade systems. That's the difference.</strong>
+  </div>
+
+  <div class="card-grid stagger-children" style="margin-top:24px;">
+    <a href="../resume-guide.html" class="card" style="text-decoration:none;">
+      <div style="font-size:1.5rem;margin-bottom:10px;">📄</div>
+      <div style="font-weight:700;margin-bottom:4px;">Get the Job →</div>
+      <div style="font-size:13px;color:var(--text-secondary);">Full resume template, LinkedIn guide, which roles to apply for, job search timeline.</div>
+      <div style="margin-top:12px;"><span class="badge badge-green">Do this now</span></div>
+    </a>
+    <a href="../30day-challenge.html" class="card" style="text-decoration:none;">
+      <div style="font-size:1.5rem;margin-bottom:10px;">📅</div>
+      <div style="font-weight:700;margin-bottom:4px;">30-Day Challenge →</div>
+      <div style="font-size:13px;color:var(--text-secondary);">Follow the structured daily plan that ties everything together.</div>
+    </a>
+    <a href="../devops-bible.html" class="card" style="text-decoration:none;">
+      <div style="font-size:1.5rem;margin-bottom:10px;">📖</div>
+      <div style="font-weight:700;margin-bottom:4px;">DevOps Bible →</div>
+      <div style="font-size:13px;color:var(--text-secondary);">Keep this open during every interview. Commands, concepts, error fixes.</div>
+    </a>
+  </div>
+</section>
+
+<footer>My DevOps Portal · 🚀 Money Projects · <a href="../index.html">Home</a> · <a href="monitoring.html">← Monitoring</a> · <a href="../resume-guide.html">Resume Guide →</a></footer>
+<script src="../script.js"></script>
+</body>
+</html>

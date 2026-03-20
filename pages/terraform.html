@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terraform — My DevOps Portal</title>
+<link rel="stylesheet" href="../style.css">
+<style>
+.tf-workflow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin: 16px 0;
+}
+.tf-step {
+  background: var(--bg-surface);
+  padding: 20px 16px;
+  text-align: center;
+  transition: background 0.2s;
+}
+.tf-step:hover { background: var(--bg-elevated); }
+.tf-step .ts-cmd { font-family: var(--font-mono); font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+.tf-step .ts-desc { font-size: 12px; color: var(--text-tertiary); line-height: 1.5; }
+.ts-1 .ts-cmd { color: var(--blue); }
+.ts-2 .ts-cmd { color: var(--yellow); }
+.ts-3 .ts-cmd { color: var(--green); }
+.ts-4 .ts-cmd { color: var(--red); }
+
+.state-visual {
+  display: grid;
+  grid-template-columns: 1fr 60px 1fr;
+  align-items: center;
+  gap: 0;
+  margin: 16px 0;
+}
+.sv-box {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  text-align: center;
+}
+.sv-box .sv-title { font-weight: 700; font-size: 14px; margin-bottom: 6px; }
+.sv-box .sv-items { font-family: var(--font-mono); font-size: 11px; color: var(--text-tertiary); line-height: 1.8; }
+.sv-arrow { text-align: center; font-size: 1.5rem; color: var(--text-tertiary); }
+</style>
+</head>
+<body>
+
+<div class="site-banner">
+  <div class="brand"><span class="dot"></span><span>My DevOps Portal</span></div>
+  <nav class="banner-nav">
+    <a href="../index.html">🏠 Home</a>
+    <a href="kubernetes.html">☸️ K8s</a>
+    <a href="terraform.html" class="active">🏗️ Terraform</a>
+    <a href="cicd.html">⚙️ CI/CD</a>
+    <a href="monitoring.html">📊 Monitor</a>
+  </nav>
+</div>
+
+<div class="page-nav">
+  <span class="page-nav-title">🏗️ Terraform — Complete Guide</span>
+  <div class="page-nav-links">
+    <a href="#story">Story</a>
+    <a href="#concepts">Concepts</a>
+    <a href="#install">Install</a>
+    <a href="#hcl">HCL Syntax</a>
+    <a href="#gcp">GCP Project</a>
+    <a href="#state">State</a>
+    <a href="#modules">Modules</a>
+    <a href="#commands">Commands</a>
+    <a href="#errors">Errors</a>
+    <a href="#interview">Interview</a>
+  </div>
+</div>
+
+<div class="page-hero">
+  <div class="hero-eyebrow">Chapter 05 · Infrastructure as Code</div>
+  <h1 class="hero-title">🏗️ Terraform<br><span class="accent">Write Code.</span><br><span class="accent-green">Build Infrastructure.</span></h1>
+  <p class="hero-sub">Stop clicking in cloud consoles. Write code that creates servers, clusters, networks, databases — automatically, repeatably, reviewably. This is Infrastructure as Code.</p>
+</div>
+
+<section class="section" id="story">
+  <div class="section-label">// the problem terraform solved</div>
+  <div class="section-title">The Story — Clicking is Not Reproducible</div>
+
+  <div class="story-box animate-fade-up">
+    <span class="story-icon">🖱️</span>
+    <strong>2012. A DevOps engineer named Alex spent 3 days clicking through AWS Console to set up an environment.</strong><br><br>
+    VPC here. Subnets there. Security groups. EC2 instances. Load balancers. RDS database. IAM roles. 47 different screens. 200+ clicks. It worked.<br><br>
+    Six months later, the production environment broke. Alex needed to rebuild staging to match. Could he reproduce those 200 clicks exactly? No. He forgot some settings. The environments drifted. Bugs appeared in production that didn't exist in staging.<br><br>
+    <strong>HashiCorp launched Terraform in 2014</strong> with one idea: infrastructure should be code. Write a file describing what you want. Terraform creates it. Every time. Identically. Version-controlled. Reviewable. Destroyable with one command.
+  </div>
+
+  <div class="analogy-box animate-fade-up-1">
+    <div class="analogy-label">🧒 Explain Like I'm 5</div>
+    <p>Clicking in AWS Console is like ordering food by pointing at random items — nobody knows what you ordered, you can't repeat it, and tomorrow you'll forget. <b>Terraform is like writing a recipe</b> — exact ingredients, exact steps, anyone can follow it, and you can make the same dish 100 times perfectly. Your infrastructure becomes a recipe stored in Git.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section" id="concepts">
+  <div class="section-label">// understand before writing code</div>
+  <div class="section-title">Core Concepts — 5 Things to Know</div>
+
+  <div class="card-grid stagger-children" style="margin-bottom:24px;">
+    <div class="card reveal">
+      <span class="badge badge-blue" style="margin-bottom:10px;">Provider</span>
+      <div style="font-size:13px;color:var(--text-secondary);line-height:1.7;">Tells Terraform which cloud to talk to. GCP, AWS, Azure, Cloudflare — each is a provider with its own plugin. You declare it at the top of your config.</div>
+    </div>
+    <div class="card reveal">
+      <span class="badge badge-green" style="margin-bottom:10px;">Resource</span>
+      <div style="font-size:13px;color:var(--text-secondary);line-height:1.7;">A piece of infrastructure you want to create. A VM, a database, a network, a Kubernetes cluster. Each resource has a type (google_compute_instance) and configuration.</div>
+    </div>
+    <div class="card reveal">
+      <span class="badge badge-yellow" style="margin-bottom:10px;">State File</span>
+      <div style="font-size:13px;color:var(--text-secondary);line-height:1.7;">Terraform's memory. Records every resource it created. Used to compare desired vs actual state. Without it, Terraform doesn't know what exists. Never delete it.</div>
+    </div>
+    <div class="card reveal">
+      <span class="badge badge-purple" style="margin-bottom:10px;">Variables</span>
+      <div style="font-size:13px;color:var(--text-secondary);line-height:1.7;">Make your config reusable. Instead of hardcoding "us-central1", use var.region. Change once in variables.tf, updates everywhere.</div>
+    </div>
+    <div class="card reveal">
+      <span class="badge badge-orange" style="margin-bottom:10px;">Outputs</span>
+      <div style="font-size:13px;color:var(--text-secondary);line-height:1.7;">Print values after apply — like the cluster IP, the database URL, the load balancer address. Reference outputs in other configs or just read them.</div>
+    </div>
+    <div class="card reveal">
+      <span class="badge badge-blue" style="margin-bottom:10px;">Module</span>
+      <div style="font-size:13px;color:var(--text-secondary);line-height:1.7;">Reusable Terraform code. Like a function — package a VPC + subnets + firewall rules into one module. Call it 3 times to create 3 environments identically.</div>
+    </div>
+  </div>
+
+  <!-- THE 4 COMMANDS -->
+  <div class="tf-workflow reveal">
+    <div class="tf-step ts-1">
+      <div class="ts-cmd">terraform init</div>
+      <div class="ts-desc">Download providers + set up backend. Run once per project.</div>
+    </div>
+    <div class="tf-step ts-2">
+      <div class="ts-cmd">terraform plan</div>
+      <div class="ts-desc">Preview what WILL change. Always run before apply. No changes made yet.</div>
+    </div>
+    <div class="tf-step ts-3">
+      <div class="ts-cmd">terraform apply</div>
+      <div class="ts-desc">Create/update infrastructure. Asks for confirmation. Changes are made here.</div>
+    </div>
+    <div class="tf-step ts-4">
+      <div class="ts-cmd">terraform destroy</div>
+      <div class="ts-desc">Delete everything. Save money when done learning. Run this always.</div>
+    </div>
+  </div>
+
+  <div class="warn-box reveal"><span class="box-icon">⚠️</span><div><b>Always run terraform plan before terraform apply.</b> Plan shows you exactly what will be created, changed, or destroyed. Surprises in infrastructure cost money and time. Plan is free. Apply is not.</div></div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section" id="install">
+  <div class="section-label">// get terraform running</div>
+  <div class="section-title">Install Terraform + Connect to GCP</div>
+
+  <div class="steps stagger-children">
+    <div class="step-card">
+      <div class="step-head">
+        <span class="step-num sn-blue">STEP 1</span>
+        <span class="step-title">Install Terraform on Your GCP VM</span>
+        <span class="step-chevron">›</span>
+      </div>
+      <div class="step-body">
+        <div class="terminal">
+          <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">install terraform — ubuntu</span><button class="terminal-copy">Copy</button></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-comment"># Add HashiCorp GPG key and repo</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">sudo apt update && sudo apt install -y gnupg software-properties-common</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">sudo apt update && sudo apt install terraform -y</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">terraform --version</span></div>
+            <div class="t-line"><span class="t-ok">Terraform v1.7.5</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head">
+        <span class="step-num sn-blue">STEP 2</span>
+        <span class="step-title">Authenticate Terraform to GCP</span>
+        <span class="step-chevron">›</span>
+      </div>
+      <div class="step-body">
+        <p>Terraform needs permission to create resources in your GCP project.</p>
+        <div class="terminal">
+          <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">gcp authentication</span><button class="terminal-copy">Copy</button></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-comment"># Install Google Cloud CLI (if not already installed)</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">sudo snap install google-cloud-cli --classic</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-comment"># Login and set up Application Default Credentials</span></div>
+            <div class="t-line"><span class="t-comment"># This is what Terraform uses to authenticate</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">gcloud auth application-default login</span></div>
+            <div class="t-line"><span class="t-out">Go to this URL: https://accounts.google.com/o/oauth2/...</span></div>
+            <div class="t-line"><span class="t-out">Enter code: ...</span></div>
+            <div class="t-line"><span class="t-ok">Credentials saved to ~/.config/gcloud/application_default_credentials.json</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-comment"># Set your project ID</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">gcloud config set project YOUR_PROJECT_ID</span></div>
+            <div class="t-line"><span class="t-comment"># Find project ID: GCP Console → top bar dropdown</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section" id="hcl">
+  <div class="section-label">// terraform's language</div>
+  <div class="section-title">HCL Syntax — HashiCorp Configuration Language</div>
+  <div class="section-sub">Terraform uses HCL — easy to read, easy to write. Learn these patterns and you can write any Terraform config.</div>
+
+  <div class="terminal reveal">
+    <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">hcl syntax — all the patterns you need</span><button class="terminal-copy">Copy</button></div>
+    <div class="terminal-body">
+      <div class="t-line"><span class="t-comment"># ── PROVIDER — tell Terraform which cloud ──────────────</span></div>
+      <div class="t-line"><span class="t-cmd">terraform {</span></div>
+      <div class="t-line"><span class="t-cmd">  required_providers {</span></div>
+      <div class="t-line"><span class="t-cmd">    google = {</span></div>
+      <div class="t-line"><span class="t-cmd">      source  = "hashicorp/google"</span></div>
+      <div class="t-line"><span class="t-cmd">      version = "~> 5.0"</span>          <span class="t-comment">  # ~> means "5.x but not 6.0"</span></div>
+      <div class="t-line"><span class="t-cmd">    }</span></div>
+      <div class="t-line"><span class="t-cmd">  }</span></div>
+      <div class="t-line"><span class="t-cmd">}</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-cmd">provider "google" {</span></div>
+      <div class="t-line"><span class="t-cmd">  project = var.project_id</span>      <span class="t-comment">  # uses a variable</span></div>
+      <div class="t-line"><span class="t-cmd">  region  = var.region</span></div>
+      <div class="t-line"><span class="t-cmd">}</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment"># ── VARIABLES ──────────────────────────────────────────</span></div>
+      <div class="t-line"><span class="t-cmd">variable "project_id" {</span></div>
+      <div class="t-line"><span class="t-cmd">  description = "GCP project ID"</span></div>
+      <div class="t-line"><span class="t-cmd">  type        = string</span></div>
+      <div class="t-line"><span class="t-cmd">}</span></div>
+      <div class="t-line"><span class="t-cmd">variable "region" {</span></div>
+      <div class="t-line"><span class="t-cmd">  default = "us-central1"</span>       <span class="t-comment">  # default = optional</span></div>
+      <div class="t-line"><span class="t-cmd">}</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment"># ── RESOURCE — a thing to create ───────────────────────</span></div>
+      <div class="t-line"><span class="t-cmd">resource "google_compute_instance" "vm" {</span></div>
+      <div class="t-line"><span class="t-comment">  # type ↑                       ↑ local name (used to reference this)</span></div>
+      <div class="t-line"><span class="t-cmd">  name         = "devops-vm"</span></div>
+      <div class="t-line"><span class="t-cmd">  machine_type = "e2-standard-2"</span></div>
+      <div class="t-line"><span class="t-cmd">  zone         = "${var.region}-a"</span>  <span class="t-comment">  # string interpolation</span></div>
+      <div class="t-line"><span class="t-cmd">  boot_disk {</span></div>
+      <div class="t-line"><span class="t-cmd">    initialize_params { image = "ubuntu-os-cloud/ubuntu-2204-lts" }</span></div>
+      <div class="t-line"><span class="t-cmd">  }</span></div>
+      <div class="t-line"><span class="t-cmd">  network_interface { network = "default" }</span></div>
+      <div class="t-line"><span class="t-cmd">}</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment"># ── OUTPUT — print values after apply ──────────────────</span></div>
+      <div class="t-line"><span class="t-cmd">output "vm_ip" {</span></div>
+      <div class="t-line"><span class="t-cmd">  value = google_compute_instance.vm.network_interface[0].access_config[0].nat_ip</span></div>
+      <div class="t-line"><span class="t-comment">  # resource_type.local_name.attribute</span></div>
+      <div class="t-line"><span class="t-cmd">}</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section" id="gcp">
+  <div class="section-label">// real project — create gke cluster</div>
+  <div class="section-title">Create a Real GKE Cluster with Terraform</div>
+  <div class="section-sub">This creates a production-grade Kubernetes cluster on GCP using your $300 free credit. Takes ~5 minutes.</div>
+
+  <div class="steps stagger-children">
+    <div class="step-card">
+      <div class="step-head">
+        <span class="step-num sn-blue">MAIN.TF</span>
+        <span class="step-title">The Complete Terraform Project — Every File</span>
+        <span class="step-chevron">›</span>
+      </div>
+      <div class="step-body">
+        <div class="terminal">
+          <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">project structure</span><button class="terminal-copy">Copy</button></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">mkdir terraform-gke && cd terraform-gke</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">touch main.tf variables.tf outputs.tf terraform.tfvars</span></div>
+          </div>
+        </div>
+        <div class="terminal" style="margin-top:8px;">
+          <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">main.tf — the GKE cluster</span><button class="terminal-copy">Copy</button></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-cmd">terraform {</span></div>
+            <div class="t-line"><span class="t-cmd">  required_providers {</span></div>
+            <div class="t-line"><span class="t-cmd">    google = { source = "hashicorp/google", version = "~> 5.0" }</span></div>
+            <div class="t-line"><span class="t-cmd">  }</span></div>
+            <div class="t-line"><span class="t-cmd">}</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-cmd">provider "google" {</span></div>
+            <div class="t-line"><span class="t-cmd">  project = var.project_id</span></div>
+            <div class="t-line"><span class="t-cmd">  region  = var.region</span></div>
+            <div class="t-line"><span class="t-cmd">}</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-comment"># Enable required GCP APIs</span></div>
+            <div class="t-line"><span class="t-cmd">resource "google_project_service" "container" {</span></div>
+            <div class="t-line"><span class="t-cmd">  service = "container.googleapis.com"</span></div>
+            <div class="t-line"><span class="t-cmd">  disable_on_destroy = false</span></div>
+            <div class="t-line"><span class="t-cmd">}</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-comment"># The GKE cluster (control plane)</span></div>
+            <div class="t-line"><span class="t-cmd">resource "google_container_cluster" "taskapi" {</span></div>
+            <div class="t-line"><span class="t-cmd">  name                     = "taskapi-cluster"</span></div>
+            <div class="t-line"><span class="t-cmd">  location                 = var.region</span></div>
+            <div class="t-line"><span class="t-cmd">  remove_default_node_pool = true</span>  <span class="t-comment">  # we add our own below</span></div>
+            <div class="t-line"><span class="t-cmd">  initial_node_count       = 1</span></div>
+            <div class="t-line"><span class="t-cmd">  networking_mode          = "VPC_NATIVE"</span></div>
+            <div class="t-line"><span class="t-cmd">  ip_allocation_policy {}</span></div>
+            <div class="t-line"><span class="t-cmd">  depends_on = [google_project_service.container]</span></div>
+            <div class="t-line"><span class="t-cmd">}</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-comment"># Node pool — actual VMs that run your pods</span></div>
+            <div class="t-line"><span class="t-cmd">resource "google_container_node_pool" "nodes" {</span></div>
+            <div class="t-line"><span class="t-cmd">  name       = "taskapi-nodes"</span></div>
+            <div class="t-line"><span class="t-cmd">  cluster    = google_container_cluster.taskapi.name</span></div>
+            <div class="t-line"><span class="t-cmd">  location   = var.region</span></div>
+            <div class="t-line"><span class="t-cmd">  node_count = var.node_count</span></div>
+            <div class="t-line"><span class="t-cmd">  node_config {</span></div>
+            <div class="t-line"><span class="t-cmd">    machine_type = var.machine_type</span></div>
+            <div class="t-line"><span class="t-cmd">    disk_size_gb = 50</span></div>
+            <div class="t-line"><span class="t-cmd">    oauth_scopes = ["https://www.googleapis.com/auth/cloud-platform"]</span></div>
+            <div class="t-line"><span class="t-cmd">  }</span></div>
+            <div class="t-line"><span class="t-cmd">  management { auto_repair = true; auto_upgrade = true }</span></div>
+            <div class="t-line"><span class="t-cmd">}</span></div>
+          </div>
+        </div>
+        <div class="terminal" style="margin-top:8px;">
+          <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">variables.tf</span><button class="terminal-copy">Copy</button></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-cmd">variable "project_id" { type = string }</span></div>
+            <div class="t-line"><span class="t-cmd">variable "region" { default = "us-central1" }</span></div>
+            <div class="t-line"><span class="t-cmd">variable "node_count" { default = 2 }</span></div>
+            <div class="t-line"><span class="t-cmd">variable "machine_type" { default = "e2-standard-2" }</span></div>
+          </div>
+        </div>
+        <div class="terminal" style="margin-top:8px;">
+          <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">terraform.tfvars — your values (gitignored if sensitive)</span><button class="terminal-copy">Copy</button></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-cmd">project_id   = "your-gcp-project-id"</span>  <span class="t-comment">  # find in GCP console top bar</span></div>
+            <div class="t-line"><span class="t-cmd">region       = "us-central1"</span></div>
+            <div class="t-line"><span class="t-cmd">node_count   = 2</span></div>
+            <div class="t-line"><span class="t-cmd">machine_type = "e2-standard-2"</span></div>
+          </div>
+        </div>
+        <div class="terminal" style="margin-top:8px;">
+          <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">outputs.tf</span><button class="terminal-copy">Copy</button></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-cmd">output "cluster_name" {</span></div>
+            <div class="t-line"><span class="t-cmd">  value = google_container_cluster.taskapi.name</span></div>
+            <div class="t-line"><span class="t-cmd">}</span></div>
+            <div class="t-line"><span class="t-cmd">output "connect_command" {</span></div>
+            <div class="t-line"><span class="t-cmd">  value = "gcloud container clusters get-credentials ${google_container_cluster.taskapi.name} --region ${var.region} --project ${var.project_id}"</span></div>
+            <div class="t-line"><span class="t-cmd">}</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head">
+        <span class="step-num sn-green">RUN IT</span>
+        <span class="step-title">Deploy the Cluster — 3 Commands</span>
+        <span class="step-chevron">›</span>
+      </div>
+      <div class="step-body">
+        <div class="terminal">
+          <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">terraform init → plan → apply</span><button class="terminal-copy">Copy</button></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-comment"># Step 1: Initialize — download providers</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">terraform init</span></div>
+            <div class="t-line"><span class="t-ok">Initializing provider plugins...</span></div>
+            <div class="t-line"><span class="t-ok">Terraform has been successfully initialized!</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-comment"># Step 2: Plan — preview what will be created</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">terraform plan</span></div>
+            <div class="t-line"><span class="t-ok">  + google_container_cluster.taskapi will be created</span></div>
+            <div class="t-line"><span class="t-ok">  + google_container_node_pool.nodes will be created</span></div>
+            <div class="t-line"><span class="t-ok">  + google_project_service.container will be created</span></div>
+            <div class="t-line"><span class="t-info">Plan: 3 to add, 0 to change, 0 to destroy.</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-comment"># Step 3: Apply — create the infrastructure (~5 minutes)</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">terraform apply -auto-approve</span></div>
+            <div class="t-line"><span class="t-out">google_project_service.container: Creating...</span></div>
+            <div class="t-line"><span class="t-out">google_container_cluster.taskapi: Creating... [5m elapsed]</span></div>
+            <div class="t-line"><span class="t-ok">Apply complete! Resources: 3 added.</span></div>
+            <div class="t-line"><span class="t-ok">connect_command = "gcloud container clusters get-credentials..."</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-comment"># Connect kubectl to the new cluster</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">gcloud container clusters get-credentials taskapi-cluster --region us-central1 --project YOUR_PROJECT_ID</span></div>
+            <div class="t-line"><span class="t-ok">Fetching cluster endpoint and auth data.</span></div>
+            <div class="t-line"><span class="t-ok">kubeconfig entry generated for taskapi-cluster.</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">kubectl get nodes</span></div>
+            <div class="t-line"><span class="t-ok">NAME                    STATUS   ROLES   AGE   VERSION</span></div>
+            <div class="t-line"><span class="t-ok">gke-taskapi-default-0   Ready    none    2m    v1.29.3-gke</span></div>
+            <div class="t-line"><span class="t-ok">gke-taskapi-default-1   Ready    none    2m    v1.29.3-gke</span></div>
+          </div>
+        </div>
+        <div class="warn-box"><span class="box-icon">⚠️</span><div><b>Always destroy when done!</b> GKE nodes cost ~₹10/hour. Run <code>terraform destroy</code> when you finish practising. Your Terraform code is saved in git — rebuild in 5 minutes any time.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section" id="state">
+  <div class="section-label">// terraform's memory</div>
+  <div class="section-title">State File — The Most Important File</div>
+
+  <div class="state-visual reveal">
+    <div class="sv-box">
+      <div class="sv-title" style="color:var(--blue);">Your Code (main.tf)</div>
+      <div class="sv-items">resource "gke_cluster" "x"<br>node_count = 2<br>machine = e2-standard-2</div>
+    </div>
+    <div class="sv-arrow">→ compare →</div>
+    <div class="sv-box">
+      <div class="sv-title" style="color:var(--green);">State File (terraform.tfstate)</div>
+      <div class="sv-items">gke_cluster: EXISTS<br>id: projects/x/clusters/y<br>node_count: 2</div>
+    </div>
+  </div>
+
+  <div class="terminal reveal">
+    <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">remote state — store in GCS (best practice)</span><button class="terminal-copy">Copy</button></div>
+    <div class="terminal-body">
+      <div class="t-line"><span class="t-comment"># Create GCS bucket for state (do once)</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">gsutil mb gs://YOUR_PROJECT_ID-terraform-state</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">gsutil versioning set on gs://YOUR_PROJECT_ID-terraform-state</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment"># Add backend block to terraform {} in main.tf</span></div>
+      <div class="t-line"><span class="t-cmd">terraform {</span></div>
+      <div class="t-line"><span class="t-cmd">  backend "gcs" {</span></div>
+      <div class="t-line"><span class="t-cmd">    bucket = "YOUR_PROJECT_ID-terraform-state"</span></div>
+      <div class="t-line"><span class="t-cmd">    prefix = "taskapi/state"</span></div>
+      <div class="t-line"><span class="t-cmd">  }</span></div>
+      <div class="t-line"><span class="t-cmd">}</span></div>
+      <div class="t-line"><span class="t-comment"># Now state is stored in GCS — safe, shared, versioned</span></div>
+    </div>
+  </div>
+
+  <div class="info-box reveal"><span class="box-icon">💡</span><div><b>Why remote state?</b> Local state file (terraform.tfstate) is on your laptop — if your laptop dies, Terraform loses track of everything it created. Remote state in GCS is safe, backed up, and multiple team members can share it. State locking prevents two people running apply simultaneously.</div></div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section" id="errors">
+  <div class="section-label">// when terraform fails</div>
+  <div class="section-title">Common Terraform Errors — Exact Fix</div>
+
+  <div class="steps stagger-children">
+    <div class="step-card">
+      <div class="step-head"><span class="step-num sn-orange">ERR 01</span><span class="step-title">Error: no valid credential sources</span><span class="step-chevron">›</span></div>
+      <div class="step-body">
+        <div class="terminal"><div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-err">Error: no valid credential sources for Google Cloud Provider</span></div>
+            <div class="t-line"><span class="t-comment"># FIX: authenticate gcloud first</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">gcloud auth application-default login</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-head"><span class="step-num sn-orange">ERR 02</span><span class="step-title">Error acquiring the state lock</span><span class="step-chevron">›</span></div>
+      <div class="step-body">
+        <div class="terminal"><div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-err">Error acquiring the state lock: ID: abc-123-def</span></div>
+            <div class="t-line"><span class="t-comment"># Previous run crashed and left a lock</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">terraform force-unlock abc-123-def</span></div>
+            <div class="t-line"><span class="t-comment"># Only if you're certain no other process is running</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-head"><span class="step-num sn-orange">ERR 03</span><span class="step-title">API not enabled</span><span class="step-chevron">›</span></div>
+      <div class="step-body">
+        <div class="terminal"><div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-err">Error: googleapi: Error 403: Kubernetes Engine API has not been enabled</span></div>
+            <div class="t-line"><span class="t-comment"># FIX: enable the API (or add google_project_service resource)</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">gcloud services enable container.googleapis.com</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section" id="interview">
+  <div class="section-label">// crack the interview</div>
+  <div class="section-title">Terraform Interview Questions</div>
+
+  <div class="qa-list stagger-children">
+    <div class="qa-card">
+      <div class="qa-q"><span class="qa-q-num">Q1</span><span class="qa-q-text">What is Terraform state and what happens if it's lost?</span><span class="qa-diff diff-m">Medium</span></div>
+      <div class="qa-a"><b>State</b> is Terraform's record of what infrastructure it created. It maps your code resources to real cloud resources (VM ID, IP, etc). Terraform uses state to determine what to change on next apply — if state says a VM exists but your code removes it, Terraform destroys the VM.<br><br><b>If state is lost:</b> Terraform thinks nothing exists. Running apply creates everything again — duplicate resources. Fix: use <code>terraform import</code> to re-associate existing resources with your code, or restore from backup.<br><br>Prevention: always use remote state (GCS/S3) with versioning enabled.
+        <div class="qa-tip">🎯 Say: "I always use remote state with GCS backend and versioning. I never commit tfstate to git — it may contain sensitive values. I treat state as the source of truth for what's deployed."</div>
+      </div>
+    </div>
+    <div class="qa-card">
+      <div class="qa-q"><span class="qa-q-num">Q2</span><span class="qa-q-text">What is the difference between terraform plan and terraform apply?</span><span class="qa-diff diff-e">Easy</span></div>
+      <div class="qa-a"><b>terraform plan</b> is a dry run — it shows you what WOULD happen (create, update, destroy) without making any changes. Safe to run anytime. Output shows green + (create), yellow ~ (update), red - (destroy).<br><br><b>terraform apply</b> executes the plan — makes actual API calls to create/change/destroy resources. Asks for confirmation unless you use -auto-approve.<br><br>Best practice: always run plan first, review output carefully (especially red - lines), then apply. In CI/CD pipelines: plan on PR, apply on merge to main.
+        <div class="qa-tip">🎯 Say: "I run plan on every PR as part of CI — reviewers see exactly what infrastructure will change before it's approved. Apply only runs automatically after merge to main."</div>
+      </div>
+    </div>
+    <div class="qa-card">
+      <div class="qa-q"><span class="qa-q-num">Q3</span><span class="qa-q-text">What are Terraform modules and why use them?</span><span class="qa-diff diff-m">Medium</span></div>
+      <div class="qa-a">A module is a reusable package of Terraform code. Like a function — takes inputs (variables), creates resources, returns outputs. Benefits: DRY (don't repeat yourself) — write VPC config once, reuse for dev/staging/prod by passing different variables. Tested, versioned, shareable.<br><br>Two types: <b>local modules</b> (in your repo: ./modules/gke-cluster), <b>public modules</b> from Terraform Registry (registry.terraform.io) — e.g., terraform-google-modules/kubernetes-engine/google.<br><br>Using a module: <code>module "gke" { source = "./modules/gke-cluster"; project_id = var.project_id }</code>
+        <div class="qa-tip">🎯 Say: "I structure large Terraform projects with modules — one module per service or environment component. It makes adding a new environment a 10-line change instead of 200 lines of copy-paste."</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section">
+  <div class="section-title">What's Next?</div>
+  <div class="card-grid stagger-children">
+    <a href="cicd.html" class="card" style="text-decoration:none;">
+      <div style="font-size:1.5rem;margin-bottom:10px;">⚙️</div>
+      <div style="font-weight:700;margin-bottom:4px;">CI/CD →</div>
+      <div style="font-size:13px;color:var(--text-secondary);">Automate every deployment. Push code → live in 90 seconds.</div>
+      <div style="margin-top:12px;"><span class="badge badge-blue">Next Chapter</span></div>
+    </a>
+    <a href="kubernetes.html" class="card" style="text-decoration:none;">
+      <div style="font-size:1.5rem;margin-bottom:10px;">☸️</div>
+      <div style="font-weight:700;margin-bottom:4px;">← Kubernetes</div>
+      <div style="font-size:13px;color:var(--text-secondary);">Deploy your TaskAPI to the GKE cluster you just created.</div>
+    </a>
+  </div>
+</section>
+
+<footer>My DevOps Portal · 🏗️ Terraform · <a href="../index.html">Home</a> · <a href="kubernetes.html">← K8s</a> · <a href="cicd.html">Next: CI/CD →</a></footer>
+<script src="../script.js"></script>
+</body>
+</html>

@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monitoring — My DevOps Portal</title>
+<link rel="stylesheet" href="../style.css">
+<style>
+.four-signals {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin: 16px 0;
+}
+.signal-card {
+  background: var(--bg-surface);
+  padding: 20px 16px;
+  text-align: center;
+  transition: background 0.2s;
+}
+.signal-card:hover { background: var(--bg-elevated); }
+.signal-icon { font-size: 2rem; margin-bottom: 8px; }
+.signal-name { font-weight: 700; font-size: 14px; margin-bottom: 6px; }
+.signal-desc { font-size: 12px; color: var(--text-tertiary); line-height: 1.5; margin-bottom: 10px; }
+.signal-metric { font-family: var(--font-mono); font-size: 11px; padding: 3px 8px; border-radius: 4px; display: inline-block; }
+
+.obs-pillars {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin: 16px 0;
+}
+.pillar {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  text-align: center;
+}
+.pillar-icon { font-size: 2rem; margin-bottom: 10px; }
+.pillar-name { font-weight: 700; font-size: 15px; margin-bottom: 6px; }
+.pillar-tool { font-family: var(--font-mono); font-size: 11px; margin-bottom: 8px; }
+.pillar-q    { font-size: 12px; color: var(--text-tertiary); line-height: 1.5; font-style: italic; }
+</style>
+</head>
+<body>
+
+<div class="site-banner">
+  <div class="brand"><span class="dot"></span><span>My DevOps Portal</span></div>
+  <nav class="banner-nav">
+    <a href="../index.html">🏠 Home</a>
+    <a href="cicd.html">⚙️ CI/CD</a>
+    <a href="monitoring.html" class="active">📊 Monitor</a>
+    <a href="projects.html">🚀 Projects</a>
+    <a href="../resume-guide.html">📄 Resume</a>
+  </nav>
+</div>
+
+<div class="page-nav">
+  <span class="page-nav-title">📊 Monitoring — Prometheus + Grafana</span>
+  <div class="page-nav-links">
+    <a href="#story">Story</a>
+    <a href="#concepts">Concepts</a>
+    <a href="#install">Install</a>
+    <a href="#prometheus">Prometheus</a>
+    <a href="#grafana">Grafana</a>
+    <a href="#app">App Metrics</a>
+    <a href="#alerts">Alerts</a>
+    <a href="#errors">Errors</a>
+    <a href="#interview">Interview</a>
+  </div>
+</div>
+
+<div class="page-hero">
+  <div class="hero-eyebrow">Chapter 07 · Observability</div>
+  <h1 class="hero-title">📊 Monitoring<br><span class="accent">Know Before</span><br><span class="accent-green">Users Tell You.</span></h1>
+  <p class="hero-sub">If you can't measure it, you can't manage it. Prometheus collects metrics every 15 seconds. Grafana makes them beautiful. Alerts wake you up before users notice. This is how production systems stay alive.</p>
+</div>
+
+<section class="section" id="story">
+  <div class="section-label">// why monitoring exists</div>
+  <div class="section-title">The Story — Finding Out From Twitter</div>
+
+  <div class="story-box animate-fade-up">
+    <span class="story-icon">🐦</span>
+    <strong>The worst way to find out your app is down — a tweet from an angry user.</strong><br><br>
+    Before monitoring, teams found out about outages when customers complained. By the time they investigated, dozens of errors had happened, data was corrupted, and the business had lost money. Debugging a dead system is like reading an obituary — the patient is already gone.<br><br>
+    <strong>Google's SRE team coined the concept of "observability"</strong> — the ability to understand the internal state of a system from its external outputs. They defined the <strong>Four Golden Signals</strong> — latency, traffic, errors, saturation — as the minimum metrics every production system must track.<br><br>
+    Today, Prometheus + Grafana is the de-facto open-source monitoring stack used by thousands of companies. It runs on Kubernetes natively, costs nothing, and can handle millions of metrics per second.
+  </div>
+
+  <div class="analogy-box animate-fade-up-1">
+    <div class="analogy-label">🧒 Explain Like I'm 5</div>
+    <p>Imagine you have a car. You drive without looking at the dashboard — no speedometer, no fuel gauge, no temperature warning. Everything feels fine until you're stranded on a highway with an overheated engine and empty tank. <b>Monitoring is your car dashboard</b> — it tells you what's happening inside while everything still looks fine from the outside. Prometheus is the sensors. Grafana is the dashboard screen.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section" id="concepts">
+  <div class="section-label">// what to measure</div>
+  <div class="section-title">The Four Golden Signals — Google's Framework</div>
+  <div class="section-sub">Measure these 4 things for any system and you'll know if it's healthy.</div>
+
+  <div class="four-signals reveal">
+    <div class="signal-card">
+      <div class="signal-icon">⏱️</div>
+      <div class="signal-name" style="color:var(--blue);">Latency</div>
+      <div class="signal-desc">How long does a request take? Track p50, p95, p99 — not just average. A spike means users are waiting.</div>
+      <span class="signal-metric" style="background:var(--blue-dim);color:var(--blue);">http_request_duration_seconds</span>
+    </div>
+    <div class="signal-card">
+      <div class="signal-icon">🚦</div>
+      <div class="signal-name" style="color:var(--green);">Traffic</div>
+      <div class="signal-desc">How many requests per second? Know your baseline. Sudden drops = something broke. Spikes = scaling needed.</div>
+      <span class="signal-metric" style="background:var(--green-dim);color:var(--green);">http_requests_total</span>
+    </div>
+    <div class="signal-card">
+      <div class="signal-icon">🔴</div>
+      <div class="signal-name" style="color:var(--red);">Errors</div>
+      <div class="signal-desc">What fraction of requests fail? Alert when error rate exceeds 1%. Even 0.1% errors = 1 in 1000 users failing.</div>
+      <span class="signal-metric" style="background:var(--red-dim);color:var(--red);">http_errors_total</span>
+    </div>
+    <div class="signal-card">
+      <div class="signal-icon">📈</div>
+      <div class="signal-name" style="color:var(--yellow);">Saturation</div>
+      <div class="signal-desc">How full is the system? CPU%, memory%, queue depth. 80% CPU is fine. 95% CPU means trouble soon.</div>
+      <span class="signal-metric" style="background:var(--yellow-dim);color:var(--yellow);">container_cpu_usage</span>
+    </div>
+  </div>
+
+  <!-- 3 PILLARS OF OBSERVABILITY -->
+  <div style="font-size:14px;font-weight:700;margin-bottom:14px;color:var(--text-secondary);">The 3 Pillars of Observability</div>
+  <div class="obs-pillars reveal">
+    <div class="pillar">
+      <div class="pillar-icon">📈</div>
+      <div class="pillar-name">Metrics</div>
+      <div class="pillar-tool" style="color:var(--blue);">Prometheus</div>
+      <div class="pillar-q">"What is happening?"<br>Numbers over time. CPU%, request rate, error count.</div>
+    </div>
+    <div class="pillar">
+      <div class="pillar-icon">📜</div>
+      <div class="pillar-name">Logs</div>
+      <div class="pillar-tool" style="color:var(--green);">Loki / ELK</div>
+      <div class="pillar-q">"Why did it happen?"<br>Detailed records of every event. Error messages, stack traces.</div>
+    </div>
+    <div class="pillar">
+      <div class="pillar-icon">🔍</div>
+      <div class="pillar-name">Traces</div>
+      <div class="pillar-tool" style="color:var(--purple);">Jaeger / Tempo</div>
+      <div class="pillar-q">"Where did it happen?"<br>Follow a request through every service. Find the slow step.</div>
+    </div>
+  </div>
+
+  <div class="info-box reveal"><span class="box-icon">💡</span><div><b>Start with metrics.</b> Logs tell you what happened AFTER the fact. Metrics tell you what's happening RIGHT NOW and trending. You can alert on metrics. You can't alert on logs efficiently. Master Prometheus + Grafana first, then add Loki for logs.</div></div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section" id="install">
+  <div class="section-label">// get monitoring running on kubernetes</div>
+  <div class="section-title">Install the Full Monitoring Stack — One Helm Command</div>
+  <div class="section-sub">kube-prometheus-stack installs Prometheus + Grafana + AlertManager + pre-built K8s dashboards in one command.</div>
+
+  <div class="steps stagger-children">
+    <div class="step-card">
+      <div class="step-head"><span class="step-num sn-blue">STEP 1</span><span class="step-title">Install kube-prometheus-stack with Helm</span><span class="step-chevron">›</span></div>
+      <div class="step-body">
+        <div class="terminal">
+          <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">install monitoring stack</span><button class="terminal-copy">Copy</button></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-comment"># Add Prometheus community Helm repo</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">helm repo add prometheus-community https://prometheus-community.github.io/helm-charts</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">helm repo update</span></div>
+            <div class="t-line"><span class="t-ok">...Update Complete. ⎈Happy Helming!⎈</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-comment"># Install the full stack in its own namespace</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">helm install monitoring prometheus-community/kube-prometheus-stack \</span></div>
+            <div class="t-line"><span class="t-cmd">  --namespace monitoring \</span></div>
+            <div class="t-line"><span class="t-cmd">  --create-namespace</span></div>
+            <div class="t-line"><span class="t-ok">NAME: monitoring</span></div>
+            <div class="t-line"><span class="t-ok">STATUS: deployed</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-comment"># Verify everything is running</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">kubectl get pods -n monitoring</span></div>
+            <div class="t-line"><span class="t-ok">monitoring-grafana-xxx              1/1   Running</span></div>
+            <div class="t-line"><span class="t-ok">monitoring-prometheus-xxx           1/1   Running</span></div>
+            <div class="t-line"><span class="t-ok">monitoring-alertmanager-xxx         1/1   Running</span></div>
+            <div class="t-line"><span class="t-ok">monitoring-kube-state-metrics-xxx   1/1   Running</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head"><span class="step-num sn-blue">STEP 2</span><span class="step-title">Access Grafana Dashboard</span><span class="step-chevron">›</span></div>
+      <div class="step-body">
+        <div class="terminal">
+          <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">open grafana in browser</span><button class="terminal-copy">Copy</button></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-comment"># Port-forward Grafana to your laptop</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">kubectl port-forward -n monitoring svc/monitoring-grafana 3000:80</span></div>
+            <div class="t-line"><span class="t-ok">Forwarding from 127.0.0.1:3000 -> 3000</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-comment"># Open browser: http://localhost:3000</span></div>
+            <div class="t-line"><span class="t-comment"># Default credentials:</span></div>
+            <div class="t-line"><span class="t-info">Username: admin</span></div>
+            <div class="t-line"><span class="t-info">Password: prom-operator</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-comment"># Get actual password (if changed):</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">kubectl get secret -n monitoring monitoring-grafana -o jsonpath="{.data.admin-password}" | base64 -d</span></div>
+          </div>
+        </div>
+        <div class="success-box"><span class="box-icon">✓</span><div>You're in Grafana! Click <b>Dashboards</b> → <b>Browse</b> → search "Kubernetes" → open "Kubernetes / Compute Resources / Cluster" — you'll see live CPU and memory for every pod in your cluster.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section" id="prometheus">
+  <div class="section-label">// how prometheus works</div>
+  <div class="section-title">Prometheus — Collecting Metrics</div>
+
+  <div class="story-box reveal">
+    <strong>How Prometheus works:</strong><br><br>
+    Prometheus is a <b>pull-based</b> system — it doesn't wait for your app to send metrics. Instead, it visits your app's <code>/metrics</code> endpoint every 15 seconds and scrapes the numbers. Your app just needs to expose metrics at that endpoint. Prometheus stores them as time-series data (value + timestamp).<br><br>
+    The metrics format looks like: <code>http_requests_total{method="GET",status="200"} 1234</code>. A metric name, optional labels in {}, and a value. Prometheus stores this every 15 seconds and you can query it with PromQL.
+  </div>
+
+  <div class="terminal reveal">
+    <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">promql — prometheus query language</span><button class="terminal-copy">Copy</button></div>
+    <div class="terminal-body">
+      <div class="t-line"><span class="t-comment"># ── Basic queries ──────────────────────────────────────</span></div>
+      <div class="t-line"><span class="t-comment"># Total HTTP requests</span></div>
+      <div class="t-line"><span class="t-cmd">http_requests_total</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment"># Requests for a specific endpoint</span></div>
+      <div class="t-line"><span class="t-cmd">http_requests_total{path="/health", method="GET"}</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment"># Request RATE per second (over last 5 minutes)</span></div>
+      <div class="t-line"><span class="t-cmd">rate(http_requests_total[5m])</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment"># Error rate (5xx responses)</span></div>
+      <div class="t-line"><span class="t-cmd">rate(http_requests_total{status=~"5.."}[5m])</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment"># CPU usage for all taskapi pods</span></div>
+      <div class="t-line"><span class="t-cmd">container_cpu_usage_seconds_total{pod=~"taskapi-.*"}</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment"># 95th percentile latency (p95)</span></div>
+      <div class="t-line"><span class="t-cmd">histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]))</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment"># Memory usage in MB</span></div>
+      <div class="t-line"><span class="t-cmd">container_memory_usage_bytes{pod=~"taskapi-.*"} / 1024 / 1024</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section" id="app">
+  <div class="section-label">// add metrics to your app</div>
+  <div class="section-title">Add /metrics to TaskAPI — 3 Lines of Code</div>
+
+  <div class="terminal reveal">
+    <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">add prometheus metrics to fastapi</span><button class="terminal-copy">Copy</button></div>
+    <div class="terminal-body">
+      <div class="t-line"><span class="t-comment"># Install the library</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">pip install prometheus-fastapi-instrumentator</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment"># Add 3 lines to app/main.py:</span></div>
+      <div class="t-line"><span class="t-cmd">from fastapi import FastAPI</span></div>
+      <div class="t-line"><span class="t-cmd">from prometheus_fastapi_instrumentator import Instrumentator</span>  <span class="t-comment">  ← add this</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-cmd">app = FastAPI()</span></div>
+      <div class="t-line"><span class="t-cmd">Instrumentator().instrument(app).expose(app)</span>  <span class="t-comment">  ← add this</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment"># Now your app exposes /metrics automatically</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">curl localhost:8000/metrics</span></div>
+      <div class="t-line"><span class="t-ok"># HELP http_requests_total Total HTTP Requests</span></div>
+      <div class="t-line"><span class="t-ok">http_requests_total{handler="/health",method="GET",status_code="200"} 42</span></div>
+      <div class="t-line"><span class="t-ok">http_request_duration_seconds_bucket{le="0.005"} 38</span></div>
+      <div class="t-line"><span class="t-ok">http_request_duration_seconds_bucket{le="0.01"} 42</span></div>
+    </div>
+  </div>
+
+  <div class="terminal reveal" style="margin-top:12px;">
+    <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">tell prometheus to scrape your app — servicemonitor.yaml</span><button class="terminal-copy">Copy</button></div>
+    <div class="terminal-body">
+      <div class="t-line"><span class="t-cmd">apiVersion: monitoring.coreos.com/v1</span></div>
+      <div class="t-line"><span class="t-cmd">kind: ServiceMonitor</span></div>
+      <div class="t-line"><span class="t-cmd">metadata:</span></div>
+      <div class="t-line"><span class="t-cmd">  name: taskapi-monitor</span></div>
+      <div class="t-line"><span class="t-cmd">  namespace: monitoring</span></div>
+      <div class="t-line"><span class="t-cmd">  labels:</span></div>
+      <div class="t-line"><span class="t-cmd">    release: monitoring</span>        <span class="t-comment">  # must match Prometheus selector</span></div>
+      <div class="t-line"><span class="t-cmd">spec:</span></div>
+      <div class="t-line"><span class="t-cmd">  selector:</span></div>
+      <div class="t-line"><span class="t-cmd">    matchLabels:</span></div>
+      <div class="t-line"><span class="t-cmd">      app: taskapi</span></div>
+      <div class="t-line"><span class="t-cmd">  endpoints:</span></div>
+      <div class="t-line"><span class="t-cmd">    - port: http</span></div>
+      <div class="t-line"><span class="t-cmd">      path: /metrics</span></div>
+      <div class="t-line"><span class="t-cmd">      interval: 15s</span>            <span class="t-comment">  # scrape every 15 seconds</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section" id="alerts">
+  <div class="section-label">// get notified before users do</div>
+  <div class="section-title">Alerting — PrometheusRule + AlertManager</div>
+
+  <div class="terminal reveal">
+    <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">prometheusrule.yaml — alert when error rate is high</span><button class="terminal-copy">Copy</button></div>
+    <div class="terminal-body">
+      <div class="t-line"><span class="t-cmd">apiVersion: monitoring.coreos.com/v1</span></div>
+      <div class="t-line"><span class="t-cmd">kind: PrometheusRule</span></div>
+      <div class="t-line"><span class="t-cmd">metadata:</span></div>
+      <div class="t-line"><span class="t-cmd">  name: taskapi-alerts</span></div>
+      <div class="t-line"><span class="t-cmd">  namespace: monitoring</span></div>
+      <div class="t-line"><span class="t-cmd">  labels:</span></div>
+      <div class="t-line"><span class="t-cmd">    release: monitoring</span></div>
+      <div class="t-line"><span class="t-cmd">spec:</span></div>
+      <div class="t-line"><span class="t-cmd">  groups:</span></div>
+      <div class="t-line"><span class="t-cmd">    - name: taskapi</span></div>
+      <div class="t-line"><span class="t-cmd">      rules:</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment">        # Alert if error rate > 5% for 5 minutes</span></div>
+      <div class="t-line"><span class="t-cmd">        - alert: HighErrorRate</span></div>
+      <div class="t-line"><span class="t-cmd">          expr: |</span></div>
+      <div class="t-line"><span class="t-cmd">            rate(http_requests_total{status_code=~"5.."}[5m])</span></div>
+      <div class="t-line"><span class="t-cmd">            /</span></div>
+      <div class="t-line"><span class="t-cmd">            rate(http_requests_total[5m]) > 0.05</span></div>
+      <div class="t-line"><span class="t-cmd">          for: 5m</span>               <span class="t-comment">  # must be true for 5 mins to fire</span></div>
+      <div class="t-line"><span class="t-cmd">          labels:</span></div>
+      <div class="t-line"><span class="t-cmd">            severity: critical</span></div>
+      <div class="t-line"><span class="t-cmd">          annotations:</span></div>
+      <div class="t-line"><span class="t-cmd">            summary: "TaskAPI error rate above 5%"</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment">        # Alert if pod is not running</span></div>
+      <div class="t-line"><span class="t-cmd">        - alert: PodDown</span></div>
+      <div class="t-line"><span class="t-cmd">          expr: kube_pod_status_ready{pod=~"taskapi-.*"} == 0</span></div>
+      <div class="t-line"><span class="t-cmd">          for: 1m</span></div>
+      <div class="t-line"><span class="t-cmd">          labels:</span></div>
+      <div class="t-line"><span class="t-cmd">            severity: warning</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment">        # Alert if disk > 80%</span></div>
+      <div class="t-line"><span class="t-cmd">        - alert: DiskSpaceHigh</span></div>
+      <div class="t-line"><span class="t-cmd">          expr: (node_filesystem_size_bytes - node_filesystem_free_bytes) / node_filesystem_size_bytes > 0.8</span></div>
+      <div class="t-line"><span class="t-cmd">          for: 10m</span></div>
+    </div>
+  </div>
+
+  <div class="tip-box reveal"><span class="box-icon">💡</span><div><b>Send alerts to Slack (free):</b> AlertManager can send alerts anywhere. Create a Slack webhook at api.slack.com/apps → Incoming Webhooks. Add the webhook URL to AlertManager config. Now production alerts land in your Slack channel with context and severity.</div></div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section" id="errors">
+  <div class="section-label">// when monitoring breaks</div>
+  <div class="section-title">Common Monitoring Errors — Exact Fix</div>
+
+  <div class="steps stagger-children">
+    <div class="step-card">
+      <div class="step-head"><span class="step-num sn-orange">ERR 01</span><span class="step-title">Grafana shows "No data" in dashboards</span><span class="step-chevron">›</span></div>
+      <div class="step-body">
+        <div class="terminal"><div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-comment"># FIX 1: Check Prometheus is scraping your app</span></div>
+            <div class="t-line"><span class="t-comment"># Port-forward Prometheus UI</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">kubectl port-forward -n monitoring svc/monitoring-prometheus 9090:9090</span></div>
+            <div class="t-line"><span class="t-comment"># Open localhost:9090 → Status → Targets</span></div>
+            <div class="t-line"><span class="t-comment"># Your app should show as UP (green)</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-comment"># FIX 2: Check time range in Grafana</span></div>
+            <div class="t-line"><span class="t-comment"># Top right of Grafana → change from "Last 1 hour" to "Last 5 minutes"</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-head"><span class="step-num sn-orange">ERR 02</span><span class="step-title">Prometheus not scraping app — Target DOWN</span><span class="step-chevron">›</span></div>
+      <div class="step-body">
+        <div class="terminal"><div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-comment"># ServiceMonitor label must match Prometheus serviceMonitorSelector</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">kubectl get prometheus -n monitoring -o yaml | grep serviceMonitorSelector</span></div>
+            <div class="t-line"><span class="t-out">    serviceMonitorSelector:</span></div>
+            <div class="t-line"><span class="t-out">      matchLabels:</span></div>
+            <div class="t-line"><span class="t-out">        release: monitoring</span>  <span class="t-comment">  ← your ServiceMonitor must have this label</span></div>
+            <div class="t-line"><span class="t-comment"># Make sure your servicemonitor.yaml has: labels: release: monitoring</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section" id="interview">
+  <div class="section-label">// crack the interview</div>
+  <div class="section-title">Monitoring Interview Questions</div>
+
+  <div class="qa-list stagger-children">
+    <div class="qa-card">
+      <div class="qa-q"><span class="qa-q-num">Q1</span><span class="qa-q-text">What are the Four Golden Signals?</span><span class="qa-diff diff-e">Easy</span></div>
+      <div class="qa-a">From Google's SRE book — the minimum set of metrics for any service:<br><br><b>1. Latency:</b> Time to serve a request. Track p50/p95/p99 (median and tail latency), not just average. A slow request is often worse than a failed one (user waits and gets nothing).<br><b>2. Traffic:</b> Demand on your system — requests per second, transactions per minute. Establishes baseline for capacity planning.<br><b>3. Errors:</b> Rate of failed requests — explicit failures (500s) and implicit (200 with wrong content). Target: less than 0.1% error rate.<br><b>4. Saturation:</b> How "full" your service is — CPU%, memory%, I/O wait. Most services degrade before hitting 100%.
+        <div class="qa-tip">🎯 Say: "My dashboards always start with the four golden signals. For TaskAPI: Grafana shows request rate, p99 latency, error rate, and CPU saturation on the first screen. That tells me if something is wrong in 5 seconds."</div>
+      </div>
+    </div>
+    <div class="qa-card">
+      <div class="qa-q"><span class="qa-q-num">Q2</span><span class="qa-q-text">What is the difference between monitoring and observability?</span><span class="qa-diff diff-m">Medium</span></div>
+      <div class="qa-a"><b>Monitoring</b> = tracking known failure modes. You define what to measure upfront (CPU, error rate). You get alerts when known thresholds are breached. Works well for systems you understand completely.<br><br><b>Observability</b> = the ability to understand ANY internal state from external outputs — including unknown failure modes. Achieved through three pillars: metrics (what), logs (why), traces (where). An observable system lets you debug novel failures without needing to add new instrumentation.<br><br>Analogy: monitoring is checking your car's known warning lights. Observability is having enough sensors to diagnose a problem that's never occurred before.
+        <div class="qa-tip">🎯 Say: "Monitoring tells you that something is wrong. Observability tells you why. I start with Prometheus metrics for monitoring, add structured logs with Loki, and use distributed tracing for complex microservice debugging."</div>
+      </div>
+    </div>
+    <div class="qa-card">
+      <div class="qa-q"><span class="qa-q-num">Q3</span><span class="qa-q-text">What is an SLI, SLO, and SLA?</span><span class="qa-diff diff-h">Hard</span></div>
+      <div class="qa-a"><b>SLI (Service Level Indicator):</b> A metric that measures service quality. Examples: request success rate, latency p99, availability percentage. Raw numbers.<br><br><b>SLO (Service Level Objective):</b> A target for an SLI. "99.9% of requests succeed" or "p99 latency &lt;200ms". Internal goal — not contractual. Your team is accountable to SLOs.<br><br><b>SLA (Service Level Agreement):</b> A legal contract with customers about service quality. If SLA is violated, there are financial consequences (credits, refunds). SLA is always less aggressive than SLO — you need buffer between your internal objective and external commitment.<br><br>Relationship: SLI is measured → compared to SLO → SLA is the external commitment based on SLO history.
+        <div class="qa-tip">🎯 Say: "Our SLO for TaskAPI is 99.5% availability with p99 latency under 300ms. We alert when we're burning error budget too fast — before we breach the SLO. The SLA with customers is 99% — giving us buffer."</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section">
+  <div class="section-title">What's Next?</div>
+  <div class="card-grid stagger-children">
+    <a href="projects.html" class="card" style="text-decoration:none;">
+      <div style="font-size:1.5rem;margin-bottom:10px;">🚀</div>
+      <div style="font-weight:700;margin-bottom:4px;">Money Projects →</div>
+      <div style="font-size:13px;color:var(--text-secondary);">Build 2 AI projects that earn real money using everything you've learned.</div>
+      <div style="margin-top:12px;"><span class="badge badge-blue">Final Chapter</span></div>
+    </a>
+    <a href="../resume-guide.html" class="card" style="text-decoration:none;">
+      <div style="font-size:1.5rem;margin-bottom:10px;">📄</div>
+      <div style="font-weight:700;margin-bottom:4px;">Resume Guide →</div>
+      <div style="font-size:13px;color:var(--text-secondary);">You're ready. Get the job. Resume template, LinkedIn, job strategy.</div>
+    </a>
+  </div>
+</section>
+
+<footer>My DevOps Portal · 📊 Monitoring · <a href="../index.html">Home</a> · <a href="cicd.html">← CI/CD</a> · <a href="projects.html">Next: Projects →</a></footer>
+<script src="../script.js"></script>
+</body>
+</html>

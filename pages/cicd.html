@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CI/CD — My DevOps Portal</title>
+<link rel="stylesheet" href="../style.css">
+<style>
+.pipeline-stages {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin: 16px 0;
+}
+.ps-stage {
+  background: var(--bg-surface);
+  padding: 16px 20px;
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 16px;
+  align-items: start;
+  transition: background 0.15s;
+}
+.ps-stage:hover { background: var(--bg-elevated); }
+.ps-name { font-family: var(--font-mono); font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+.ps-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.7; }
+.ps-desc code { font-size: 11px; }
+
+.trigger-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+  margin: 16px 0;
+}
+.trigger-card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 14px;
+}
+.trigger-card .tc-event { font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: var(--blue); margin-bottom: 6px; }
+.trigger-card .tc-desc  { font-size: 12px; color: var(--text-tertiary); line-height: 1.5; }
+</style>
+</head>
+<body>
+
+<div class="site-banner">
+  <div class="brand"><span class="dot"></span><span>My DevOps Portal</span></div>
+  <nav class="banner-nav">
+    <a href="../index.html">🏠 Home</a>
+    <a href="terraform.html">🏗️ Terraform</a>
+    <a href="cicd.html" class="active">⚙️ CI/CD</a>
+    <a href="monitoring.html">📊 Monitor</a>
+    <a href="projects.html">🚀 Projects</a>
+  </nav>
+</div>
+
+<div class="page-nav">
+  <span class="page-nav-title">⚙️ CI/CD — GitHub Actions</span>
+  <div class="page-nav-links">
+    <a href="#story">Story</a>
+    <a href="#concepts">Concepts</a>
+    <a href="#syntax">Syntax</a>
+    <a href="#pipeline">Pipeline</a>
+    <a href="#secrets">Secrets</a>
+    <a href="#environments">Environments</a>
+    <a href="#advanced">Advanced</a>
+    <a href="#errors">Errors</a>
+    <a href="#interview">Interview</a>
+  </div>
+</div>
+
+<div class="page-hero">
+  <div class="hero-eyebrow">Chapter 06 · Automation</div>
+  <h1 class="hero-title">⚙️ CI/CD<br><span class="accent">Push Code.</span><br><span class="accent-green">It's Live in 90s.</span></h1>
+  <p class="hero-sub">Continuous Integration + Continuous Delivery. The pipeline that tests, builds, and deploys your code automatically on every push. No human steps. No manual deployments. Ever.</p>
+</div>
+
+<section class="section" id="story">
+  <div class="section-label">// why cicd exists</div>
+  <div class="section-title">The Story — Deployment Friday</div>
+
+  <div class="story-box animate-fade-up">
+    <span class="story-icon">😱</span>
+    <strong>"Deployment Friday" — the most feared day in software teams before CI/CD.</strong><br><br>
+    A developer writes code all week. On Friday afternoon, they SSH into the production server, copy files manually, restart the app and pray. Something breaks. It's 5pm Friday. Nobody wants to stay late to fix it. The site is down all weekend.<br><br>
+    Teams were so scared of deploying they did it once a month. Batching up 4 weeks of changes into one massive deployment that was guaranteed to break something.<br><br>
+    <strong>CI/CD inverted this entirely.</strong> Deploy many small changes automatically. Each one tested. Each one reversible. Netflix deploys thousands of times per day. Amazon deploys every 11 seconds. Small deployments are safe deployments. Automation removes human error.
+  </div>
+
+  <div class="analogy-box animate-fade-up-1">
+    <div class="analogy-label">🧒 Explain Like I'm 5</div>
+    <p>Imagine a factory that makes toys. Old way: workers build toys all month, then test them all at once, then ship them — one giant stressful day. <b>CI/CD way:</b> every toy gets automatically tested on the assembly line right after it's made. If it passes — it ships immediately. If it fails — the line stops and fixes it right there. Small batches. Constant flow. No surprises.</p>
+  </div>
+
+  <!-- PIPELINE STAGES -->
+  <div class="pipeline-stages reveal">
+    <div class="ps-stage">
+      <div class="ps-name"><span style="color:var(--blue);">①</span> Trigger</div>
+      <div class="ps-desc">Developer pushes to GitHub. Pipeline starts automatically in &lt;5 seconds.</div>
+    </div>
+    <div class="ps-stage">
+      <div class="ps-name"><span style="color:var(--blue);">②</span> Test</div>
+      <div class="ps-desc">Run all unit tests + linting. If any test fails → pipeline stops. Bad code never moves forward.</div>
+    </div>
+    <div class="ps-stage">
+      <div class="ps-name"><span style="color:var(--yellow);">③</span> Build</div>
+      <div class="ps-desc"><code>docker build</code> — creates a new image tagged with the commit SHA. Immutable artifact.</div>
+    </div>
+    <div class="ps-stage">
+      <div class="ps-name"><span style="color:var(--yellow);">④</span> Push</div>
+      <div class="ps-desc"><code>docker push</code> — uploads image to Docker Hub / ECR. Kubernetes will pull from here.</div>
+    </div>
+    <div class="ps-stage">
+      <div class="ps-name"><span style="color:var(--green);">⑤</span> Deploy</div>
+      <div class="ps-desc"><code>kubectl apply</code> — updates K8s deployment with new image. Rolling update. Zero downtime.</div>
+    </div>
+    <div class="ps-stage">
+      <div class="ps-name"><span style="color:var(--green);">⑥</span> Verify</div>
+      <div class="ps-desc">Check deployment status. Run smoke tests against live URL. Alert on failure.</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section" id="concepts">
+  <div class="section-label">// github actions building blocks</div>
+  <div class="section-title">GitHub Actions — Core Concepts</div>
+
+  <div class="card-grid stagger-children" style="margin-bottom:24px;">
+    <div class="card reveal">
+      <span class="badge badge-blue" style="margin-bottom:10px;">Workflow</span>
+      <div style="font-size:13px;color:var(--text-secondary);line-height:1.7;">A YAML file in <code>.github/workflows/</code>. Defines what runs, when it runs, and how. One repo can have multiple workflows.</div>
+    </div>
+    <div class="card reveal">
+      <span class="badge badge-green" style="margin-bottom:10px;">Event / Trigger</span>
+      <div style="font-size:13px;color:var(--text-secondary);line-height:1.7;">What starts the workflow. push, pull_request, schedule (cron), workflow_dispatch (manual button), release.</div>
+    </div>
+    <div class="card reveal">
+      <span class="badge badge-yellow" style="margin-bottom:10px;">Job</span>
+      <div style="font-size:13px;color:var(--text-secondary);line-height:1.7;">A unit of work that runs on a fresh virtual machine (runner). Jobs run in parallel by default. Use <code>needs:</code> to sequence them.</div>
+    </div>
+    <div class="card reveal">
+      <span class="badge badge-purple" style="margin-bottom:10px;">Step</span>
+      <div style="font-size:13px;color:var(--text-secondary);line-height:1.7;">An individual task within a job. Either a shell command (<code>run:</code>) or a pre-built action (<code>uses:</code>). Steps run sequentially.</div>
+    </div>
+    <div class="card reveal">
+      <span class="badge badge-orange" style="margin-bottom:10px;">Runner</span>
+      <div style="font-size:13px;color:var(--text-secondary);line-height:1.7;">The virtual machine that runs your job. GitHub provides free Ubuntu, Windows, Mac runners. <code>ubuntu-latest</code> is most common. 2,000 free minutes/month.</div>
+    </div>
+    <div class="card reveal">
+      <span class="badge badge-blue" style="margin-bottom:10px;">Action</span>
+      <div style="font-size:13px;color:var(--text-secondary);line-height:1.7;">A pre-built, reusable step from the GitHub Marketplace. <code>actions/checkout@v4</code> checks out code. <code>docker/build-push-action</code> builds and pushes Docker images.</div>
+    </div>
+  </div>
+
+  <!-- TRIGGERS -->
+  <div style="font-size:14px;font-weight:700;margin-bottom:12px;color:var(--text-secondary);">Common Triggers</div>
+  <div class="trigger-grid reveal">
+    <div class="trigger-card">
+      <div class="tc-event">push</div>
+      <div class="tc-desc">On git push to specified branches. Most common trigger.</div>
+    </div>
+    <div class="trigger-card">
+      <div class="tc-event">pull_request</div>
+      <div class="tc-desc">On PR opened/updated. Run tests before merging.</div>
+    </div>
+    <div class="trigger-card">
+      <div class="tc-event">schedule</div>
+      <div class="tc-desc">Cron schedule. Run nightly tests, weekly backups.</div>
+    </div>
+    <div class="trigger-card">
+      <div class="tc-event">workflow_dispatch</div>
+      <div class="tc-desc">Manual trigger. Adds a "Run workflow" button in GitHub UI.</div>
+    </div>
+    <div class="trigger-card">
+      <div class="tc-event">release</div>
+      <div class="tc-desc">On GitHub release published. Deploy tagged versions.</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section" id="syntax">
+  <div class="section-label">// write your first workflow</div>
+  <div class="section-title">GitHub Actions YAML Syntax — Every Part Explained</div>
+
+  <div class="terminal reveal">
+    <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">.github/workflows/ci.yml — anatomy</span><button class="terminal-copy">Copy</button></div>
+    <div class="terminal-body">
+      <div class="t-line"><span class="t-comment"># Workflow name — shows in GitHub Actions tab</span></div>
+      <div class="t-line"><span class="t-cmd">name: CI Pipeline</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment"># WHEN does this run?</span></div>
+      <div class="t-line"><span class="t-cmd">on:</span></div>
+      <div class="t-line"><span class="t-cmd">  push:</span></div>
+      <div class="t-line"><span class="t-cmd">    branches: [main, develop]</span>  <span class="t-comment">  # only on these branches</span></div>
+      <div class="t-line"><span class="t-cmd">  pull_request:</span></div>
+      <div class="t-line"><span class="t-cmd">    branches: [main]</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment"># Environment variables available to ALL jobs</span></div>
+      <div class="t-line"><span class="t-cmd">env:</span></div>
+      <div class="t-line"><span class="t-cmd">  IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/taskapi</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-cmd">jobs:</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment">  # ── JOB 1: Test ──────────────────────────────────────</span></div>
+      <div class="t-line"><span class="t-cmd">  test:</span></div>
+      <div class="t-line"><span class="t-cmd">    name: 🧪 Run Tests</span></div>
+      <div class="t-line"><span class="t-cmd">    runs-on: ubuntu-latest</span>   <span class="t-comment">  # free GitHub-hosted runner</span></div>
+      <div class="t-line"><span class="t-cmd">    steps:</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment">      # Step 1: Get the code (ALWAYS first step)</span></div>
+      <div class="t-line"><span class="t-cmd">      - name: Checkout code</span></div>
+      <div class="t-line"><span class="t-cmd">        uses: actions/checkout@v4</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment">      # Step 2: Set up Python</span></div>
+      <div class="t-line"><span class="t-cmd">      - name: Set up Python</span></div>
+      <div class="t-line"><span class="t-cmd">        uses: actions/setup-python@v5</span></div>
+      <div class="t-line"><span class="t-cmd">        with:</span></div>
+      <div class="t-line"><span class="t-cmd">          python-version: "3.11"</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment">      # Step 3: Install dependencies</span></div>
+      <div class="t-line"><span class="t-cmd">      - name: Install dependencies</span></div>
+      <div class="t-line"><span class="t-cmd">        run: pip install -r requirements.txt</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment">      # Step 4: Run tests</span></div>
+      <div class="t-line"><span class="t-cmd">      - name: Run pytest</span></div>
+      <div class="t-line"><span class="t-cmd">        run: pytest tests/ -v --tb=short</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment">  # ── JOB 2: Build + Push Docker ───────────────────────</span></div>
+      <div class="t-line"><span class="t-cmd">  build:</span></div>
+      <div class="t-line"><span class="t-cmd">    name: 🐳 Build & Push</span></div>
+      <div class="t-line"><span class="t-cmd">    needs: test</span>               <span class="t-comment">  # only runs if test job PASSES</span></div>
+      <div class="t-line"><span class="t-cmd">    runs-on: ubuntu-latest</span></div>
+      <div class="t-line"><span class="t-cmd">    if: github.ref == 'refs/heads/main'</span>  <span class="t-comment">  # only on main branch</span></div>
+      <div class="t-line"><span class="t-cmd">    steps:</span></div>
+      <div class="t-line"><span class="t-cmd">      - uses: actions/checkout@v4</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment">      # Login to Docker Hub using secrets</span></div>
+      <div class="t-line"><span class="t-cmd">      - uses: docker/login-action@v3</span></div>
+      <div class="t-line"><span class="t-cmd">        with:</span></div>
+      <div class="t-line"><span class="t-cmd">          username: ${{ secrets.DOCKERHUB_USERNAME }}</span></div>
+      <div class="t-line"><span class="t-cmd">          password: ${{ secrets.DOCKERHUB_TOKEN }}</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment">      # Build and push with commit SHA tag</span></div>
+      <div class="t-line"><span class="t-cmd">      - uses: docker/build-push-action@v5</span></div>
+      <div class="t-line"><span class="t-cmd">        with:</span></div>
+      <div class="t-line"><span class="t-cmd">          push: true</span></div>
+      <div class="t-line"><span class="t-cmd">          tags: |</span></div>
+      <div class="t-line"><span class="t-cmd">            ${{ env.IMAGE }}:latest</span></div>
+      <div class="t-line"><span class="t-cmd">            ${{ env.IMAGE }}:${{ github.sha }}</span>  <span class="t-comment">  # exact commit</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment">  # ── JOB 3: Deploy to Kubernetes ──────────────────────</span></div>
+      <div class="t-line"><span class="t-cmd">  deploy:</span></div>
+      <div class="t-line"><span class="t-cmd">    name: 🚀 Deploy</span></div>
+      <div class="t-line"><span class="t-cmd">    needs: build</span></div>
+      <div class="t-line"><span class="t-cmd">    runs-on: ubuntu-latest</span></div>
+      <div class="t-line"><span class="t-cmd">    if: github.ref == 'refs/heads/main'</span></div>
+      <div class="t-line"><span class="t-cmd">    steps:</span></div>
+      <div class="t-line"><span class="t-cmd">      - uses: actions/checkout@v4</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-cmd">      - uses: azure/setup-kubectl@v3</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment">      # Decode and write kubeconfig from secret</span></div>
+      <div class="t-line"><span class="t-cmd">      - name: Configure kubectl</span></div>
+      <div class="t-line"><span class="t-cmd">        run: |</span></div>
+      <div class="t-line"><span class="t-cmd">          echo "${{ secrets.KUBECONFIG }}" | base64 -d > kubeconfig.yaml</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment">      # Update image tag in deployment.yaml with commit SHA</span></div>
+      <div class="t-line"><span class="t-cmd">      - name: Update image tag</span></div>
+      <div class="t-line"><span class="t-cmd">        run: |</span></div>
+      <div class="t-line"><span class="t-cmd">          sed -i "s|:latest|:${{ github.sha }}|g" k8s/deployment.yaml</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-cmd">      - name: Deploy to K8s</span></div>
+      <div class="t-line"><span class="t-cmd">        run: |</span></div>
+      <div class="t-line"><span class="t-cmd">          kubectl --kubeconfig=kubeconfig.yaml apply -f k8s/</span></div>
+      <div class="t-line"><span class="t-cmd">          kubectl --kubeconfig=kubeconfig.yaml rollout status deployment/taskapi --timeout=120s</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section" id="secrets">
+  <div class="section-label">// keep credentials safe</div>
+  <div class="section-title">GitHub Secrets — Store Credentials Safely</div>
+  <div class="section-sub">Never put passwords, tokens, or keys in your YAML files. GitHub Secrets encrypts them and injects at runtime.</div>
+
+  <div class="steps stagger-children">
+    <div class="step-card">
+      <div class="step-head"><span class="step-num sn-blue">STEP 1</span><span class="step-title">Add Docker Hub Secrets</span><span class="step-chevron">›</span></div>
+      <div class="step-body">
+        <div class="info-box"><span class="box-icon">🖱️</span>
+          <div>
+            <b>Get Docker Hub Token:</b> hub.docker.com → click avatar → Account Settings → Security → New Access Token → name it "github-actions" → Generate → copy the token<br><br>
+            <b>Add to GitHub:</b> Your repo → Settings → Secrets and variables → Actions → New repository secret:<br>
+            Name: <b>DOCKERHUB_USERNAME</b> → Value: your Docker Hub username<br>
+            Name: <b>DOCKERHUB_TOKEN</b> → Value: the token you copied
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head"><span class="step-num sn-blue">STEP 2</span><span class="step-title">Add Kubernetes Cluster Secret</span><span class="step-chevron">›</span></div>
+      <div class="step-body">
+        <div class="terminal">
+          <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">get kubeconfig and encode it</span><button class="terminal-copy">Copy</button></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-comment"># Get kubeconfig for GKE cluster</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">gcloud container clusters get-credentials taskapi-cluster --region us-central1</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-comment"># Base64 encode it (pipe to clipboard or copy output)</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">cat ~/.kube/config | base64 -w 0</span></div>
+            <div class="t-line"><span class="t-info">LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0t...</span>  <span class="t-comment">← copy this entire output</span></div>
+          </div>
+        </div>
+        <div class="info-box"><span class="box-icon">🖱️</span><div>GitHub repo → Settings → Secrets → New secret → Name: <b>KUBECONFIG</b> → Value: paste the base64 output → Add secret</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="terminal reveal" style="margin-top:16px;">
+    <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">using secrets in workflows</span><button class="terminal-copy">Copy</button></div>
+    <div class="terminal-body">
+      <div class="t-line"><span class="t-comment"># Access secret with ${{ secrets.SECRET_NAME }}</span></div>
+      <div class="t-line"><span class="t-cmd">      - name: Login to Docker Hub</span></div>
+      <div class="t-line"><span class="t-cmd">        uses: docker/login-action@v3</span></div>
+      <div class="t-line"><span class="t-cmd">        with:</span></div>
+      <div class="t-line"><span class="t-cmd">          username: ${{ secrets.DOCKERHUB_USERNAME }}</span></div>
+      <div class="t-line"><span class="t-cmd">          password: ${{ secrets.DOCKERHUB_TOKEN }}</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment"># GitHub also provides built-in variables:</span></div>
+      <div class="t-line"><span class="t-cmd">${{ github.sha }}</span>        <span class="t-comment">  ← commit SHA: a3f2c91...</span></div>
+      <div class="t-line"><span class="t-cmd">${{ github.ref }}</span>        <span class="t-comment">  ← branch: refs/heads/main</span></div>
+      <div class="t-line"><span class="t-cmd">${{ github.actor }}</span>      <span class="t-comment">  ← who triggered: akshc15</span></div>
+      <div class="t-line"><span class="t-cmd">${{ github.repository }}</span> <span class="t-comment">  ← akshc15/taskapi</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section" id="advanced">
+  <div class="section-label">// level up your pipelines</div>
+  <div class="section-title">Advanced Patterns — Used in Real Companies</div>
+
+  <div class="steps stagger-children">
+    <div class="step-card">
+      <div class="step-head"><span class="step-num sn-purple">PATTERN 1</span><span class="step-title">Dependency Caching — Make Pipelines 3x Faster</span><span class="step-chevron">›</span></div>
+      <div class="step-body">
+        <p>Without caching, pip install runs on every push — slow. With caching, dependencies are reused if requirements.txt didn't change.</p>
+        <div class="terminal">
+          <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">cache pip dependencies</span><button class="terminal-copy">Copy</button></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-cmd">      - name: Cache pip</span></div>
+            <div class="t-line"><span class="t-cmd">        uses: actions/cache@v4</span></div>
+            <div class="t-line"><span class="t-cmd">        with:</span></div>
+            <div class="t-line"><span class="t-cmd">          path: ~/.cache/pip</span></div>
+            <div class="t-line"><span class="t-cmd">          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}</span></div>
+            <div class="t-line"><span class="t-comment">          # key changes only if requirements.txt changes → cache miss</span></div>
+            <div class="t-line"><span class="t-cmd">          restore-keys: ${{ runner.os }}-pip-</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-cmd">      - name: Install dependencies</span></div>
+            <div class="t-line"><span class="t-cmd">        run: pip install -r requirements.txt</span></div>
+            <div class="t-line"><span class="t-comment">        # Uses cached packages if key matches → seconds instead of minutes</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head"><span class="step-num sn-purple">PATTERN 2</span><span class="step-title">Matrix Builds — Test on Multiple Versions at Once</span><span class="step-chevron">›</span></div>
+      <div class="step-body">
+        <div class="terminal">
+          <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">matrix strategy</span><button class="terminal-copy">Copy</button></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-cmd">  test:</span></div>
+            <div class="t-line"><span class="t-cmd">    runs-on: ubuntu-latest</span></div>
+            <div class="t-line"><span class="t-cmd">    strategy:</span></div>
+            <div class="t-line"><span class="t-cmd">      matrix:</span></div>
+            <div class="t-line"><span class="t-cmd">        python-version: ["3.10", "3.11", "3.12"]</span></div>
+            <div class="t-line"><span class="t-comment">    # Creates 3 parallel jobs, one per Python version</span></div>
+            <div class="t-line"><span class="t-cmd">    steps:</span></div>
+            <div class="t-line"><span class="t-cmd">      - uses: actions/setup-python@v5</span></div>
+            <div class="t-line"><span class="t-cmd">        with:</span></div>
+            <div class="t-line"><span class="t-cmd">          python-version: ${{ matrix.python-version }}</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head"><span class="step-num sn-purple">PATTERN 3</span><span class="step-title">Manual Approval — Required for Production Deploy</span><span class="step-chevron">›</span></div>
+      <div class="step-body">
+        <p>For production, you may want a human to approve before deployment. GitHub Environments with protection rules add a pause.</p>
+        <div class="info-box"><span class="box-icon">🖱️</span><div>Repo → Settings → Environments → New environment → name it <b>production</b> → tick <b>Required reviewers</b> → add yourself → Save. Now any job targeting <code>environment: production</code> will pause and wait for your approval in the GitHub UI.</div></div>
+        <div class="terminal">
+          <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">production environment with approval</span><button class="terminal-copy">Copy</button></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-cmd">  deploy-prod:</span></div>
+            <div class="t-line"><span class="t-cmd">    name: 🚀 Deploy Production</span></div>
+            <div class="t-line"><span class="t-cmd">    needs: build</span></div>
+            <div class="t-line"><span class="t-cmd">    environment: production</span>  <span class="t-comment">  ← pauses for approval</span></div>
+            <div class="t-line"><span class="t-cmd">    runs-on: ubuntu-latest</span></div>
+            <div class="t-line"><span class="t-cmd">    steps:</span></div>
+            <div class="t-line"><span class="t-cmd">      - name: Deploy to prod K8s</span></div>
+            <div class="t-line"><span class="t-cmd">        run: kubectl apply -f k8s/prod/</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section" id="errors">
+  <div class="section-label">// when pipelines fail</div>
+  <div class="section-title">Common CI/CD Errors — Exact Fix</div>
+
+  <div class="steps stagger-children">
+    <div class="step-card">
+      <div class="step-head"><span class="step-num sn-orange">ERR 01</span><span class="step-title">Error: denied: requested access to the resource is denied</span><span class="step-chevron">›</span></div>
+      <div class="step-body">
+        <div class="terminal"><div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-err">ERROR: denied: requested access to the resource is denied</span></div>
+            <div class="t-line"><span class="t-comment"># Docker Hub push rejected — wrong credentials</span></div>
+            <div class="t-line"><span class="t-comment"># FIX: regenerate Docker Hub access token</span></div>
+            <div class="t-line"><span class="t-comment"># hub.docker.com → Account Settings → Security → New Token</span></div>
+            <div class="t-line"><span class="t-comment"># Update DOCKERHUB_TOKEN secret in GitHub</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-head"><span class="step-num sn-orange">ERR 02</span><span class="step-title">Process exited with code 1 — tests failed</span><span class="step-chevron">›</span></div>
+      <div class="step-body">
+        <div class="terminal"><div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-err">FAILED tests/test_main.py::test_health - AssertionError</span></div>
+            <div class="t-line"><span class="t-err">Process completed with exit code 1.</span></div>
+            <div class="t-line"><span class="t-comment"># This is CI working correctly — bad code blocked!</span></div>
+            <div class="t-line"><span class="t-comment"># FIX: read the test output in the Actions log</span></div>
+            <div class="t-line"><span class="t-comment"># Fix the failing test or the app code</span></div>
+            <div class="t-line"><span class="t-comment"># Push again — pipeline reruns automatically</span></div>
+          </div>
+        </div>
+        <div class="success-box"><span class="box-icon">✓</span><div>A failing pipeline is CI doing its job. The goal is to catch bugs here — not in production. Fix the code, push, pipeline goes green.</div></div>
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-head"><span class="step-num sn-orange">ERR 03</span><span class="step-title">Unable to connect to the server — kubectl fails</span><span class="step-chevron">›</span></div>
+      <div class="step-body">
+        <div class="terminal"><div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-err">Unable to connect to the server: dial tcp: connection refused</span></div>
+            <div class="t-line"><span class="t-comment"># KUBECONFIG secret is wrong or cluster is not running</span></div>
+            <div class="t-line"><span class="t-comment"># FIX: re-encode kubeconfig</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">cat ~/.kube/config | base64 -w 0</span></div>
+            <div class="t-line"><span class="t-comment"># Update KUBECONFIG secret in GitHub with new value</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section" id="interview">
+  <div class="section-label">// crack the interview</div>
+  <div class="section-title">CI/CD Interview Questions</div>
+
+  <div class="qa-list stagger-children">
+    <div class="qa-card">
+      <div class="qa-q"><span class="qa-q-num">Q1</span><span class="qa-q-text">What is the difference between Continuous Integration, Delivery, and Deployment?</span><span class="qa-diff diff-e">Easy</span></div>
+      <div class="qa-a"><b>Continuous Integration (CI):</b> Every code push automatically triggers build + test. Goal: catch bugs early when they're cheap. If tests fail, pipeline stops. Developers get feedback in minutes, not days.<br><br><b>Continuous Delivery (CD):</b> Every passing build is automatically prepared for release to production. The release is automatic up to a staging environment but requires a <b>human to click a button</b> to go to production. Every commit is READY to deploy, but not automatically deployed.<br><br><b>Continuous Deployment:</b> Every passing build is automatically deployed to production with <b>no human approval</b>. Netflix, Amazon use this. Requires excellent test coverage and monitoring.
+        <div class="qa-tip">🎯 Say: "We use Continuous Delivery — automatic to staging, manual approval to production. This gives us deployment confidence without risk. We're moving toward Continuous Deployment as our test coverage improves."</div>
+      </div>
+    </div>
+    <div class="qa-card">
+      <div class="qa-q"><span class="qa-q-num">Q2</span><span class="qa-q-text">How do you handle secrets in CI/CD pipelines?</span><span class="qa-diff diff-m">Medium</span></div>
+      <div class="qa-a">Never hardcode secrets in workflow YAML files or source code. Three approaches in order of security:<br><br><b>1. GitHub Secrets (good):</b> Stored encrypted in GitHub, injected as environment variables at runtime. Masked in logs. Good for most use cases.<br><br><b>2. Cloud-native secrets (better):</b> AWS Secrets Manager, GCP Secret Manager. Secrets stored in cloud, retrieved at runtime. Rotation support. Audit trail.<br><br><b>3. HashiCorp Vault (best):</b> Dedicated secrets management. Dynamic secrets (short-lived credentials), full audit log, fine-grained access policies. Overkill for small teams but standard at large companies.
+        <div class="qa-tip">🎯 Say: "I use GitHub Secrets for Docker Hub credentials and kubeconfig. For production, I'm moving toward GCP Secret Manager to get rotation and audit trails. The principle: secrets never touch source code or logs."</div>
+      </div>
+    </div>
+    <div class="qa-card">
+      <div class="qa-q"><span class="qa-q-num">Q3</span><span class="qa-q-text">What is GitOps and how does it differ from traditional CI/CD?</span><span class="qa-diff diff-h">Hard</span></div>
+      <div class="qa-a"><b>Traditional CI/CD:</b> Pipeline actively pushes changes to infrastructure — kubectl apply, terraform apply run inside the pipeline. Pipeline has credentials to modify production.<br><br><b>GitOps:</b> Git is the single source of truth. An agent running INSIDE the cluster (ArgoCD, Flux) watches a Git repo. When it detects a change, it pulls and applies. The pipeline never has production credentials — it only pushes to git. The cluster pulls changes.<br><br>Benefits: security (no outbound credentials from cluster), auditability (every change is a git commit), drift detection (agent continuously reconciles), disaster recovery (recreate cluster from git repo).
+        <div class="qa-tip">🎯 Say: "GitOps inverts the deployment model — instead of pipeline pushing to cluster, cluster pulls from git. I've implemented ArgoCD watching our k8s-manifests repo. Rollback is a git revert. Drift is auto-corrected."</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="section">
+  <div class="section-title">What's Next?</div>
+  <div class="card-grid stagger-children">
+    <a href="monitoring.html" class="card" style="text-decoration:none;">
+      <div style="font-size:1.5rem;margin-bottom:10px;">📊</div>
+      <div style="font-weight:700;margin-bottom:4px;">Monitoring →</div>
+      <div style="font-size:13px;color:var(--text-secondary);">Know before your users know. Prometheus + Grafana + Alerting.</div>
+      <div style="margin-top:12px;"><span class="badge badge-blue">Next Chapter</span></div>
+    </a>
+    <a href="projects.html" class="card" style="text-decoration:none;">
+      <div style="font-size:1.5rem;margin-bottom:10px;">🚀</div>
+      <div style="font-weight:700;margin-bottom:4px;">Money Projects →</div>
+      <div style="font-size:13px;color:var(--text-secondary);">Build 2 AI projects that earn. Resume Screener + K8s AI Monitor.</div>
+    </a>
+  </div>
+</section>
+
+<footer>My DevOps Portal · ⚙️ CI/CD · <a href="../index.html">Home</a> · <a href="terraform.html">← Terraform</a> · <a href="monitoring.html">Next: Monitoring →</a></footer>
+<script src="../script.js"></script>
+</body>
+</html>
