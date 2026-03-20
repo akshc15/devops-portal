@@ -1,0 +1,1635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DevOps Bible — 30-Day Zero to Hero · akshc15</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Syne:wght@400;500;600;700;800&display=swap');
+:root{
+  --bg:#07070f;--bg2:#0c0c1a;--bg3:#111125;--card:#0e0e1e;
+  --border:#1a1a30;--border2:#252545;
+  --blue:#4f8ef7;--green:#22d3a5;--yellow:#f59e0b;
+  --red:#f87171;--pink:#f472b6;--purple:#a78bfa;--cyan:#67e8f9;
+  --text:#e2e8f0;--muted:#64748b;--dim:#2a2a45;
+  --mono:'JetBrains Mono',monospace;--sans:'Syne',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.7;}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:200;background:rgba(7,7,15,0.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 1.5rem;height:52px;display:flex;align-items:center;gap:1.5rem;overflow-x:auto;}
+.nav-brand{font-family:var(--mono);font-size:12px;color:var(--green);font-weight:700;white-space:nowrap;letter-spacing:.05em;margin-right:.5rem;}
+nav a{font-family:var(--mono);font-size:11px;color:var(--muted);text-decoration:none;white-space:nowrap;transition:color .15s;padding:4px 0;}
+nav a:hover{color:var(--text);}
+
+/* HERO */
+.hero{padding:5rem 2rem 3rem;text-align:center;max-width:960px;margin:0 auto;position:relative;}
+.hero::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:600px;height:300px;background:radial-gradient(ellipse at center,rgba(79,142,247,.08) 0%,transparent 70%);pointer-events:none;}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;color:var(--green);background:rgba(34,211,165,.07);border:1px solid rgba(34,211,165,.18);padding:5px 16px;border-radius:100px;margin-bottom:2rem;letter-spacing:.12em;text-transform:uppercase;}
+.hero h1{font-size:clamp(2.2rem,5.5vw,4rem);font-weight:800;line-height:1.1;margin-bottom:1rem;letter-spacing:-.03em;}
+.hero h1 .hl{color:var(--blue);}
+.hero h1 .hl2{color:var(--green);}
+.hero-sub{color:var(--muted);font-size:1rem;max-width:620px;margin:0 auto 2.5rem;line-height:1.8;}
+.hero-stats{display:flex;flex-wrap:wrap;justify-content:center;gap:2rem;margin-bottom:1rem;}
+.stat{text-align:center;}
+.stat-n{font-family:var(--mono);font-size:2rem;font-weight:700;color:var(--blue);line-height:1;}
+.stat-l{font-size:11px;color:var(--muted);font-family:var(--mono);margin-top:4px;text-transform:uppercase;letter-spacing:.08em;}
+
+/* PROGRESS */
+.prog-wrap{max-width:960px;margin:0 auto 3rem;padding:0 2rem;}
+.prog-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.5rem;}
+.prog-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;}
+.prog-top span{font-family:var(--mono);font-size:12px;color:var(--muted);}
+.prog-top strong{font-family:var(--mono);font-size:1.1rem;color:var(--green);}
+.prog-bar{background:var(--bg3);border-radius:100px;height:6px;overflow:hidden;margin-bottom:1rem;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--blue));border-radius:100px;transition:width .4s ease;width:0%;}
+.dots{display:flex;flex-wrap:wrap;gap:5px;}
+.dot{width:26px;height:26px;border-radius:5px;background:var(--bg3);border:1px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9px;color:var(--dim);transition:all .15s;}
+.dot:hover{border-color:var(--blue);}
+.dot.done{background:rgba(34,211,165,.12);border-color:var(--green);color:var(--green);font-weight:700;}
+.dot.today{border-color:var(--yellow);color:var(--yellow);}
+
+/* SECTIONS */
+.sec{max-width:960px;margin:0 auto;padding:0 2rem 4rem;}
+.sec-eyebrow{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;margin-bottom:.3rem;}
+.sec-title{font-size:1.8rem;font-weight:800;letter-spacing:-.02em;margin-bottom:.4rem;}
+.sec-sub{font-size:14px;color:var(--muted);margin-bottom:2rem;line-height:1.7;}
+
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;}
+.card:hover{border-color:var(--border2);}
+
+/* PIPELINE VISUAL */
+.pipeline{display:flex;align-items:center;flex-wrap:wrap;gap:0;justify-content:center;padding:1.5rem 0;}
+.p-step{text-align:center;padding:.8rem 1.1rem;background:var(--bg3);border:1px solid var(--border);border-radius:10px;min-width:95px;}
+.p-step .pi{font-size:1.5rem;margin-bottom:4px;}
+.p-step .pn{font-family:var(--mono);font-size:10px;color:var(--blue);text-transform:uppercase;letter-spacing:.08em;}
+.p-step .pt{font-size:10px;color:var(--muted);margin-top:2px;}
+.p-arr{color:var(--dim);padding:0 6px;font-size:1.1rem;}
+
+/* TOOL GRID */
+.tool-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:1rem;}
+.tool-card{padding:1.25rem;border-radius:12px;background:var(--card);border:1px solid var(--border);transition:border-color .2s,transform .2s;}
+.tool-card:hover{border-color:var(--blue);transform:translateY(-2px);}
+.t-head{display:flex;align-items:center;gap:10px;margin-bottom:.75rem;}
+.t-icon{font-size:1.4rem;}
+.t-name{font-weight:700;font-size:15px;}
+.t-tag{font-family:var(--mono);font-size:10px;padding:2px 9px;border-radius:100px;margin-left:auto;}
+.tag-b{background:rgba(79,142,247,.1);color:var(--blue);border:1px solid rgba(79,142,247,.2);}
+.tag-g{background:rgba(34,211,165,.08);color:var(--green);border:1px solid rgba(34,211,165,.18);}
+.tag-y{background:rgba(245,158,11,.08);color:var(--yellow);border:1px solid rgba(245,158,11,.18);}
+.tag-p{background:rgba(167,139,250,.08);color:var(--purple);border:1px solid rgba(167,139,250,.18);}
+.t-analogy{font-size:12px;color:var(--muted);background:var(--bg3);padding:8px 12px;border-radius:6px;margin-bottom:8px;font-style:italic;}
+.t-analogy b{color:var(--yellow);font-style:normal;}
+.t-role{font-size:13px;color:var(--text);}
+
+/* CODE BLOCKS */
+pre,code.block{display:block;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:1rem 1.25rem;font-family:var(--mono);font-size:12px;color:var(--green);overflow-x:auto;line-height:1.8;margin:8px 0;white-space:pre;}
+code.inline{font-family:var(--mono);font-size:12px;background:var(--bg3);padding:2px 7px;border-radius:4px;color:var(--cyan);border:1px solid var(--border);}
+.comment{color:var(--dim);}
+.cmd-label{font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.08em;}
+
+/* STEP CARDS */
+.steps{display:flex;flex-direction:column;gap:1rem;}
+.step-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.step-head{padding:1rem 1.25rem;display:flex;align-items:center;gap:12px;cursor:pointer;transition:background .15s;}
+.step-head:hover{background:var(--bg3);}
+.step-num{font-family:var(--mono);font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;flex-shrink:0;}
+.sn-b{background:rgba(79,142,247,.12);color:var(--blue);}
+.sn-g{background:rgba(34,211,165,.1);color:var(--green);}
+.sn-y{background:rgba(245,158,11,.1);color:var(--yellow);}
+.sn-p{background:rgba(167,139,250,.1);color:var(--purple);}
+.step-title{font-weight:600;font-size:15px;flex:1;}
+.step-badge{font-family:var(--mono);font-size:10px;color:var(--muted);}
+.step-body{padding:0 1.25rem 1.25rem;border-top:1px solid var(--border);display:none;}
+.step-body.open{display:block;padding-top:1.25rem;}
+.step-body p{font-size:13px;color:var(--muted);margin-bottom:.75rem;line-height:1.8;}
+.where-box{background:rgba(79,142,247,.05);border:1px solid rgba(79,142,247,.12);border-radius:8px;padding:.9rem 1.1rem;font-size:13px;margin-bottom:10px;line-height:1.8;}
+.where-box b{color:var(--blue);font-family:var(--mono);}
+.warn-box{background:rgba(245,158,11,.05);border:1px solid rgba(245,158,11,.15);border-radius:8px;padding:.75rem 1.1rem;font-size:13px;color:var(--yellow);margin:8px 0;line-height:1.7;}
+.info-box{background:rgba(34,211,165,.04);border:1px solid rgba(34,211,165,.12);border-radius:8px;padding:.75rem 1.1rem;font-size:13px;color:var(--green);margin:8px 0;line-height:1.7;}
+.tip-box{background:rgba(167,139,250,.05);border:1px solid rgba(167,139,250,.15);border-radius:8px;padding:.75rem 1.1rem;font-size:13px;color:var(--purple);margin:8px 0;line-height:1.7;}
+.err-box{background:rgba(248,113,113,.04);border:1px solid rgba(248,113,113,.15);border-radius:8px;padding:.75rem 1.1rem;font-size:13px;color:var(--red);margin:8px 0;line-height:1.7;}
+
+/* WEEK / DAY TABLE */
+.week-block{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:1.5rem;}
+.week-hdr{padding:1.1rem 1.5rem;display:flex;align-items:center;gap:12px;}
+.wk1{background:linear-gradient(135deg,rgba(79,142,247,.07),transparent);}
+.wk2{background:linear-gradient(135deg,rgba(34,211,165,.07),transparent);}
+.wk3{background:linear-gradient(135deg,rgba(245,158,11,.07),transparent);}
+.wk4{background:linear-gradient(135deg,rgba(167,139,250,.07),transparent);}
+.wk5{background:linear-gradient(135deg,rgba(244,114,182,.07),transparent);}
+.w-pill{font-family:var(--mono);font-size:11px;font-weight:700;padding:3px 12px;border-radius:100px;}
+.wp1{background:rgba(79,142,247,.12);color:var(--blue);}
+.wp2{background:rgba(34,211,165,.1);color:var(--green);}
+.wp3{background:rgba(245,158,11,.1);color:var(--yellow);}
+.wp4{background:rgba(167,139,250,.1);color:var(--purple);}
+.wp5{background:rgba(244,114,182,.1);color:var(--pink);}
+.w-title{font-size:1.05rem;font-weight:700;}
+.w-days{font-family:var(--mono);font-size:12px;color:var(--muted);margin-left:auto;}
+.day-row{display:grid;grid-template-columns:55px 1fr 1fr 34px;gap:1rem;align-items:start;padding:.9rem 1.5rem;border-top:1px solid var(--border);transition:background .12s;}
+.day-row:hover{background:rgba(255,255,255,.013);}
+.day-row.done{background:rgba(34,211,165,.025);}
+.d-num{font-family:var(--mono);font-size:10px;color:var(--muted);}
+.d-num span{display:block;font-size:1.15rem;font-weight:700;color:var(--dim);line-height:1.2;}
+.day-row.done .d-num span{color:var(--green);}
+.d-task{font-size:13px;font-weight:600;}
+.d-task small{display:block;font-size:11px;color:var(--muted);font-weight:400;margin-top:2px;font-family:var(--mono);}
+.d-del{font-size:12px;color:var(--muted);font-family:var(--mono);}
+.d-del::before{content:'→ ';color:var(--dim);}
+.chk{width:28px;height:28px;border-radius:6px;border:1.5px solid var(--border);background:transparent;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:all .15s;color:transparent;flex-shrink:0;}
+.chk:hover{border-color:var(--green);}
+.day-row.done .chk{background:rgba(34,211,165,.12);border-color:var(--green);color:var(--green);}
+.week-concept{padding:1rem 1.5rem;background:rgba(79,142,247,.04);border-top:1px solid var(--border);}
+.week-concept b{font-family:var(--mono);font-size:11px;color:var(--blue);}
+.week-concept p{font-size:13px;color:var(--muted);margin-top:4px;}
+
+/* QA */
+.qa-grid{display:flex;flex-direction:column;gap:.75rem;}
+.qa-card{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.qa-q{padding:.9rem 1.25rem;display:flex;align-items:start;gap:10px;cursor:pointer;transition:background .15s;}
+.qa-q:hover{background:var(--bg3);}
+.qa-qn{font-family:var(--mono);font-size:10px;color:var(--blue);background:rgba(79,142,247,.1);padding:2px 8px;border-radius:4px;flex-shrink:0;margin-top:2px;}
+.qa-qt{font-size:14px;font-weight:600;flex:1;}
+.qa-diff{font-family:var(--mono);font-size:10px;padding:2px 8px;border-radius:100px;flex-shrink:0;margin-top:2px;}
+.diff-e{background:rgba(34,211,165,.1);color:var(--green);}
+.diff-m{background:rgba(245,158,11,.1);color:var(--yellow);}
+.diff-h{background:rgba(248,113,113,.1);color:var(--red);}
+.qa-a{padding:1rem 1.25rem;border-top:1px solid var(--border);display:none;font-size:13px;color:var(--muted);line-height:1.8;}
+.qa-a.open{display:block;}
+.qa-a b{color:var(--green);}
+.qa-tip{padding:.65rem 1.25rem;background:rgba(167,139,250,.05);border-top:1px solid var(--border);font-family:var(--mono);font-size:11px;color:var(--purple);display:none;}
+.qa-tip.open{display:block;}
+
+/* MISTAKES */
+.mistake-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:1rem;}
+.m-card{background:var(--card);border:1px solid rgba(248,113,113,.18);border-radius:12px;padding:1.25rem;}
+.m-head{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-weight:700;font-size:14px;}
+.m-n{font-family:var(--mono);font-size:10px;background:rgba(248,113,113,.1);color:var(--red);padding:2px 8px;border-radius:4px;}
+.m-card p{font-size:13px;color:var(--muted);margin-bottom:8px;line-height:1.7;}
+.m-fix{background:rgba(34,211,165,.05);border:1px solid rgba(34,211,165,.12);border-radius:6px;padding:8px 12px;font-size:12px;color:var(--green);font-family:var(--mono);}
+.m-fix::before{content:'✓ FIX: ';opacity:.6;}
+
+/* RESOURCES */
+.res-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;}
+.res-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;text-decoration:none;color:inherit;display:block;transition:border-color .2s,transform .2s;}
+.res-card:hover{border-color:var(--blue);transform:translateY(-2px);}
+.r-icon{font-size:1.4rem;margin-bottom:8px;}
+.r-title{font-weight:700;font-size:14px;margin-bottom:4px;}
+.r-desc{font-size:12px;color:var(--muted);line-height:1.6;}
+.r-link{font-family:var(--mono);font-size:11px;color:var(--blue);margin-top:10px;}
+
+/* TERMINAL DEMO */
+.terminal{background:#0a0a0f;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:10px 0;}
+.t-bar{background:#111125;padding:8px 14px;display:flex;align-items:center;gap:6px;border-bottom:1px solid var(--border);}
+.t-dot{width:10px;height:10px;border-radius:50%;}
+.t-d1{background:#f87171;}.t-d2{background:#f59e0b;}.t-d3{background:#22d3a5;}
+.t-name{font-family:var(--mono);font-size:11px;color:var(--muted);margin-left:6px;}
+.t-body{padding:1rem 1.25rem;font-family:var(--mono);font-size:12px;line-height:1.9;}
+.t-prompt{color:var(--green);}
+.t-cmd{color:var(--text);}
+.t-out{color:var(--muted);}
+.t-ok{color:var(--green);}
+.t-err{color:var(--red);}
+
+/* GITHUB STEPS */
+.gh-steps{display:flex;flex-direction:column;gap:1rem;}
+.gh-step{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;display:grid;grid-template-columns:44px 1fr;gap:1rem;align-items:start;}
+.gh-num{width:36px;height:36px;border-radius:8px;background:rgba(79,142,247,.1);border:1px solid rgba(79,142,247,.2);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-weight:700;font-size:14px;color:var(--blue);flex-shrink:0;}
+.gh-step h4{font-size:14px;font-weight:700;margin-bottom:6px;}
+.gh-step p{font-size:13px;color:var(--muted);line-height:1.7;}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse;font-size:13px;margin:12px 0;}
+th{text-align:left;padding:8px 12px;font-family:var(--mono);font-size:11px;color:var(--muted);border-bottom:1px solid var(--border);text-transform:uppercase;letter-spacing:.08em;}
+td{padding:9px 12px;border-bottom:1px solid var(--border);color:var(--text);}
+td:first-child{font-family:var(--mono);color:var(--cyan);font-size:12px;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(255,255,255,.01);}
+
+/* BTN */
+.btn{display:inline-block;padding:10px 24px;border-radius:8px;font-family:var(--mono);font-size:12px;font-weight:700;text-decoration:none;transition:all .15s;cursor:pointer;border:none;}
+.btn-b{background:var(--blue);color:#fff;}
+.btn-b:hover{background:#3a7eef;}
+.btn-o{background:transparent;border:1.5px solid var(--border2);color:var(--text);}
+.btn-o:hover{border-color:var(--blue);color:var(--blue);}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:2rem;text-align:center;font-family:var(--mono);font-size:11px;color:var(--muted);}
+footer a{color:var(--blue);text-decoration:none;}
+
+/* SECTION DIVIDER */
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:0 2rem 3rem;}
+
+@media(max-width:640px){
+  .day-row{grid-template-columns:44px 1fr 34px;}
+  .d-del{display:none;}
+  nav a{display:none;}
+  nav a:nth-child(-n+4){display:block;}
+  .hero h1{font-size:2rem;}
+  .sec{padding:0 1rem 3rem;}
+  .prog-wrap{padding:0 1rem;}
+  .mistake-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+<!-- SITE NAV -->
+<div style="background:#05050d;border-bottom:1px solid rgba(255,255,255,0.07);padding:0 1.5rem;height:46px;display:flex;align-items:center;justify-content:space-between;font-family:'DM Mono',monospace;position:sticky;top:0;z-index:999;backdrop-filter:blur(10px);">
+  <div style="display:flex;align-items:center;gap:1.5rem;">
+    <a href="index.html" style="font-size:13px;font-weight:700;color:#f5f2eb;text-decoration:none;letter-spacing:.08em;">← HOME</a>
+    <span style="color:rgba(255,255,255,0.15);font-size:11px;">|</span>
+    <span style="font-size:11px;color:rgba(255,255,255,0.3);letter-spacing:.1em;text-transform:uppercase;">DevOpsZero</span>
+  </div>
+  <div style="display:flex;align-items:center;gap:1.25rem;">
+    <a href="devops-bible.html" style="font-size:11px;color:rgba(255,255,255,0.4);text-decoration:none;letter-spacing:.08em;text-transform:uppercase;transition:color .15s;" onmouseover="this.style.color='#e84a1e'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">📖 Bible</a>
+    <a href="30day-challenge.html" style="font-size:11px;color:rgba(255,255,255,0.4);text-decoration:none;letter-spacing:.08em;text-transform:uppercase;" onmouseover="this.style.color='#4f8ef7'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">📅 Challenge</a>
+    <a href="resume-guide.html" style="font-size:11px;color:rgba(255,255,255,0.4);text-decoration:none;letter-spacing:.08em;text-transform:uppercase;" onmouseover="this.style.color='#4f8ef7'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">📄 Resume</a>
+    <a href="https://akshc15.github.io" style="font-size:11px;color:rgba(255,255,255,0.4);text-decoration:none;letter-spacing:.08em;text-transform:uppercase;" onmouseover="this.style.color='#22d3a5'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">akshc15 Portal</a>
+  </div>
+</div>
+
+
+<!-- NAV -->
+<nav>
+  <span class="nav-brand">📖 DevOps Bible</span>
+  <a href="#bigpicture">Big Picture</a>
+  <a href="#accounts">Accounts</a>
+  <a href="#install">Install</a>
+  <a href="#roadmap">30 Days</a>
+  <a href="#linux">Linux</a>
+  <a href="#docker">Docker</a>
+  <a href="#kubernetes">Kubernetes</a>
+  <a href="#terraform">Terraform</a>
+  <a href="#cicd">CI/CD</a>
+  <a href="#monitoring">Monitor</a>
+  <a href="#errors">Errors</a>
+  <a href="#interview">Interview</a>
+  <a href="https://akshc15.github.io" style="margin-left:auto;">← Portal</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">📖 The DevOps Bible · 2026 · Zero to Interview-Ready</div>
+  <h1>From <span class="hl">Zero</span> to<br><span class="hl2">DevOps Engineer</span><br>in 30 Days</h1>
+  <p class="hero-sub">One page. Everything. Account creation → Linux → Docker → Kubernetes → Terraform → CI/CD → Monitoring → Live on Cloud → Interview ready. All free. No fluff.</p>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-n">30</div><div class="stat-l">days</div></div>
+    <div class="stat"><div class="stat-n">12</div><div class="stat-l">tools</div></div>
+    <div class="stat"><div class="stat-n">1</div><div class="stat-l">project</div></div>
+    <div class="stat"><div class="stat-n">∞</div><div class="stat-l">jobs unlocked</div></div>
+    <div class="stat"><div class="stat-n">₹0</div><div class="stat-l">cost</div></div>
+  </div>
+</section>
+
+<!-- PROGRESS -->
+<div class="prog-wrap">
+  <div class="prog-card">
+    <div class="prog-top"><span>Your progress — saves automatically in browser</span><strong id="ptxt">0 / 30 days complete</strong></div>
+    <div class="prog-bar"><div class="prog-fill" id="pfill"></div></div>
+    <div class="dots" id="dots"></div>
+    <p style="font-size:11px;color:var(--muted);margin-top:10px;font-family:var(--mono);">Click a circle to mark complete. Come back tomorrow — it remembers.</p>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════════════════
+     BIG PICTURE
+════════════════════════════════════════════════ -->
+<section class="sec" id="bigpicture">
+  <div class="sec-eyebrow">// understand this first — before any command</div>
+  <div class="sec-title">The Big Picture — Explained Like You're 5</div>
+  <div class="sec-sub">If you understand this story, everything else is just filling in details.</div>
+
+  <div class="card" style="padding:2rem;margin-bottom:1.5rem;">
+    <div style="background:var(--bg3);border-left:3px solid var(--blue);padding:1rem 1.5rem;border-radius:0 8px 8px 0;margin-bottom:1.5rem;font-size:14px;color:var(--muted);line-height:1.9;">
+      <b style="color:var(--text);">👶 The Story:</b><br><br>
+      You write an app on your laptop. Works great! But your friend's laptop? Crashes. Server? Breaks. <b style="color:var(--text);">Docker</b> fixes this — it packs your app + everything it needs into a sealed lunchbox that runs identically everywhere.<br><br>
+      Now your app is popular — 10,000 users hit it at once. One lunchbox isn't enough. You need 50 running in parallel, someone to restart broken ones, someone to route traffic. That's <b style="color:var(--text);">Kubernetes</b> — the factory manager that runs thousands of lunchboxes automatically.<br><br>
+      You need a server to run Kubernetes on. Instead of clicking around AWS for 2 hours, you write a code file describing what you want. <b style="color:var(--text);">Terraform</b> reads it and creates the server in 3 minutes. Repeatable. Version controlled.<br><br>
+      Every time you change code and push to GitHub, a <b style="color:var(--text);">robot (GitHub Actions/Jenkins)</b> automatically tests it, builds it, containerises it, and deploys it. No manual steps. That's <b style="color:var(--text);">CI/CD</b>.<br><br>
+      Is everything healthy? Is there a memory leak? Did 500 errors spike? <b style="color:var(--text);">Prometheus + Grafana</b> watch everything and show you live dashboards.<br><br>
+      <b style="color:var(--green);">That's DevOps. You just understood it completely. Everything else is details.</b>
+    </div>
+
+    <div class="pipeline">
+      <div class="p-step"><div class="pi">💻</div><div class="pn">YOU CODE</div><div class="pt">VS Code</div></div>
+      <div class="p-arr">→</div>
+      <div class="p-step"><div class="pi">🐙</div><div class="pn">GIT PUSH</div><div class="pt">GitHub</div></div>
+      <div class="p-arr">→</div>
+      <div class="p-step"><div class="pi">⚙️</div><div class="pn">CI RUNS</div><div class="pt">Test + Build</div></div>
+      <div class="p-arr">→</div>
+      <div class="p-step"><div class="pi">🐳</div><div class="pn">DOCKER</div><div class="pt">Image built</div></div>
+      <div class="p-arr">→</div>
+      <div class="p-step"><div class="pi">📦</div><div class="pn">REGISTRY</div><div class="pt">Stored</div></div>
+      <div class="p-arr">→</div>
+      <div class="p-step"><div class="pi">☸️</div><div class="pn">K8S DEPLOY</div><div class="pt">Kubernetes</div></div>
+      <div class="p-arr">→</div>
+      <div class="p-step"><div class="pi">🌍</div><div class="pn">LIVE</div><div class="pt">World sees it</div></div>
+    </div>
+
+    <div class="tip-box">⏱️ <b>Time from git push to live:</b> About 90 seconds. Fully automated. This is what Senior DevOps engineers build. You will build this exact system in 30 days.</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════════════════
+     ACCOUNTS — ALL FREE
+════════════════════════════════════════════════ -->
+<section class="sec" id="accounts">
+  <div class="sec-eyebrow">// before day 1 — create these once, use forever</div>
+  <div class="sec-title">Create All Accounts — All Free</div>
+  <div class="sec-sub">5 accounts. Takes 20 minutes total. All free forever. No credit card needed for most.</div>
+
+  <div class="steps">
+    <div class="step-card">
+      <div class="step-head" onclick="tog(this)">
+        <span class="step-num sn-g">ACCOUNT 1</span>
+        <span class="step-title">🐙 GitHub — Your Code Home</span>
+        <span class="step-badge">Free forever · No card</span>
+      </div>
+      <div class="step-body">
+        <p>GitHub stores your code, runs your CI/CD pipeline, and hosts this very website. You need this first — everything else connects to it.</p>
+        <div class="where-box"><b>Where to go:</b> Open Chrome → type <b>github.com</b> → click <b>Sign up</b> (top right green button) → enter your email → create a password → choose a username (e.g. akshc15) → verify your email → choose the Free plan → done.</div>
+        <div class="info-box">✓ Verify: go to github.com/yourusername — if you see your profile page, you're in.</div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head" onclick="tog(this)">
+        <span class="step-num sn-b">ACCOUNT 2</span>
+        <span class="step-title">☁️ Google Cloud (GCP) — Your Free Cloud Computer</span>
+        <span class="step-badge">$300 free credit · ~3 months</span>
+      </div>
+      <div class="step-body">
+        <p>GCP gives you a $300 credit that lasts ~3 months. You'll use this to run your cloud VM (your Linux computer in the cloud) and a Kubernetes cluster. Free e2-micro VM is also free forever.</p>
+        <div class="where-box"><b>Where to go:</b> Open Chrome → go to <b>cloud.google.com/free</b> → click big blue <b>"Get started for free"</b> button → sign in with your Google account → choose Country: India → Accept terms → click <b>"Continue"</b> → add your debit/credit card (GCP requires this to verify, you will NOT be charged automatically) → click <b>"Start my free trial"</b>. You'll see "$300 credit" confirmed on screen.</div>
+        <div class="warn-box">⚠️ GCP will NOT charge you until you explicitly upgrade. Your $300 credit is used first. Always destroy resources when done learning to save credits.</div>
+        <div class="info-box">✓ Verify: you see console.cloud.google.com with "Free trial" badge in top bar.</div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head" onclick="tog(this)">
+        <span class="step-num sn-y">ACCOUNT 3</span>
+        <span class="step-title">🐳 Docker Hub — Store Your Container Images</span>
+        <span class="step-badge">Free forever · No card</span>
+      </div>
+      <div class="step-body">
+        <p>Docker Hub is like GitHub but for Docker images. You push your built images here; Kubernetes pulls from here to deploy.</p>
+        <div class="where-box"><b>Where to go:</b> Open Chrome → go to <b>hub.docker.com</b> → click <b>"Sign Up"</b> → enter email, username, password → verify email → choose <b>Personal (Free)</b> plan → done.</div>
+        <div class="info-box">✓ Verify: go to hub.docker.com/u/yourusername — you see your empty profile.</div>
+        <div class="tip-box">📌 Note your Docker Hub username — you'll use it in every Dockerfile and CI/CD config.</div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head" onclick="tog(this)">
+        <span class="step-num sn-p">ACCOUNT 4</span>
+        <span class="step-title">🤖 GitHub Actions — Your Free CI/CD Robot</span>
+        <span class="step-badge">2000 free minutes/month</span>
+      </div>
+      <div class="step-body">
+        <p>GitHub Actions is built into GitHub — no separate signup. But you need to set up Secrets (safe storage for passwords) in your repo.</p>
+        <div class="where-box"><b>How to set up Secrets (do after creating your first repo):</b><br>Go to your GitHub repo → click <b>Settings</b> tab (top menu) → left sidebar → <b>Secrets and variables</b> → <b>Actions</b> → click <b>"New repository secret"</b> → Name: <b>DOCKERHUB_USERNAME</b> → Value: your Docker Hub username → <b>Add secret</b>. Repeat for <b>DOCKERHUB_TOKEN</b> (get from hub.docker.com → click your avatar → Account Settings → Security → New Access Token → copy it).</div>
+        <div class="info-box">✓ Free tier: 2,000 minutes/month — enough for 200+ deployments daily.</div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head" onclick="tog(this)">
+        <span class="step-num sn-g">ACCOUNT 5</span>
+        <span class="step-title">📊 Grafana Cloud — Free Monitoring Dashboard</span>
+        <span class="step-badge">Free forever tier</span>
+      </div>
+      <div class="step-body">
+        <p>Grafana Cloud's free tier gives you hosted Prometheus + Grafana dashboards. No server needed to start monitoring.</p>
+        <div class="where-box"><b>Where to go:</b> Open Chrome → go to <b>grafana.com/auth/sign-up</b> → sign up with GitHub (easiest) → choose Free plan → select region closest to you (e.g. ap-southeast-1) → done. You'll get a free Grafana Cloud stack with Prometheus, Loki, and dashboards.</div>
+        <div class="info-box">✓ Free limits: 10,000 metrics series, 50GB logs, 50GB traces — more than enough for learning.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════════════════
+     INSTALL EVERYTHING
+════════════════════════════════════════════════ -->
+<section class="sec" id="install">
+  <div class="sec-eyebrow">// your cloud vm is your main computer — run everything there</div>
+  <div class="sec-title">Create Cloud VM + Install Every Tool</div>
+  <div class="sec-sub">One GCP VM. One setup script. Every tool installed. All free with your $300 credit.</div>
+
+  <div class="steps">
+    <div class="step-card">
+      <div class="step-head" onclick="tog(this)">
+        <span class="step-num sn-b">STEP 1</span>
+        <span class="step-title">☁️ Create Your GCP Cloud VM — Click by Click</span>
+        <span class="step-badge">~5 minutes</span>
+      </div>
+      <div class="step-body">
+        <div class="where-box">
+          <b>1.</b> Go to <b>console.cloud.google.com</b><br>
+          <b>2.</b> Click the <b>☰ hamburger menu</b> (top left) → scroll down → click <b>"Compute Engine"</b> → click <b>"VM Instances"</b><br>
+          <b>3.</b> Click <b>"CREATE INSTANCE"</b> (blue button top center)<br>
+          <b>4.</b> Fill in: Name: <b>devops-vm</b> · Region: <b>us-central1</b> · Zone: <b>us-central1-a</b><br>
+          <b>5.</b> Machine type: click <b>"CHANGE"</b> → Series: <b>E2</b> → Machine type: <b>e2-standard-2</b> (2 vCPU, 8GB RAM)<br>
+          <b>6.</b> Boot disk: click <b>"CHANGE"</b> → OS: <b>Ubuntu</b> → Version: <b>Ubuntu 22.04 LTS</b> → Size: <b>50 GB</b> → click <b>SELECT</b><br>
+          <b>7.</b> Firewall: tick ✅ <b>Allow HTTP traffic</b> and ✅ <b>Allow HTTPS traffic</b><br>
+          <b>8.</b> Click <b>CREATE</b> → wait 60 seconds → you'll see your VM with a green checkmark ✓
+        </div>
+        <div class="tip-box">💡 Cost: e2-standard-2 costs ~$0.067/hour = ~$1.60/day. Your $300 credit covers ~187 days. Stop the VM when not learning!</div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head" onclick="tog(this)">
+        <span class="step-num sn-b">STEP 2</span>
+        <span class="step-title">💻 Connect VS Code to Your Cloud VM</span>
+        <span class="step-badge">Write code locally, run in cloud</span>
+      </div>
+      <div class="step-body">
+        <p>VS Code Remote SSH lets you write code on your laptop but run it on the cloud VM. Best of both worlds.</p>
+        <div class="where-box">
+          <b>On your laptop:</b><br>
+          1. Download VS Code: go to <b>code.visualstudio.com</b> → Download for your OS → install it<br>
+          2. Open VS Code → click Extensions icon (left sidebar, looks like 4 squares) → search <b>"Remote - SSH"</b> → click Install<br>
+          3. In GCP Console → your VM → click the <b>SSH</b> button (a terminal window opens in browser)<br>
+          4. In that browser terminal, run: <b>cat ~/.ssh/authorized_keys</b> — note the key or generate one below
+        </div>
+        <div class="where-box">
+          <b>Easier way — use GCP browser SSH for all commands in this guide.</b> Just click the SSH button next to your VM in GCP Console. A full Linux terminal opens in your browser. No setup needed!
+        </div>
+        <div class="info-box">✓ Click SSH in GCP Console → you see <code class="inline">yourusername@devops-vm:~$</code> — you're now inside your cloud Linux computer.</div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head" onclick="tog(this)">
+        <span class="step-num sn-g">STEP 3</span>
+        <span class="step-title">🛠️ Master Setup Script — Install Everything in One Go</span>
+        <span class="step-badge">Run once · ~10 minutes</span>
+      </div>
+      <div class="step-body">
+        <p>Copy this entire script. Paste it into your GCP SSH terminal. Press Enter. It installs all 12 tools automatically.</p>
+        <div class="cmd-label">GCP SSH Terminal — paste this entire block:</div>
+        <pre>#!/bin/bash
+set -e
+
+echo "══════════════════════════════════════"
+echo " DevOps Bible — Master Setup Script"
+echo "══════════════════════════════════════"
+
+<span class="comment"># [1/12] System update</span>
+echo "[1/12] Updating system..."
+sudo apt update -y && sudo apt upgrade -y
+sudo apt install -y curl wget git vim unzip jq htop
+
+<span class="comment"># [2/12] Docker</span>
+echo "[2/12] Installing Docker..."
+curl -fsSL https://get.docker.com | sudo sh
+sudo usermod -aG docker $USER
+sudo systemctl enable docker
+
+<span class="comment"># [3/12] Docker Compose</span>
+echo "[3/12] Installing Docker Compose..."
+sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+
+<span class="comment"># [4/12] kubectl</span>
+echo "[4/12] Installing kubectl..."
+curl -LO "https://dl.k8s.io/release/$(curl -sL https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+sudo install -m 0755 kubectl /usr/local/bin/kubectl
+rm kubectl
+
+<span class="comment"># [5/12] Minikube (local K8s)</span>
+echo "[5/12] Installing Minikube..."
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+sudo install minikube-linux-amd64 /usr/local/bin/minikube
+rm minikube-linux-amd64
+
+<span class="comment"># [6/12] Terraform</span>
+echo "[6/12] Installing Terraform..."
+sudo apt install -y gnupg software-properties-common
+wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+sudo apt update && sudo apt install terraform -y
+
+<span class="comment"># [7/12] Helm</span>
+echo "[7/12] Installing Helm..."
+curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+<span class="comment"># [8/12] Python + FastAPI (your app)</span>
+echo "[8/12] Installing Python..."
+sudo apt install -y python3 python3-pip python3-venv
+pip3 install fastapi uvicorn pytest httpx --break-system-packages
+
+<span class="comment"># [9/12] Node.js 20</span>
+echo "[9/12] Installing Node.js..."
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+sudo apt install -y nodejs
+
+<span class="comment"># [10/12] Google Cloud CLI</span>
+echo "[10/12] Installing gcloud CLI..."
+sudo snap install google-cloud-cli --classic
+
+<span class="comment"># [11/12] k9s (beautiful K8s dashboard in terminal)</span>
+echo "[11/12] Installing k9s..."
+curl -sS https://webinstall.dev/k9s | bash
+
+<span class="comment"># [12/12] Prometheus + Grafana (via Docker)</span>
+echo "[12/12] Done! Start Prometheus/Grafana on Day 25."
+
+echo ""
+echo "✓ All tools installed! Run: newgrp docker"
+echo "✓ Log out and back in for all changes to take effect"
+</pre>
+        <div class="info-box">✓ After script finishes, run: <code class="inline">newgrp docker</code> then verify:</div>
+        <div class="terminal">
+          <div class="t-bar"><div class="t-dot t-d1"></div><div class="t-dot t-d2"></div><div class="t-dot t-d3"></div><span class="t-name">devops-vm — verify all tools</span></div>
+          <div class="t-body">
+            <div><span class="t-prompt">$ </span><span class="t-cmd">docker --version</span></div>
+            <div class="t-ok">Docker version 25.0.4, build f2a4580</div>
+            <div><span class="t-prompt">$ </span><span class="t-cmd">kubectl version --client</span></div>
+            <div class="t-ok">Client Version: v1.29.3</div>
+            <div><span class="t-prompt">$ </span><span class="t-cmd">terraform --version</span></div>
+            <div class="t-ok">Terraform v1.7.5</div>
+            <div><span class="t-prompt">$ </span><span class="t-cmd">helm version --short</span></div>
+            <div class="t-ok">v3.14.3</div>
+            <div><span class="t-prompt">$ </span><span class="t-cmd">git --version</span></div>
+            <div class="t-ok">git version 2.43.0</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════════════════
+     TOOL REFERENCE
+════════════════════════════════════════════════ -->
+<section class="sec" id="tools">
+  <div class="sec-eyebrow">// your arsenal — understand before using</div>
+  <div class="sec-title">Every Tool — Explained + Role in Project</div>
+  <div class="sec-sub">5-year-old analogy + real role + when you use it in the 30 days.</div>
+  <div class="tool-grid">
+    <div class="tool-card">
+      <div class="t-head"><span class="t-icon">🐧</span><span class="t-name">Linux + Shell</span><span class="t-tag tag-g">Week 1</span></div>
+      <div class="t-analogy">The <b>operating system</b> your cloud VM runs. Like Windows but more powerful and free. Shell = the text window where you type commands.</div>
+      <div class="t-role">Every tool you use lives on Linux. Shell scripts automate repetitive tasks. Days 1-3.</div>
+    </div>
+    <div class="tool-card">
+      <div class="t-head"><span class="t-icon">🐙</span><span class="t-name">Git + GitHub</span><span class="t-tag tag-g">Week 1</span></div>
+      <div class="t-analogy">Git is like <b>Google Drive with full history</b> for code. GitHub is the website that hosts it. Every code change is tracked, reversible, shareable.</div>
+      <div class="t-role">Stores all project code. Triggers CI/CD pipeline on push. Days 4-5.</div>
+    </div>
+    <div class="tool-card">
+      <div class="t-head"><span class="t-icon">🐳</span><span class="t-name">Docker</span><span class="t-tag tag-b">Week 2</span></div>
+      <div class="t-analogy">A <b>sealed lunchbox</b> for your app — contains the app, its libraries, its settings. Runs identically anywhere. No "works on my machine" ever again.</div>
+      <div class="t-role">Packages TaskAPI into a portable image. Days 6-10.</div>
+    </div>
+    <div class="tool-card">
+      <div class="t-head"><span class="t-icon">🔧</span><span class="t-name">Docker Compose</span><span class="t-tag tag-b">Week 2</span></div>
+      <div class="t-analogy">A <b>recipe card</b> that says "start app + database + redis together with one command". Manages multiple containers locally.</div>
+      <div class="t-role">Runs TaskAPI + Postgres together in dev. Day 10.</div>
+    </div>
+    <div class="tool-card">
+      <div class="t-head"><span class="t-icon">☸️</span><span class="t-name">Kubernetes (K8s)</span><span class="t-tag tag-g">Week 3</span></div>
+      <div class="t-analogy">The <b>factory manager</b>. Runs hundreds of containers across many servers. Restarts broken ones. Scales automatically. Routes traffic. Never sleeps.</div>
+      <div class="t-role">Runs TaskAPI in production. Handles scaling, self-healing, updates. Days 14-19.</div>
+    </div>
+    <div class="tool-card">
+      <div class="t-head"><span class="t-icon">🏗️</span><span class="t-name">Terraform</span><span class="t-tag tag-y">Week 3</span></div>
+      <div class="t-analogy">Instead of clicking AWS for 2 hours, you write a <b>code file describing what you want</b>. Terraform creates it in 3 minutes. Want to delete it? One command.</div>
+      <div class="t-role">Creates GKE cluster, networking, VMs with code. Days 16-18.</div>
+    </div>
+    <div class="tool-card">
+      <div class="t-head"><span class="t-icon">⚙️</span><span class="t-name">GitHub Actions (CI/CD)</span><span class="t-tag tag-y">Week 4</span></div>
+      <div class="t-analogy">A <b>robot employee</b>. Every git push triggers: test → build → push to registry → deploy to K8s. Fully automatic. Zero human steps.</div>
+      <div class="t-role">Automates entire delivery pipeline. Days 20-24.</div>
+    </div>
+    <div class="tool-card">
+      <div class="t-head"><span class="t-icon">⛵</span><span class="t-name">Helm</span><span class="t-tag tag-g">Week 4</span></div>
+      <div class="t-analogy">Like <b>IKEA flat-pack</b> for Kubernetes — instead of writing 6 YAML files, write one values.yaml and Helm generates everything.</div>
+      <div class="t-role">Packages all K8s manifests into one reusable chart. Day 24.</div>
+    </div>
+    <div class="tool-card">
+      <div class="t-head"><span class="t-icon">📈</span><span class="t-name">Prometheus</span><span class="t-tag tag-p">Week 4</span></div>
+      <div class="t-analogy">A <b>doctor taking vitals every 15 seconds</b>. Scrapes CPU, memory, request count, error rate from your app and stores it as a time-series database.</div>
+      <div class="t-role">Monitors TaskAPI health metrics. Days 25-26.</div>
+    </div>
+    <div class="tool-card">
+      <div class="t-head"><span class="t-icon">📊</span><span class="t-name">Grafana</span><span class="t-tag tag-p">Week 4</span></div>
+      <div class="t-analogy">The <b>screen showing the heart monitor</b>. Takes Prometheus data and draws beautiful live dashboards. You see spikes, drops, and anomalies instantly.</div>
+      <div class="t-role">Visualizes Prometheus metrics. Beautiful dashboards. Days 25-26.</div>
+    </div>
+    <div class="tool-card">
+      <div class="t-head"><span class="t-icon">📝</span><span class="t-name">Shell Scripting</span><span class="t-tag tag-g">All weeks</span></div>
+      <div class="t-analogy">Like a <b>to-do list for Linux</b> — a file of commands that run in sequence. Automate backups, deployments, health checks, installs.</div>
+      <div class="t-role">Automates repetitive tasks throughout all 30 days.</div>
+    </div>
+    <div class="tool-card">
+      <div class="t-head"><span class="t-icon">🤖</span><span class="t-name">Minikube</span><span class="t-tag tag-b">Week 3</span></div>
+      <div class="t-analogy">A <b>mini Kubernetes on your cloud VM</b> — free, no cloud cost. Perfect for learning K8s concepts before going to real GKE/EKS.</div>
+      <div class="t-role">Local K8s practice. Days 14-16 before switching to GKE.</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════════════════
+     LINUX CRASH COURSE
+════════════════════════════════════════════════ -->
+<section class="sec" id="linux">
+  <div class="sec-eyebrow">// days 1-3 — the foundation of everything</div>
+  <div class="sec-title">Linux + Shell Scripting — Master Reference</div>
+  <div class="sec-sub">Every command you'll use across 30 days. Bookmark this. Come back when stuck.</div>
+
+  <div class="steps">
+    <div class="step-card">
+      <div class="step-head" onclick="tog(this)">
+        <span class="step-num sn-g">BASICS</span>
+        <span class="step-title">🐧 Essential Linux Commands — The 30 You'll Use Daily</span>
+      </div>
+      <div class="step-body">
+        <table>
+          <tr><th>Command</th><th>What it does</th><th>Example</th></tr>
+          <tr><td>ls -la</td><td>List all files with details</td><td>ls -la /home</td></tr>
+          <tr><td>cd</td><td>Change directory</td><td>cd /home/devops/taskapi</td></tr>
+          <tr><td>mkdir -p</td><td>Create directory (+ parents)</td><td>mkdir -p taskapi/k8s</td></tr>
+          <tr><td>cat</td><td>Print file contents</td><td>cat Dockerfile</td></tr>
+          <tr><td>nano / vim</td><td>Edit a file in terminal</td><td>nano app.py</td></tr>
+          <tr><td>cp / mv / rm</td><td>Copy / move / delete</td><td>cp app.py app.bak</td></tr>
+          <tr><td>grep</td><td>Search inside files</td><td>grep "ERROR" app.log</td></tr>
+          <tr><td>tail -f</td><td>Watch log file live</td><td>tail -f /var/log/syslog</td></tr>
+          <tr><td>ps aux</td><td>Show all running processes</td><td>ps aux | grep python</td></tr>
+          <tr><td>kill -9</td><td>Force stop a process</td><td>kill -9 12345</td></tr>
+          <tr><td>chmod +x</td><td>Make file executable</td><td>chmod +x deploy.sh</td></tr>
+          <tr><td>curl</td><td>Make HTTP requests from terminal</td><td>curl localhost:8000/health</td></tr>
+          <tr><td>sudo</td><td>Run as admin</td><td>sudo apt install nginx</td></tr>
+          <tr><td>export</td><td>Set environment variable</td><td>export DB_URL=postgres://...</td></tr>
+          <tr><td>echo $VAR</td><td>Print variable value</td><td>echo $PATH</td></tr>
+          <tr><td>which</td><td>Find where a command lives</td><td>which python3</td></tr>
+          <tr><td>df -h</td><td>Check disk space</td><td>df -h /</td></tr>
+          <tr><td>free -h</td><td>Check RAM usage</td><td>free -h</td></tr>
+          <tr><td>top / htop</td><td>Live process monitor</td><td>htop</td></tr>
+          <tr><td>ssh</td><td>Connect to remote server</td><td>ssh <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="1f6a6c7a6d5f2c2b312e312d312c">[email&#160;protected]</a></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head" onclick="tog(this)">
+        <span class="step-num sn-g">SCRIPTING</span>
+        <span class="step-title">📝 Shell Script — Your First Automation Script</span>
+      </div>
+      <div class="step-body">
+        <p>Shell scripts are just text files with commands. Save them with .sh extension. Make executable. Run them.</p>
+        <div class="cmd-label">Create: nano deploy.sh</div>
+        <pre>#!/bin/bash
+<span class="comment"># deploy.sh — builds, tests, and runs TaskAPI</span>
+<span class="comment"># #!/bin/bash tells Linux: use bash to run this file</span>
+
+set -e  <span class="comment"># stop script immediately if any command fails</span>
+
+APP_NAME="taskapi"
+IMAGE_TAG="latest"
+
+echo "🚀 Starting deployment of $APP_NAME..."
+
+<span class="comment"># Functions — reusable blocks of commands</span>
+check_docker() {
+  if ! command -v docker &> /dev/null; then
+    echo "❌ Docker not installed. Run setup script first."
+    exit 1
+  fi
+  echo "✓ Docker found: $(docker --version)"
+}
+
+run_tests() {
+  echo "🧪 Running tests..."
+  python3 -m pytest tests/ -v
+  echo "✓ All tests passed"
+}
+
+build_image() {
+  echo "🐳 Building Docker image..."
+  docker build -t $APP_NAME:$IMAGE_TAG .
+  echo "✓ Image built: $APP_NAME:$IMAGE_TAG"
+}
+
+deploy() {
+  echo "🔄 Stopping old container if running..."
+  docker stop $APP_NAME 2>/dev/null || true
+  docker rm $APP_NAME 2>/dev/null || true
+
+  echo "▶️  Starting new container..."
+  docker run -d \
+    --name $APP_NAME \
+    -p 8000:8000 \
+    --restart unless-stopped \
+    $APP_NAME:$IMAGE_TAG
+
+  echo "✓ $APP_NAME is running at http://localhost:8000"
+}
+
+<span class="comment"># Run all functions in order</span>
+check_docker
+run_tests
+build_image
+deploy
+
+echo ""
+echo "✅ Deployment complete!"
+echo "   Test it: curl localhost:8000/health"</pre>
+        <div class="terminal">
+          <div class="t-bar"><div class="t-dot t-d1"></div><div class="t-dot t-d2"></div><div class="t-dot t-d3"></div><span class="t-name">run the script</span></div>
+          <div class="t-body">
+            <div><span class="t-prompt">$ </span><span class="t-cmd">chmod +x deploy.sh</span></div>
+            <div><span class="t-prompt">$ </span><span class="t-cmd">./deploy.sh</span></div>
+            <div class="t-ok">🚀 Starting deployment of taskapi...</div>
+            <div class="t-ok">✓ Docker found: Docker version 25.0.4</div>
+            <div class="t-ok">✓ All tests passed</div>
+            <div class="t-ok">✓ Image built: taskapi:latest</div>
+            <div class="t-ok">✅ Deployment complete!</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════════════════
+     DOCKER DEEP DIVE
+════════════════════════════════════════════════ -->
+<section class="sec" id="docker">
+  <div class="sec-eyebrow">// week 2 — days 6-10</div>
+  <div class="sec-title">Docker — Complete Reference</div>
+  <div class="sec-sub">Every Dockerfile instruction explained. Every command you'll need.</div>
+
+  <div class="steps">
+    <div class="step-card">
+      <div class="step-head" onclick="tog(this)">
+        <span class="step-num sn-b">DOCKERFILE</span>
+        <span class="step-title">🐳 TaskAPI Dockerfile — Every Line Explained</span>
+      </div>
+      <div class="step-body">
+        <pre><span class="comment"># FROM — which base image to start from</span>
+<span class="comment"># "slim" = smaller image, fewer attack surfaces</span>
+FROM python:3.11-slim
+
+<span class="comment"># WORKDIR — set working directory inside container</span>
+<span class="comment"># All following commands run from /app</span>
+WORKDIR /app
+
+<span class="comment"># COPY requirements BEFORE the app code</span>
+<span class="comment"># Docker caches layers — if requirements didn't change,</span>
+<span class="comment"># it skips the pip install step on rebuild (faster!)</span>
+COPY requirements.txt .
+
+<span class="comment"># RUN — execute commands during BUILD time</span>
+<span class="comment"># --no-cache-dir = don't store pip cache in image (smaller)</span>
+RUN pip install --no-cache-dir -r requirements.txt
+
+<span class="comment"># COPY the app code AFTER installing dependencies</span>
+COPY app/ ./app/
+COPY tests/ ./tests/
+
+<span class="comment"># EXPOSE — documents which port the app uses</span>
+<span class="comment"># WARNING: this does NOT publish the port! -p flag does that.</span>
+EXPOSE 8000
+
+<span class="comment"># Security: create and run as non-root user</span>
+<span class="comment"># If container is compromised, attacker gets appuser, not root</span>
+RUN adduser --disabled-password --gecos '' appuser
+USER appuser
+
+<span class="comment"># CMD — the command to run when container starts</span>
+<span class="comment"># Can be overridden with: docker run image DIFFERENT_COMMAND</span>
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]</pre>
+        <div class="warn-box">⚠️ Common mistake: EXPOSE does NOT publish ports. You still need <code class="inline">docker run -p 8000:8000</code> to access it from outside the container.</div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head" onclick="tog(this)">
+        <span class="step-num sn-b">COMMANDS</span>
+        <span class="step-title">🐳 Essential Docker Commands — All 30 Days Reference</span>
+      </div>
+      <div class="step-body">
+        <table>
+          <tr><th>Command</th><th>What it does</th></tr>
+          <tr><td>docker build -t taskapi .</td><td>Build image from Dockerfile in current directory</td></tr>
+          <tr><td>docker run -p 8000:8000 taskapi</td><td>Run container, map host port 8000 → container 8000</td></tr>
+          <tr><td>docker run -d --name taskapi taskapi</td><td>Run in background (-d) with a name</td></tr>
+          <tr><td>docker ps</td><td>Show running containers</td></tr>
+          <tr><td>docker ps -a</td><td>Show ALL containers (including stopped)</td></tr>
+          <tr><td>docker logs taskapi</td><td>Show container logs</td></tr>
+          <tr><td>docker logs -f taskapi</td><td>Follow logs live (like tail -f)</td></tr>
+          <tr><td>docker exec -it taskapi sh</td><td>Open shell INSIDE running container</td></tr>
+          <tr><td>docker stop taskapi</td><td>Stop container gracefully</td></tr>
+          <tr><td>docker rm taskapi</td><td>Delete stopped container</td></tr>
+          <tr><td>docker images</td><td>List all local images</td></tr>
+          <tr><td>docker rmi taskapi</td><td>Delete image</td></tr>
+          <tr><td>docker push user/taskapi:v1</td><td>Push image to Docker Hub</td></tr>
+          <tr><td>docker pull user/taskapi:v1</td><td>Pull image from Docker Hub</td></tr>
+          <tr><td>docker-compose up -d</td><td>Start all services in docker-compose.yml</td></tr>
+          <tr><td>docker-compose down</td><td>Stop and remove all compose containers</td></tr>
+          <tr><td>docker system prune</td><td>Clean up unused containers, images, networks</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head" onclick="tog(this)">
+        <span class="step-num sn-b">COMPOSE</span>
+        <span class="step-title">🔧 docker-compose.yml — Full Annotated Version</span>
+      </div>
+      <div class="step-body">
+        <pre>version: "3.9"
+
+services:
+  app:
+    build: .                   <span class="comment"># Build from local Dockerfile</span>
+    container_name: taskapi
+    ports:
+      - "8000:8000"            <span class="comment"># host:container port</span>
+    environment:
+      - APP_ENV=development
+      - DATABASE_URL=postgresql://taskuser:taskpass@db:5432/taskdb
+    volumes:
+      - ./app:/app/app         <span class="comment"># Mount code for live reload in dev</span>
+    depends_on:
+      db:
+        condition: service_healthy   <span class="comment"># wait for DB to be ready</span>
+    restart: unless-stopped
+
+  db:
+    image: postgres:15-alpine  <span class="comment"># Pull from Docker Hub, don't build</span>
+    container_name: postgres
+    environment:
+      POSTGRES_USER: taskuser
+      POSTGRES_PASSWORD: taskpass
+      POSTGRES_DB: taskdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data  <span class="comment"># persist data!</span>
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U taskuser"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pg_data:   <span class="comment"># named volume — survives container restarts</span></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════════════════
+     KUBERNETES
+════════════════════════════════════════════════ -->
+<section class="sec" id="kubernetes">
+  <div class="sec-eyebrow">// week 3 — days 14-19</div>
+  <div class="sec-title">Kubernetes — Complete Reference</div>
+  <div class="sec-sub">Every YAML file explained. Every kubectl command. Every concept.</div>
+
+  <div class="steps">
+    <div class="step-card">
+      <div class="step-head" onclick="tog(this)">
+        <span class="step-num sn-g">DEPLOYMENT</span>
+        <span class="step-title">☸️ k8s/deployment.yaml — Every Line Explained</span>
+      </div>
+      <div class="step-body">
+        <pre>apiVersion: apps/v1       <span class="comment"># API version — use apps/v1 for Deployments</span>
+kind: Deployment          <span class="comment"># What type of object we're creating</span>
+metadata:
+  name: taskapi           <span class="comment"># Name of this Deployment</span>
+  namespace: default      <span class="comment"># Which namespace (like a folder) it lives in</span>
+  labels:
+    app: taskapi          <span class="comment"># Labels = key:value tags for finding this later</span>
+spec:
+  replicas: 2             <span class="comment"># Run 2 identical Pods at all times</span>
+  selector:
+    matchLabels:
+      app: taskapi        <span class="comment"># This Deployment manages Pods with label app=taskapi</span>
+  template:               <span class="comment"># Template for creating Pods</span>
+    metadata:
+      labels:
+        app: taskapi      <span class="comment"># Pods get this label — must match selector above</span>
+    spec:
+      containers:
+        - name: taskapi
+          image: yourdockerhubuser/taskapi:latest
+          ports:
+            - containerPort: 8000
+          env:
+            - name: APP_ENV
+              value: "production"
+          resources:
+            requests:     <span class="comment"># Minimum guaranteed resources</span>
+              cpu: "100m" <span class="comment"># 100m = 0.1 CPU cores</span>
+              memory: "128Mi"
+            limits:       <span class="comment"># Maximum allowed — pod killed if exceeded</span>
+              cpu: "500m"
+              memory: "256Mi"
+          livenessProbe:  <span class="comment"># K8s restarts pod if this fails</span>
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 10  <span class="comment"># wait 10s after start before checking</span>
+            periodSeconds: 15        <span class="comment"># check every 15 seconds</span>
+          readinessProbe: <span class="comment"># K8s only routes traffic when this passes</span>
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10</pre>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head" onclick="tog(this)">
+        <span class="step-num sn-g">SERVICE</span>
+        <span class="step-title">☸️ k8s/service.yaml + ingress.yaml — Expose Your App</span>
+      </div>
+      <div class="step-body">
+        <pre><span class="comment">## service.yaml — gives pods a stable network address</span>
+apiVersion: v1
+kind: Service
+metadata:
+  name: taskapi-svc
+spec:
+  selector:
+    app: taskapi         <span class="comment"># finds Pods with this label</span>
+  ports:
+    - protocol: TCP
+      port: 80           <span class="comment"># port that Service listens on</span>
+      targetPort: 8000   <span class="comment"># port on the Pod</span>
+  type: ClusterIP        <span class="comment"># internal only (use NodePort for local Minikube)</span>
+
+---
+<span class="comment">## ingress.yaml — routes external HTTP traffic into the cluster</span>
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: taskapi-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: taskapi.yourdomain.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: taskapi-svc
+                port:
+                  number: 80</pre>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head" onclick="tog(this)">
+        <span class="step-num sn-g">KUBECTL</span>
+        <span class="step-title">🗂️ kubectl Commands — Your Daily K8s Toolkit</span>
+      </div>
+      <div class="step-body">
+        <table>
+          <tr><th>Command</th><th>What it does</th></tr>
+          <tr><td>kubectl apply -f k8s/</td><td>Apply all YAML files in k8s/ folder</td></tr>
+          <tr><td>kubectl get pods</td><td>List all pods and their status</td></tr>
+          <tr><td>kubectl get pods -w</td><td>Watch pods update in real time</td></tr>
+          <tr><td>kubectl get svc</td><td>List services</td></tr>
+          <tr><td>kubectl get all</td><td>List everything (pods, svcs, deployments)</td></tr>
+          <tr><td>kubectl describe pod POD_NAME</td><td>Full details + events for a pod</td></tr>
+          <tr><td>kubectl logs POD_NAME</td><td>Show pod logs</td></tr>
+          <tr><td>kubectl logs -f POD_NAME</td><td>Follow logs live</td></tr>
+          <tr><td>kubectl logs POD_NAME --previous</td><td>Logs from CRASHED previous pod</td></tr>
+          <tr><td>kubectl exec -it POD_NAME -- sh</td><td>Shell inside a running pod</td></tr>
+          <tr><td>kubectl scale deployment taskapi --replicas=5</td><td>Scale to 5 pods</td></tr>
+          <tr><td>kubectl rollout status deployment/taskapi</td><td>Watch rolling update progress</td></tr>
+          <tr><td>kubectl rollout undo deployment/taskapi</td><td>Instant rollback to previous version</td></tr>
+          <tr><td>kubectl delete pod POD_NAME</td><td>Delete pod (K8s recreates it immediately)</td></tr>
+          <tr><td>kubectl port-forward svc/taskapi-svc 8080:80</td><td>Access service on localhost:8080</td></tr>
+          <tr><td>kubectl get events --sort-by=.lastTimestamp</td><td>Recent cluster events</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════════════════
+     TERRAFORM
+════════════════════════════════════════════════ -->
+<section class="sec" id="terraform">
+  <div class="sec-eyebrow">// week 3 — days 16-18</div>
+  <div class="sec-title">Terraform — Infrastructure as Code</div>
+  <div class="sec-sub">Create a real GKE Kubernetes cluster on GCP with code. Free with your $300 credit.</div>
+
+  <div class="steps">
+    <div class="step-card">
+      <div class="step-head" onclick="tog(this)">
+        <span class="step-num sn-y">CORE CONCEPTS</span>
+        <span class="step-title">🏗️ Terraform Mental Model — 5 Concepts to Know</span>
+      </div>
+      <div class="step-body">
+        <div class="info-box">📦 <b>Provider</b> = "which cloud?" — tells Terraform to talk to GCP, AWS, or Azure</div>
+        <div class="info-box">🏗️ <b>Resource</b> = "what to create" — a VM, a cluster, a database, a network</div>
+        <div class="info-box">🧠 <b>State file</b> = Terraform's memory — records what it created. Never delete this!</div>
+        <div class="info-box">📋 <b>Variables</b> = like function parameters — make your code reusable</div>
+        <div class="info-box">📤 <b>Outputs</b> = print values after apply — like the cluster IP or connection string</div>
+        <div class="cmd-label">The 4 Terraform commands you'll use 95% of the time:</div>
+        <div class="terminal">
+          <div class="t-bar"><div class="t-dot t-d1"></div><div class="t-dot t-d2"></div><div class="t-dot t-d3"></div><span class="t-name">terraform workflow</span></div>
+          <div class="t-body">
+            <div><span class="t-prompt">$ </span><span class="t-cmd">terraform init</span><span class="t-out">     # download providers, setup backend</span></div>
+            <div><span class="t-prompt">$ </span><span class="t-cmd">terraform plan</span><span class="t-out">    # PREVIEW what will be created/changed/deleted</span></div>
+            <div><span class="t-prompt">$ </span><span class="t-cmd">terraform apply</span><span class="t-out">   # CREATE the infrastructure (asks for confirmation)</span></div>
+            <div><span class="t-prompt">$ </span><span class="t-cmd">terraform destroy</span><span class="t-out"> # DELETE everything (saves money!)</span></div>
+          </div>
+        </div>
+        <div class="warn-box">⚠️ Always run <code class="inline">terraform destroy</code> when done learning! A GKE cluster left running costs ~$0.10/hr from your credit.</div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head" onclick="tog(this)">
+        <span class="step-num sn-y">MAIN.TF</span>
+        <span class="step-title">🏗️ main.tf — Create a GKE Cluster (Free with Credit)</span>
+      </div>
+      <div class="step-body">
+        <div class="cmd-label">Create: mkdir terraform-gke && cd terraform-gke && nano main.tf</div>
+        <pre><span class="comment"># Tell Terraform to use GCP</span>
+provider "google" {
+  project = var.project_id
+  region  = var.region
+}
+
+<span class="comment"># The Kubernetes cluster</span>
+resource "google_container_cluster" "taskapi" {
+  name     = "taskapi-cluster"
+  location = var.region
+
+  <span class="comment"># Remove default node pool — we create our own below</span>
+  remove_default_node_pool = true
+  initial_node_count       = 1
+
+  networking_mode = "VPC_NATIVE"
+  ip_allocation_policy {}
+}
+
+<span class="comment"># Node pool — the actual VMs that run your pods</span>
+resource "google_container_node_pool" "taskapi_nodes" {
+  name       = "taskapi-node-pool"
+  cluster    = google_container_cluster.taskapi.name
+  location   = var.region
+  node_count = 2  <span class="comment"># 2 VMs in the pool</span>
+
+  node_config {
+    machine_type = "e2-standard-2"  <span class="comment"># 2 vCPU, 8GB RAM per node</span>
+    disk_size_gb = 50
+    oauth_scopes = [
+      "https://www.googleapis.com/auth/cloud-platform"
+    ]
+  }
+
+  management {
+    auto_repair  = true   <span class="comment"># auto-replace unhealthy nodes</span>
+    auto_upgrade = true   <span class="comment"># auto-update K8s version</span>
+  }
+}
+
+<span class="comment"># Print the connect command after cluster is created</span>
+output "connect_command" {
+  value = "gcloud container clusters get-credentials taskapi-cluster --region ${var.region} --project ${var.project_id}"
+}</pre>
+        <div class="cmd-label">Create: nano variables.tf</div>
+        <pre>variable "project_id" {
+  default = "your-gcp-project-id"  <span class="comment"># find in GCP console top bar</span>
+}
+variable "region" {
+  default = "us-central1"
+}</pre>
+        <div class="terminal">
+          <div class="t-bar"><div class="t-dot t-d1"></div><div class="t-dot t-d2"></div><div class="t-dot t-d3"></div><span class="t-name">deploy the cluster</span></div>
+          <div class="t-body">
+            <div><span class="t-prompt">$ </span><span class="t-cmd">terraform init</span></div>
+            <div class="t-ok">✓ Terraform initialized!</div>
+            <div><span class="t-prompt">$ </span><span class="t-cmd">terraform plan</span></div>
+            <div class="t-out">Plan: 2 to add, 0 to change, 0 to destroy.</div>
+            <div><span class="t-prompt">$ </span><span class="t-cmd">terraform apply -auto-approve</span></div>
+            <div class="t-out">...creating cluster... (~5 minutes)</div>
+            <div class="t-ok">Apply complete! Resources: 2 added.</div>
+            <div class="t-ok">connect_command = "gcloud container clusters get-credentials..."</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════════════════
+     CI/CD
+════════════════════════════════════════════════ -->
+<section class="sec" id="cicd">
+  <div class="sec-eyebrow">// week 4 — days 20-24</div>
+  <div class="sec-title">CI/CD — GitHub Actions Pipeline</div>
+  <div class="sec-sub">Automate everything. Push code → test → build → deploy. Zero human steps.</div>
+
+  <div class="steps">
+    <div class="step-card">
+      <div class="step-head" onclick="tog(this)">
+        <span class="step-num sn-y">PIPELINE</span>
+        <span class="step-title">⚙️ .github/workflows/ci.yml — Complete Production Pipeline</span>
+      </div>
+      <div class="step-body">
+        <pre>name: TaskAPI CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, staging]      <span class="comment"># trigger on push to these branches</span>
+  pull_request:
+    branches: [main]               <span class="comment"># also runs on PRs to main</span>
+
+env:
+  IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/taskapi
+
+jobs:
+
+  <span class="comment">## ── JOB 1: Run Tests ──────────────────────────</span>
+  test:
+    name: 🧪 Test
+    runs-on: ubuntu-latest         <span class="comment"># free GitHub-hosted runner</span>
+    steps:
+      - uses: actions/checkout@v4  <span class="comment"># pull your code into the runner</span>
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run pytest
+        run: pytest tests/ -v --tb=short
+
+  <span class="comment">## ── JOB 2: Build + Push Docker Image ──────────</span>
+  build:
+    name: 🐳 Build & Push
+    needs: test                    <span class="comment"># only runs if tests PASS</span>
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'  <span class="comment"># only on main branch</span>
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - uses: docker/build-push-action@v5
+        with:
+          push: true
+          tags: |
+            ${{ env.IMAGE }}:latest
+            ${{ env.IMAGE }}:${{ github.sha }}  <span class="comment"># tag with commit hash</span>
+
+  <span class="comment">## ── JOB 3: Deploy to Kubernetes ───────────────</span>
+  deploy:
+    name: 🚀 Deploy
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: azure/setup-kubectl@v3
+
+      - name: Configure kubectl
+        run: echo "${{ secrets.KUBECONFIG }}" | base64 -d > kubeconfig.yaml
+
+      - name: Update image tag
+        run: |
+          sed -i "s|:latest|:${{ github.sha }}|g" k8s/deployment.yaml
+
+      - name: Deploy
+        run: |
+          kubectl --kubeconfig=kubeconfig.yaml apply -f k8s/
+          kubectl --kubeconfig=kubeconfig.yaml rollout status deployment/taskapi --timeout=120s
+
+      - name: Verify deployment
+        run: |
+          kubectl --kubeconfig=kubeconfig.yaml get pods
+          echo "✅ Deployment complete!"</pre>
+        <div class="info-box">✓ Flow: git push main → tests run (2min) → image built + pushed (3min) → deployed to K8s (1min) → your new code is live.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════════════════
+     MONITORING
+════════════════════════════════════════════════ -->
+<section class="sec" id="monitoring">
+  <div class="sec-eyebrow">// week 4 — days 25-27</div>
+  <div class="sec-title">Monitoring — Prometheus + Grafana</div>
+  <div class="sec-sub">Know before users tell you. Watch your app in real time.</div>
+
+  <div class="steps">
+    <div class="step-card">
+      <div class="step-head" onclick="tog(this)">
+        <span class="step-num sn-p">SETUP</span>
+        <span class="step-title">📊 Install Prometheus + Grafana on K8s with Helm</span>
+      </div>
+      <div class="step-body">
+        <p>Helm installs the entire monitoring stack (Prometheus + Grafana + AlertManager) in one command.</p>
+        <div class="terminal">
+          <div class="t-bar"><div class="t-dot t-d1"></div><div class="t-dot t-d2"></div><div class="t-dot t-d3"></div><span class="t-name">install monitoring stack</span></div>
+          <div class="t-body">
+            <div class="t-out"># Add the helm chart repository</div>
+            <div><span class="t-prompt">$ </span><span class="t-cmd">helm repo add prometheus-community https://prometheus-community.github.io/helm-charts</span></div>
+            <div><span class="t-prompt">$ </span><span class="t-cmd">helm repo update</span></div>
+            <div class="t-ok">...Update Complete. ⎈Happy Helming!⎈</div>
+            <div class="t-out"># Install kube-prometheus-stack (Prometheus + Grafana + AlertManager)</div>
+            <div><span class="t-prompt">$ </span><span class="t-cmd">helm install monitoring prometheus-community/kube-prometheus-stack \</span></div>
+            <div><span class="t-cmd">  --namespace monitoring --create-namespace</span></div>
+            <div class="t-ok">NAME: monitoring</div>
+            <div class="t-ok">STATUS: deployed</div>
+            <div class="t-out"># Access Grafana dashboard</div>
+            <div><span class="t-prompt">$ </span><span class="t-cmd">kubectl port-forward svc/monitoring-grafana 3000:80 -n monitoring</span></div>
+            <div class="t-ok">Open: http://localhost:3000</div>
+            <div class="t-out">Username: admin  Password: prom-operator</div>
+          </div>
+        </div>
+        <div class="info-box">✓ Grafana comes pre-loaded with K8s dashboards. Search "Kubernetes / Compute Resources" for CPU + memory charts.</div>
+        <div class="tip-box">📌 Add /metrics endpoint to FastAPI: pip install prometheus-fastapi-instrumentator then add 2 lines to main.py — Prometheus auto-scrapes it.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════════════════
+     ERROR BIBLE
+════════════════════════════════════════════════ -->
+<section class="sec" id="errors">
+  <div class="sec-eyebrow">// when things break — and they will</div>
+  <div class="sec-title">Error Bible — Fix Any Error in 5 Minutes</div>
+  <div class="sec-sub">The 20 most common errors you'll hit. Exact fix for each. Save hours of googling.</div>
+
+  <div class="mistake-grid">
+    <div class="m-card">
+      <div class="m-head"><span class="m-n">K8S-01</span>CrashLoopBackOff</div>
+      <p>Pod starts, crashes, K8s restarts it, it crashes again. Usually: app is crashing on startup, missing env variable, or wrong command.</p>
+      <div class="m-fix">kubectl logs POD_NAME --previous — read the crash log. Fix the app error or missing env var.</div>
+    </div>
+    <div class="m-card">
+      <div class="m-head"><span class="m-n">K8S-02</span>ImagePullBackOff</div>
+      <p>K8s can't pull the Docker image. Wrong image name, wrong tag, or repo is private without credentials.</p>
+      <div class="m-fix">kubectl describe pod POD_NAME → check Events. Verify image name exactly. For private repos, create K8s imagePullSecret.</div>
+    </div>
+    <div class="m-card">
+      <div class="m-head"><span class="m-n">K8S-03</span>Pending — no nodes available</div>
+      <p>Pod is waiting for a node. Either no nodes exist, or nodes don't have enough CPU/memory for your resource requests.</p>
+      <div class="m-fix">kubectl describe pod → check "Insufficient cpu/memory". Lower your resource requests or add more nodes.</div>
+    </div>
+    <div class="m-card">
+      <div class="m-head"><span class="m-n">K8S-04</span>OOMKilled — Out of Memory</div>
+      <p>Container exceeded its memory limit. K8s killed it. App has a memory leak or limit is too low.</p>
+      <div class="m-fix">Increase memory limit in deployment.yaml OR fix the memory leak in your app. Check kubectl describe pod for "OOMKilled".</div>
+    </div>
+    <div class="m-card">
+      <div class="m-head"><span class="m-n">DOCKER-01</span>Port already in use</div>
+      <p>You tried to run container on port 8000 but something already uses it on the host.</p>
+      <div class="m-fix">lsof -i :8000 to find what's using it. Kill it with kill -9 PID. Or use a different host port: docker run -p 8001:8000</div>
+    </div>
+    <div class="m-card">
+      <div class="m-head"><span class="m-n">DOCKER-02</span>Cannot connect to Docker daemon</div>
+      <p>Docker Desktop isn't running, or current user isn't in the docker group on Linux.</p>
+      <div class="m-fix">Start Docker Desktop. On Linux: sudo usermod -aG docker $USER then log out and back in (or run: newgrp docker).</div>
+    </div>
+    <div class="m-card">
+      <div class="m-head"><span class="m-n">DOCKER-03</span>Module not found in container</div>
+      <p>Your requirements.txt is missing a package, or COPY order in Dockerfile is wrong.</p>
+      <div class="m-fix">Add missing package to requirements.txt. Make sure COPY requirements.txt . is BEFORE RUN pip install.</div>
+    </div>
+    <div class="m-card">
+      <div class="m-head"><span class="m-n">TF-01</span>Error: no valid credential sources</div>
+      <p>Terraform can't authenticate to GCP. gcloud CLI isn't logged in or Application Default Credentials missing.</p>
+      <div class="m-fix">Run: gcloud auth application-default login — opens browser, sign in with your Google account. Re-run terraform apply.</div>
+    </div>
+    <div class="m-card">
+      <div class="m-head"><span class="m-n">TF-02</span>Error acquiring state lock</div>
+      <p>Another Terraform process is running, or a previous run crashed and left a lock behind.</p>
+      <div class="m-fix">terraform force-unlock LOCK_ID (ID shown in error message). Only do this if you're sure no other process is running.</div>
+    </div>
+    <div class="m-card">
+      <div class="m-head"><span class="m-n">CICD-01</span>Pipeline fails: Permission denied (publickey)</div>
+      <p>GitHub Actions can't SSH into your server or K8s cluster because the SSH key or kubeconfig secret is wrong.</p>
+      <div class="m-fix">Re-check your GitHub Secrets. KUBECONFIG must be base64-encoded: cat ~/.kube/config | base64 -w0 and paste as the secret value.</div>
+    </div>
+    <div class="m-card">
+      <div class="m-head"><span class="m-n">CICD-02</span>Docker push: unauthorized</div>
+      <p>GitHub Actions can't push to Docker Hub. Token expired or wrong username/token in secrets.</p>
+      <div class="m-fix">Generate a new Docker Hub Access Token (hub.docker.com → Account → Security → New Access Token). Update DOCKERHUB_TOKEN secret in GitHub.</div>
+    </div>
+    <div class="m-card">
+      <div class="m-head"><span class="m-n">GIT-01</span>Merge conflict</div>
+      <p>Two people (or branches) changed the same line in a file. Git doesn't know which version to keep.</p>
+      <div class="m-fix">Open the conflicted file. Find &lt;&lt;&lt;&lt;&lt;&lt;&lt; markers. Keep the right code. Delete the markers. git add . then git commit.</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════════════════
+     30 DAY ROADMAP
+════════════════════════════════════════════════ -->
+<section class="sec" id="roadmap">
+  <div class="sec-eyebrow">// your daily plan — one deliverable per day</div>
+  <div class="sec-title">30-Day Roadmap — Day by Day</div>
+  <div class="sec-sub">Check off each day. Every task is covered in detail in the sections above.</div>
+
+  <!-- WEEK 1 -->
+  <div class="week-block">
+    <div class="week-hdr wk1">
+      <span class="w-pill wp1">WEEK 1</span>
+      <span class="w-title">🐧 Linux + Git + Your Cloud VM</span>
+      <span class="w-days">Days 1–7</span>
+    </div>
+    <div class="day-row" data-day="1"><div class="d-num">DAY<span>01</span></div><div class="d-task">Create GCP account + VM<small>cloud.google.com/free → VM → SSH in</small></div><div class="d-del">GCP SSH terminal working ✓</div><button class="chk" onclick="td(1)">✓</button></div>
+    <div class="day-row" data-day="2"><div class="d-num">DAY<span>02</span></div><div class="d-task">Run setup script — install all tools<small>Paste master script → verify all 12 tools</small></div><div class="d-del">docker --version shows 25.x ✓</div><button class="chk" onclick="td(2)">✓</button></div>
+    <div class="day-row" data-day="3"><div class="d-num">DAY<span>03</span></div><div class="d-task">Linux crash course + shell scripting<small>Learn 20 commands, write deploy.sh</small></div><div class="d-del">./deploy.sh runs without errors ✓</div><button class="chk" onclick="td(3)">✓</button></div>
+    <div class="day-row" data-day="4"><div class="d-num">DAY<span>04</span></div><div class="d-task">Git + GitHub setup<small>git init, commit, push to GitHub</small></div><div class="d-del">github.com/you/taskapi repo exists ✓</div><button class="chk" onclick="td(4)">✓</button></div>
+    <div class="day-row" data-day="5"><div class="d-num">DAY<span>05</span></div><div class="d-task">Git branching + workflow<small>Create feature branch, PR, merge</small></div><div class="d-del">Merged PR on GitHub ✓</div><button class="chk" onclick="td(5)">✓</button></div>
+    <div class="day-row" data-day="6"><div class="d-num">DAY<span>06</span></div><div class="d-task">Write TaskAPI app (FastAPI)<small>app/main.py with /health + /tasks</small></div><div class="d-del">curl localhost:8000/health returns ok ✓</div><button class="chk" onclick="td(6)">✓</button></div>
+    <div class="day-row" data-day="7"><div class="d-num">DAY<span>07</span></div><div class="d-task">Write tests + connect VS Code to VM<small>pytest passes, VS Code Remote SSH setup</small></div><div class="d-del">pytest shows 3 passed ✓</div><button class="chk" onclick="td(7)">✓</button></div>
+    <div class="week-concept"><b>// Week 1 interview concept:</b><p>"Linux is the OS that runs 90% of cloud servers. Shell scripting automates repetitive ops tasks. Git is how teams collaborate — every company uses it."</p></div>
+  </div>
+
+  <!-- WEEK 2 -->
+  <div class="week-block">
+    <div class="week-hdr wk2">
+      <span class="w-pill wp2">WEEK 2</span>
+      <span class="w-title">🐳 Docker — Pack Your App</span>
+      <span class="w-days">Days 8–14</span>
+    </div>
+    <div class="day-row" data-day="8"><div class="d-num">DAY<span>08</span></div><div class="d-task">Docker concepts + run hello-world<small>docker run hello-world — understand layers</small></div><div class="d-del">Docker whale works ✓</div><button class="chk" onclick="td(8)">✓</button></div>
+    <div class="day-row" data-day="9"><div class="d-num">DAY<span>09</span></div><div class="d-task">Write Dockerfile for TaskAPI<small>Every instruction explained (see Docker section above)</small></div><div class="d-del">docker build -t taskapi . succeeds ✓</div><button class="chk" onclick="td(9)">✓</button></div>
+    <div class="day-row" data-day="10"><div class="d-num">DAY<span>10</span></div><div class="d-task">Run container + test API<small>docker run -p 8000:8000 taskapi</small></div><div class="d-del">curl localhost:8000/health returns ok ✓</div><button class="chk" onclick="td(10)">✓</button></div>
+    <div class="day-row" data-day="11"><div class="d-num">DAY<span>11</span></div><div class="d-task">Docker Compose — app + Postgres<small>docker-compose up -d both services running</small></div><div class="d-del">docker-compose ps shows 2 running ✓</div><button class="chk" onclick="td(11)">✓</button></div>
+    <div class="day-row" data-day="12"><div class="d-num">DAY<span>12</span></div><div class="d-task">Run tests inside container<small>docker-compose run app pytest</small></div><div class="d-del">pytest inside container passes ✓</div><button class="chk" onclick="td(12)">✓</button></div>
+    <div class="day-row" data-day="13"><div class="d-num">DAY<span>13</span></div><div class="d-task">Create Docker Hub account + push image<small>docker tag + docker push</small></div><div class="d-del">Image visible on hub.docker.com ✓</div><button class="chk" onclick="td(13)">✓</button></div>
+    <div class="day-row" data-day="14"><div class="d-num">DAY<span>14</span></div><div class="d-task">Docker security + multi-stage builds<small>Non-root user, smaller image</small></div><div class="d-del">Image size reduced by 60%+ ✓</div><button class="chk" onclick="td(14)">✓</button></div>
+    <div class="week-concept"><b>// Week 2 interview concept:</b><p>"A Docker image is immutable and stored in a registry. A container is a running instance. The key value: portability — runs identically on any machine with Docker installed."</p></div>
+  </div>
+
+  <!-- WEEK 3 -->
+  <div class="week-block">
+    <div class="week-hdr wk3">
+      <span class="w-pill wp3">WEEK 3</span>
+      <span class="w-title">☸️ Kubernetes + Terraform</span>
+      <span class="w-days">Days 15–21</span>
+    </div>
+    <div class="day-row" data-day="15"><div class="d-num">DAY<span>15</span></div><div class="d-task">Minikube — local K8s cluster<small>minikube start → kubectl get nodes</small></div><div class="d-del">1 node Ready in minikube ✓</div><button class="chk" onclick="td(15)">✓</button></div>
+    <div class="day-row" data-day="16"><div class="d-num">DAY<span>16</span></div><div class="d-task">Write deployment.yaml — deploy TaskAPI<small>kubectl apply -f k8s/deployment.yaml</small></div><div class="d-del">kubectl get pods shows 2 Running ✓</div><button class="chk" onclick="td(16)">✓</button></div>
+    <div class="day-row" data-day="17"><div class="d-num">DAY<span>17</span></div><div class="d-task">Service + Ingress — expose the app<small>Access TaskAPI via browser URL</small></div><div class="d-del">App accessible via minikube IP ✓</div><button class="chk" onclick="td(17)">✓</button></div>
+    <div class="day-row" data-day="18"><div class="d-num">DAY<span>18</span></div><div class="d-task">Terraform — write main.tf for GKE<small>Define cluster + node pool</small></div><div class="d-del">terraform plan shows 2 to add ✓</div><button class="chk" onclick="td(18)">✓</button></div>
+    <div class="day-row" data-day="19"><div class="d-num">DAY<span>19</span></div><div class="d-task">terraform apply — real GKE cluster live<small>~5 minutes, uses $300 credit</small></div><div class="d-del">kubectl get nodes shows GKE nodes ✓</div><button class="chk" onclick="td(19)">✓</button></div>
+    <div class="day-row" data-day="20"><div class="d-num">DAY<span>20</span></div><div class="d-task">Deploy TaskAPI to real GKE<small>kubectl apply -f k8s/ on GKE</small></div><div class="d-del">App live on real cloud URL ✓</div><button class="chk" onclick="td(20)">✓</button></div>
+    <div class="day-row" data-day="21"><div class="d-num">DAY<span>21</span></div><div class="d-task">K8s scaling, rolling updates, rollback<small>Scale 3 replicas, update image, undo</small></div><div class="d-del">kubectl rollout undo works ✓</div><button class="chk" onclick="td(21)">✓</button></div>
+    <div class="week-concept"><b>// Week 3 interview concept:</b><p>"Kubernetes is declarative — you describe desired state in YAML, K8s makes it reality. Terraform is the same for infrastructure. Both are idempotent: applying the same config twice has the same result."</p></div>
+  </div>
+
+  <!-- WEEK 4 -->
+  <div class="week-block">
+    <div class="week-hdr wk4">
+      <span class="w-pill wp4">WEEK 4</span>
+      <span class="w-title">⚙️ CI/CD + Monitoring + Live</span>
+      <span class="w-days">Days 22–28</span>
+    </div>
+    <div class="day-row" data-day="22"><div class="d-num">DAY<span>22</span></div><div class="d-task">GitHub Actions — CI pipeline<small>Push triggers test + docker build</small></div><div class="d-del">Green checkmark on GitHub Actions ✓</div><button class="chk" onclick="td(22)">✓</button></div>
+    <div class="day-row" data-day="23"><div class="d-num">DAY<span>23</span></div><div class="d-task">Add Docker push + deploy to pipeline<small>Full automated deploy on every push</small></div><div class="d-del">git push → live in 90 seconds ✓</div><button class="chk" onclick="td(23)">✓</button></div>
+    <div class="day-row" data-day="24"><div class="d-num">DAY<span>24</span></div><div class="d-task">Helm chart for TaskAPI<small>helm install taskapi ./chart</small></div><div class="d-del">helm list shows taskapi deployed ✓</div><button class="chk" onclick="td(24)">✓</button></div>
+    <div class="day-row" data-day="25"><div class="d-num">DAY<span>25</span></div><div class="d-task">Prometheus + Grafana on K8s<small>helm install monitoring stack</small></div><div class="d-del">Grafana dashboard at localhost:3000 ✓</div><button class="chk" onclick="td(25)">✓</button></div>
+    <div class="day-row" data-day="26"><div class="d-num">DAY<span>26</span></div><div class="d-task">Add /metrics to TaskAPI<small>Prometheus scrapes your app metrics</small></div><div class="d-del">Request rate visible in Grafana ✓</div><button class="chk" onclick="td(26)">✓</button></div>
+    <div class="day-row" data-day="27"><div class="d-num">DAY<span>27</span></div><div class="d-task">Liveness + readiness probes + resource limits<small>Production hardening</small></div><div class="d-del">K8s auto-restarts unhealthy pod ✓</div><button class="chk" onclick="td(27)">✓</button></div>
+    <div class="day-row" data-day="28"><div class="d-num">DAY<span>28</span></div><div class="d-task">Disaster recovery + RBAC basics<small>Delete pod → watch self-heal. Create read-only role.</small></div><div class="d-del">Pod deleted → back in 8 seconds ✓</div><button class="chk" onclick="td(28)">✓</button></div>
+    <div class="week-concept"><b>// Week 4 interview concept:</b><p>"CI/CD reduces deployment risk by making each release small and automated. Monitoring closes the feedback loop — you know something broke before users do. Probes + resource limits = production-grade."</p></div>
+  </div>
+
+  <!-- WEEK 5 (bonus) -->
+  <div class="week-block">
+    <div class="week-hdr wk5">
+      <span class="w-pill wp5">BONUS</span>
+      <span class="w-title">🎓 Interview Prep + Portfolio</span>
+      <span class="w-days">Days 29–30</span>
+    </div>
+    <div class="day-row" data-day="29"><div class="d-num">DAY<span>29</span></div><div class="d-task">Write runbook + project README<small>Document: deploy, rollback, debug, scale</small></div><div class="d-del">README covers every operation ✓</div><button class="chk" onclick="td(29)">✓</button></div>
+    <div class="day-row" data-day="30"><div class="d-num">DAY<span>30</span></div><div class="d-task">🎉 Full demo — push code → live on internet<small>Record a screen video for portfolio</small></div><div class="d-del">YOU ARE INTERVIEW READY 🚀</div><button class="chk" onclick="td(30)">✓</button></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════════════════
+     INTERVIEW QUESTIONS
+════════════════════════════════════════════════ -->
+<section class="sec" id="interview">
+  <div class="sec-eyebrow">// crack any devops interview</div>
+  <div class="sec-title">Top Interview Questions — With Perfect Answers</div>
+  <div class="sec-sub">Click to reveal. Real questions from real DevOps interviews at top companies.</div>
+
+  <div class="qa-grid">
+    <div class="qa-card">
+      <div class="qa-q" onclick="tq(this)"><span class="qa-qn">Q1</span><span class="qa-qt">What is the difference between a Docker image and a container?</span><span class="qa-diff diff-e">Easy</span></div>
+      <div class="qa-a"><b>Image</b> = the read-only blueprint. Built with docker build. Stored in a registry. Like a class definition in code, or a cake recipe. <b>Container</b> = a running instance of that image. Created with docker run. Has a writable layer on top. Like an object/instance, or a baked cake. You can run 10 containers from 1 image simultaneously, each isolated.</div>
+      <div class="qa-tip">🎯 Say in interview: "Image is immutable, stored in registry. Container is ephemeral, running in memory. I always tag images with commit SHA, not :latest, for production."</div>
+    </div>
+    <div class="qa-card">
+      <div class="qa-q" onclick="tq(this)"><span class="qa-qn">Q2</span><span class="qa-qt">Explain Kubernetes architecture — what runs on master vs worker?</span><span class="qa-diff diff-m">Medium</span></div>
+      <div class="qa-a"><b>Control Plane (Master):</b> API Server (entry point — all kubectl commands hit this), etcd (distributed key-value store — the cluster's database/memory), Scheduler (decides which node to run a new pod on), Controller Manager (runs control loops — ensures desired state matches actual state).<br><br><b>Worker Nodes:</b> kubelet (agent that runs on every node, talks to API server, manages pods), kube-proxy (handles network routing to pods), Container Runtime (Docker/containerd — actually runs the containers).</div>
+      <div class="qa-tip">🎯 Say: "The control plane is the brain. Worker nodes are the muscles. kubectl talks to the API server, which writes to etcd, which controllers watch and act on."</div>
+    </div>
+    <div class="qa-card">
+      <div class="qa-q" onclick="tq(this)"><span class="qa-qn">Q3</span><span class="qa-qt">What is the difference between CI and CD? Walk me through a pipeline.</span><span class="qa-diff diff-e">Easy</span></div>
+      <div class="qa-a"><b>CI (Continuous Integration):</b> Every code push automatically triggers: checkout code → install deps → run tests → build Docker image. If anything fails, pipeline stops. No broken code moves forward.<br><br><b>CD (Continuous Delivery/Deployment):</b> On CI success: push image to registry → update K8s manifests → kubectl apply → rolling update deploys.<br><br>Full flow: git push → tests (2 min) → docker build + push (3 min) → deploy to K8s (1 min) → new version live in 90 seconds, zero human steps.</div>
+      <div class="qa-tip">🎯 Say: "CI catches bugs early when they're cheap to fix. CD eliminates manual deployments — every merge to main is automatically production-ready."</div>
+    </div>
+    <div class="qa-card">
+      <div class="qa-q" onclick="tq(this)"><span class="qa-qn">Q4</span><span class="qa-qt">What is Terraform state? What happens if it's lost?</span><span class="qa-diff diff-m">Medium</span></div>
+      <div class="qa-a">Terraform state (terraform.tfstate) is Terraform's memory — it records every resource it created, their IDs, and their current configuration. Without state, Terraform doesn't know what already exists. If you run apply without state, it tries to create everything again = duplicates and errors.<br><br>If state is lost: you run terraform import to re-associate existing resources with your config, or you manually delete and recreate infrastructure.<br><br>Best practice: store state remotely in GCS/S3 with state locking (via Terraform Cloud or backend config) so the team shares it and concurrent runs don't corrupt it.</div>
+      <div class="qa-tip">🎯 Say: "I always use remote state with GCS backend + state locking. Never commit tfstate to git — it may contain secrets."</div>
+    </div>
+    <div class="qa-card">
+      <div class="qa-q" onclick="tq(this)"><span class="qa-qn">Q5</span><span class="qa-qt">Pod is in CrashLoopBackOff. How do you debug it?</span><span class="qa-diff diff-m">Medium</span></div>
+      <div class="qa-a">Step-by-step debug flow:<br><br><b>1.</b> <code class="inline">kubectl logs POD_NAME --previous</code> — get logs from the crashed instance (not the restarting one). 90% of causes are here.<br><br><b>2.</b> <code class="inline">kubectl describe pod POD_NAME</code> — scroll to Events. Shows: image pull failures, OOMKilled, scheduling issues, probe failures.<br><br><b>3.</b> Check env vars — missing DATABASE_URL or wrong secret name causes startup crash.<br><br><b>4.</b> <code class="inline">kubectl exec -it POD_NAME -- sh</code> if you can catch it in a running state, then check connectivity: curl DB_HOST:5432.<br><br><b>5.</b> Temporarily add <code class="inline">command: ["sleep", "infinity"]</code> to pod spec to keep it alive and debug inside.</div>
+      <div class="qa-tip">🎯 Say: "My first instinct is --previous logs. CrashLoopBackOff almost always means the app itself is crashing — it's a K8s symptom, not the root cause."</div>
+    </div>
+    <div class="qa-card">
+      <div class="qa-q" onclick="tq(this)"><span class="qa-qn">Q6</span><span class="qa-qt">What's the difference between liveness and readiness probes?</span><span class="qa-diff diff-e">Easy</span></div>
+      <div class="qa-a"><b>Liveness probe:</b> "Is this container alive?" K8s polls /health every N seconds. If it fails K consecutive times, K8s kills and restarts the container. Solves: deadlocks, infinite loops, zombie processes.<br><br><b>Readiness probe:</b> "Is this container ready to serve traffic?" If it fails, the pod is removed from the Service's endpoint list — it won't receive requests, but it ISN'T restarted. Solves: app taking 30s to warm up, app temporarily overloaded.<br><br>Both use the same syntax but have opposite consequences: liveness triggers restart, readiness removes from load balancer.</div>
+      <div class="qa-tip">🎯 Mnemonic: <b>L</b>iveness = <b>L</b>aunch new pod. <b>R</b>eadiness = <b>R</b>emove from rotation.</div>
+    </div>
+    <div class="qa-card">
+      <div class="qa-q" onclick="tq(this)"><span class="qa-qn">Q7</span><span class="qa-qt">How do you do a zero-downtime deployment in Kubernetes?</span><span class="qa-diff diff-m">Medium</span></div>
+      <div class="qa-a">K8s does zero-downtime rolling updates by default. In your deployment, strategy: type: RollingUpdate with maxUnavailable: 0 and maxSurge: 1. This means: bring up 1 new pod, wait for it to pass readiness probe, then kill 1 old pod. Repeat until all pods are updated. At no point is the service down.<br><br>Prerequisites for true zero-downtime: readiness probe must pass before traffic is routed, your app must handle graceful shutdown (SIGTERM signal), database schema changes must be backward-compatible (never drop a column in the same deploy that removes code using it).</div>
+      <div class="qa-tip">🎯 Say: "I set maxUnavailable: 0 and rely on readiness probes. I also ensure my app handles SIGTERM gracefully — drains in-flight requests before shutting down."</div>
+    </div>
+    <div class="qa-card">
+      <div class="qa-q" onclick="tq(this)"><span class="qa-qn">Q8</span><span class="qa-qt">What is Infrastructure as Code? Why use it over clicking in the console?</span><span class="qa-diff diff-e">Easy</span></div>
+      <div class="qa-a">IaC = describing your infrastructure in code files (Terraform HCL, Pulumi TS, AWS CDK). Benefits over clicking:<br><br><b>Reproducibility:</b> Create identical staging + prod environments from same code.<br><b>Version control:</b> Every infra change is a git commit — you know who changed what and when.<br><b>Peer review:</b> Infrastructure changes go through code review like application code.<br><b>Disaster recovery:</b> If prod dies, run terraform apply and rebuild in 5 minutes.<br><b>Documentation:</b> The code IS the documentation of what exists.<br><br>Clicking in a console creates snowflake infrastructure — unique, undocumented, impossible to reproduce exactly.</div>
+      <div class="qa-tip">🎯 Say: "IaC makes infrastructure boring — repeatable, reviewable, testable. Manual clicks make it a snowflake that only one person understands."</div>
+    </div>
+    <div class="qa-card">
+      <div class="qa-q" onclick="tq(this)"><span class="qa-qn">Q9</span><span class="qa-qt">How do you monitor application health? What metrics matter?</span><span class="qa-diff diff-m">Medium</span></div>
+      <div class="qa-a">The four golden signals (from Google SRE book):<br><br><b>Latency:</b> How long requests take. Track p50, p95, p99 — not just average.<br><b>Traffic:</b> Requests per second. Baseline + spike detection.<br><b>Errors:</b> HTTP 5xx error rate. Alert if >1% of requests fail.<br><b>Saturation:</b> How full is the system — CPU%, memory%, queue depth.<br><br>Implementation: Prometheus scrapes /metrics every 15s. Grafana visualises. AlertManager fires PagerDuty/Slack when thresholds breach. Loki aggregates logs. This gives you full observability: metrics (what happened), logs (why it happened), traces (where in the code it happened).</div>
+      <div class="qa-tip">🎯 Say: "I follow the four golden signals. Latency and error rate are my primary SLIs. I set SLOs like 99.9% of requests under 200ms, and alert before breaching the error budget."</div>
+    </div>
+    <div class="qa-card">
+      <div class="qa-q" onclick="tq(this)"><span class="qa-qn">Q10</span><span class="qa-qt">What is a Kubernetes namespace? When do you use multiple?</span><span class="qa-diff diff-h">Hard</span></div>
+      <div class="qa-a">Namespace = a virtual cluster within a K8s cluster. Resources in different namespaces are isolated — same name can exist in namespace A and B simultaneously.<br><br>Use multiple namespaces for: environment isolation (namespace per environment: dev/staging/prod), team isolation (team-a, team-b each own their namespace), resource quotas per team/app, RBAC — grant team-a access to only their namespace.<br><br>Common pattern in companies: one K8s cluster, separate namespaces per environment. Or separate clusters for prod vs non-prod (harder to breach isolation between clusters).<br><br>System namespaces (never touch): kube-system (K8s core components), kube-public (cluster info), default (where your stuff goes if you don't specify).</div>
+      <div class="qa-tip">🎯 Say: "I use namespaces to enforce separation of concerns. In my setup: default for dev, staging namespace for staging, and RBAC ensures junior devs can't accidentally kubectl delete -n staging."</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════════════════
+     HOW TO PUBLISH ON YOUR SITE
+════════════════════════════════════════════════ -->
+<section class="sec" id="publish">
+  <div class="sec-eyebrow">// get this live on akshc15.github.io right now</div>
+  <div class="sec-title">Publish to Your Site — 3 Steps</div>
+  <div class="sec-sub">This page becomes live at akshc15.github.io/devops-bible in under 2 minutes.</div>
+
+  <div class="gh-steps">
+    <div class="gh-step">
+      <div class="gh-num">1</div>
+      <div>
+        <h4>Download this file</h4>
+        <p>You have <code class="inline">devops-bible.html</code> downloaded. It's one self-contained file — no dependencies, no build step.</p>
+      </div>
+    </div>
+    <div class="gh-step">
+      <div class="gh-num">2</div>
+      <div>
+        <h4>Upload to your GitHub repo</h4>
+        <p>Go to <b>github.com/akshc15/akshc15.github.io</b> → click <b>Add file</b> (top right near green Code button) → click <b>Upload files</b> → drag and drop <code class="inline">devops-bible.html</code> → scroll down → type commit message: "Add DevOps Bible" → click <b>Commit changes</b>. GitHub Pages auto-deploys in ~30 seconds.</p>
+        <div class="info-box">✓ Your page is now live at: <b>akshc15.github.io/devops-bible.html</b></div>
+      </div>
+    </div>
+    <div class="gh-step">
+      <div class="gh-num">3</div>
+      <div>
+        <h4>Add card to your homepage (index.html)</h4>
+        <p>In your repo, click <b>index.html</b> → click the pencil icon (Edit this file) → find the cards section → add this alongside your existing cards:</p>
+        <pre style="font-size:11px;">&lt;a href="devops-bible.html"&gt;
+  📖  DevOps Bible
+  Zero to Hero in 30 Days.
+  Linux · Docker · K8s · Terraform · CI/CD · Monitoring.
+  One page. Everything. All free.
+&lt;/a&gt;</pre>
+        <p>→ click <b>Commit changes</b> → done. Card appears on your homepage.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- RESOURCES -->
+<section class="sec">
+  <div class="sec-eyebrow">// free resources to go deeper</div>
+  <div class="sec-title">Best Free Learning Resources</div>
+  <div class="sec-sub">No paid courses needed. These cover everything.</div>
+  <div class="res-grid">
+    <a class="res-card" href="https://akshc15.github.io/devpath.html" target="_blank"><div class="r-icon">⚡</div><div class="r-title">Your DevPath — 90+ Missions</div><div class="r-desc">Your own portal. Hands-on missions on a real cloud VM. Docker, K8s, Terraform, Ansible tracks.</div><div class="r-link">akshc15.github.io/devpath →</div></a>
+    <a class="res-card" href="https://akshc15.github.io/dream-interview.html" target="_blank"><div class="r-icon">🧠</div><div class="r-title">Your Interview Quiz</div><div class="r-desc">100 real interview questions with instant feedback. Use after Day 30.</div><div class="r-link">akshc15.github.io/dream-interview →</div></a>
+    <a class="res-card" href="https://akshc15.github.io/dream-project.html" target="_blank"><div class="r-icon">💬</div><div class="r-title">Your Dream Project</div><div class="r-desc">Full DreamChat app on K8s. The advanced version of TaskAPI. AWS+Azure+GCP compared.</div><div class="r-link">akshc15.github.io/dream-project →</div></a>
+    <a class="res-card" href="https://labs.play-with-docker.com" target="_blank"><div class="r-icon">🧪</div><div class="r-title">Play with Docker</div><div class="r-desc">Free browser Docker environment. No install. Perfect for Week 2 practice.</div><div class="r-link">labs.play-with-docker.com →</div></a>
+    <a class="res-card" href="https://killercoda.com" target="_blank"><div class="r-icon">⚔️</div><div class="r-title">Killercoda</div><div class="r-desc">Free browser Kubernetes cluster. Real kubectl practice. Used by CKA exam prep.</div><div class="r-link">killercoda.com →</div></a>
+    <a class="res-card" href="https://docs.docker.com/get-started" target="_blank"><div class="r-icon">🐳</div><div class="r-title">Docker Official Docs</div><div class="r-desc">The only Docker tutorial you need. Get Started covers everything in Week 2.</div><div class="r-link">docs.docker.com/get-started →</div></a>
+    <a class="res-card" href="https://kubernetes.io/docs/tutorials/kubernetes-basics" target="_blank"><div class="r-icon">☸️</div><div class="r-title">K8s Interactive Tutorial</div><div class="r-desc">Official tutorial with browser-based cluster. No install needed. Week 3 companion.</div><div class="r-link">kubernetes.io/docs/tutorials →</div></a>
+    <a class="res-card" href="https://developer.hashicorp.com/terraform/tutorials/gcp-get-started" target="_blank"><div class="r-icon">🏗️</div><div class="r-title">Terraform GCP Tutorial</div><div class="r-desc">HashiCorp's official GCP guide. Exact steps for Week 3 Terraform days.</div><div class="r-link">developer.hashicorp.com/terraform →</div></a>
+  </div>
+</section>
+
+<footer>
+  akshc15 · DevOps Bible · Zero to Hero in 30 Days · All Free ·
+  <a href="https://akshc15.github.io/devpath.html">DevPath</a> ·
+  <a href="https://akshc15.github.io/dream-project.html">Dream Project</a> ·
+  <a href="https://akshc15.github.io/dream-interview.html">Interview Quiz</a> ·
+  <a href="https://akshc15.github.io">Portal</a>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// ── PROGRESS ──────────────────────────
+const SK = 'devops_bible_v1';
+function lp(){try{return JSON.parse(localStorage.getItem(SK))||{};}catch{return{};}}
+function sp(d){try{localStorage.setItem(SK,JSON.stringify(d));}catch{}}
+function up(){
+  const d=lp();
+  const n=Object.values(d).filter(Boolean).length;
+  document.getElementById('ptxt').textContent=n+' / 30 days complete';
+  document.getElementById('pfill').style.width=Math.round(n/30*100)+'%';
+  document.querySelectorAll('.dot').forEach(dot=>{
+    const i=parseInt(dot.dataset.day);
+    dot.classList.toggle('done',!!d[i]);
+    dot.textContent=d[i]?'✓':i;
+  });
+  document.querySelectorAll('.day-row[data-day]').forEach(r=>{
+    r.classList.toggle('done',!!d[parseInt(r.dataset.day)]);
+  });
+}
+function td(n){const d=lp();d[n]=!d[n];sp(d);up();}
+// build dots
+const dc=document.getElementById('dots');
+for(let i=1;i<=30;i++){
+  const d=document.createElement('div');
+  d.className='dot';d.dataset.day=i;d.textContent=i;
+  d.onclick=()=>td(i);dc.appendChild(d);
+}
+up();
+
+// ── STEP ACCORDION ────────────────────
+function tog(head){
+  const body=head.nextElementSibling;
+  const open=body.classList.contains('open');
+  document.querySelectorAll('.step-body.open').forEach(b=>b.classList.remove('open'));
+  if(!open)body.classList.add('open');
+}
+
+// ── Q&A ───────────────────────────────
+function tq(qEl){
+  const card=qEl.parentElement;
+  const a=card.querySelector('.qa-a');
+  const tip=card.querySelector('.qa-tip');
+  const open=

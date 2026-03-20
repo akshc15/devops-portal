@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resume + Job Guide — My DevOps Portal</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Syne:wght@400;600;700;800&display=swap');
+:root{
+  --bg:#07070f;--bg2:#0c0c1a;--bg3:#111125;--card:#0e0e1e;
+  --border:#1a1a32;--border2:#252548;
+  --blue:#4f8ef7;--green:#22d3a5;--yellow:#f59e0b;
+  --red:#f87171;--pink:#f472b6;--purple:#a78bfa;--cyan:#67e8f9;
+  --gold:#fbbf24;
+  --text:#e2e8f0;--muted:#64748b;--dim:#2a2a45;
+  --mono:'JetBrains Mono',monospace;--sans:'Syne',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.7;overflow-x:hidden;}
+
+/* SHARED BANNER */
+.site-banner{background:#05050d;border-bottom:1px solid rgba(255,255,255,0.07);padding:0 1.5rem;height:46px;display:flex;align-items:center;justify-content:space-between;font-family:var(--mono);position:sticky;top:0;z-index:999;}
+.site-banner a{font-size:11px;color:rgba(255,255,255,0.4);text-decoration:none;letter-spacing:.08em;text-transform:uppercase;transition:color .15s;}
+.site-banner a:hover{color:#f5f2eb;}
+.site-banner .home{font-size:13px;font-weight:700;color:#f5f2eb;}
+.banner-links{display:flex;align-items:center;gap:1.25rem;}
+
+/* NAV */
+nav{border-bottom:1px solid var(--border);padding:0 2rem;height:52px;display:flex;align-items:center;justify-content:space-between;background:rgba(7,7,15,0.95);backdrop-filter:blur(12px);position:sticky;top:46px;z-index:100;}
+.nav-brand{font-family:var(--mono);font-size:13px;color:var(--green);font-weight:700;letter-spacing:.06em;}
+.nav-links{display:flex;gap:1.5rem;}
+.nav-links a{font-family:var(--mono);font-size:11px;color:var(--muted);text-decoration:none;transition:color .15s;letter-spacing:.05em;}
+.nav-links a:hover{color:var(--text);}
+.nav-links a.active{color:var(--blue);}
+
+/* HERO */
+.hero{padding:5rem 2rem 3rem;max-width:960px;margin:0 auto;position:relative;}
+.hero::before{content:'';position:absolute;top:0;right:0;width:400px;height:300px;background:radial-gradient(ellipse,rgba(79,142,247,.06),transparent 70%);pointer-events:none;}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;color:var(--blue);background:rgba(79,142,247,.07);border:1px solid rgba(79,142,247,.18);padding:5px 16px;border-radius:100px;margin-bottom:1.5rem;letter-spacing:.1em;text-transform:uppercase;}
+.hero h1{font-size:clamp(2rem,5vw,3.8rem);font-weight:800;line-height:1.1;margin-bottom:1rem;letter-spacing:-.02em;}
+.hero h1 .hl{color:var(--blue);}
+.hero h1 .hl2{color:var(--green);}
+.hero-sub{color:var(--muted);font-size:1rem;max-width:640px;line-height:1.8;margin-bottom:2rem;}
+.warning-banner{background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);border-radius:10px;padding:1rem 1.5rem;font-size:13px;color:var(--gold);line-height:1.8;margin-bottom:1rem;}
+.warning-banner b{color:#fde68a;}
+
+/* SECTIONS */
+.sec{max-width:960px;margin:0 auto;padding:0 2rem 4rem;}
+.sec-eyebrow{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;margin-bottom:.3rem;}
+.sec-title{font-size:1.7rem;font-weight:800;letter-spacing:-.02em;margin-bottom:.4rem;}
+.sec-sub{font-size:14px;color:var(--muted);margin-bottom:2rem;line-height:1.7;}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:0 2rem 3rem;}
+
+/* SKILL BLOCKS */
+.skill-group{margin-bottom:2rem;}
+.sg-header{display:flex;align-items:center;gap:12px;margin-bottom:1rem;}
+.sg-icon{font-size:1.4rem;}
+.sg-title{font-size:1rem;font-weight:700;}
+.sg-level{font-family:var(--mono);font-size:10px;padding:2px 10px;border-radius:100px;margin-left:auto;}
+.lvl-must{background:rgba(248,113,113,.12);color:var(--red);border:1px solid rgba(248,113,113,.2);}
+.lvl-good{background:rgba(245,158,11,.1);color:var(--yellow);border:1px solid rgba(245,158,11,.18);}
+.lvl-bonus{background:rgba(34,211,165,.08);color:var(--green);border:1px solid rgba(34,211,165,.18);}
+.skill-tags{display:flex;flex-wrap:wrap;gap:8px;}
+.skill-tag{font-family:var(--mono);font-size:12px;padding:5px 14px;border-radius:6px;border:1px solid var(--border2);background:var(--card);color:var(--text);display:flex;align-items:center;gap:6px;transition:border-color .15s;}
+.skill-tag:hover{border-color:var(--blue);}
+.skill-tag .dot{width:6px;height:6px;border-radius:50%;}
+.dot-r{background:var(--red);}
+.dot-y{background:var(--yellow);}
+.dot-g{background:var(--green);}
+
+/* RESUME CARD */
+.resume-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:2rem;}
+.rc-header{background:#0a0a1a;padding:1rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.rc-title{font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;}
+.copy-btn{font-family:var(--mono);font-size:10px;background:rgba(79,142,247,.1);color:var(--blue);border:1px solid rgba(79,142,247,.2);padding:4px 12px;border-radius:4px;cursor:pointer;letter-spacing:.06em;transition:all .15s;}
+.copy-btn:hover{background:rgba(79,142,247,.2);}
+.rc-body{padding:1.5rem;}
+.rc-section{margin-bottom:1.5rem;}
+.rc-section:last-child{margin-bottom:0;}
+.rc-section-title{font-family:var(--mono);font-size:11px;color:var(--blue);letter-spacing:.15em;text-transform:uppercase;margin-bottom:.75rem;display:flex;align-items:center;gap:8px;}
+.rc-section-title::after{content:'';flex:1;height:1px;background:var(--border);}
+.rc-line{font-size:13px;color:var(--text);padding:4px 0;border-bottom:1px solid rgba(255,255,255,.03);line-height:1.7;}
+.rc-line:last-child{border-bottom:none;}
+.rc-line b{color:var(--cyan);}
+.rc-line .bullet{color:var(--green);margin-right:6px;}
+.rc-line .red{color:var(--red);}
+.rc-note{font-family:var(--mono);font-size:11px;color:var(--yellow);background:rgba(245,158,11,.05);border:1px solid rgba(245,158,11,.15);border-radius:6px;padding:8px 12px;margin-top:8px;}
+
+/* LINKEDIN SECTION */
+.linkedin-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.li-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;}
+.li-card .li-title{font-size:14px;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:8px;}
+.li-card .li-title .num{font-family:var(--mono);font-size:10px;background:rgba(79,142,247,.1);color:var(--blue);padding:2px 8px;border-radius:4px;}
+.li-card p{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:8px;}
+.li-card .li-example{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:10px 12px;font-size:12px;color:var(--text);font-family:var(--mono);line-height:1.7;}
+.li-card .do{color:var(--green);}
+.li-card .dont{color:var(--red);}
+
+/* JOB ROLES */
+.roles-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;}
+.role-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;transition:border-color .2s,transform .2s;}
+.role-card:hover{border-color:var(--blue);transform:translateY(-2px);}
+.role-card .r-title{font-size:15px;font-weight:700;margin-bottom:4px;}
+.role-card .r-sal{font-family:var(--mono);font-size:12px;color:var(--green);margin-bottom:.75rem;}
+.role-card .r-skills{font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:.75rem;}
+.role-card .r-where{font-family:var(--mono);font-size:11px;color:var(--blue);}
+
+/* DO/DONT TABLE */
+.dd-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.dd-card{background:var(--card);border-radius:12px;overflow:hidden;}
+.dd-header{padding:.75rem 1.25rem;font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;}
+.dd-do .dd-header{background:rgba(34,211,165,.08);color:var(--green);border-bottom:1px solid rgba(34,211,165,.15);}
+.dd-dont .dd-header{background:rgba(248,113,113,.06);color:var(--red);border-bottom:1px solid rgba(248,113,113,.15);}
+.dd-list{padding:.75rem 1.25rem;}
+.dd-item{font-size:13px;padding:7px 0;border-bottom:1px solid var(--border);color:var(--muted);display:flex;align-items:start;gap:8px;line-height:1.6;}
+.dd-item:last-child{border-bottom:none;}
+.dd-item::before{flex-shrink:0;font-size:12px;margin-top:2px;}
+.dd-do .dd-item::before{content:'✓';color:var(--green);}
+.dd-dont .dd-item::before{content:'✗';color:var(--red);}
+
+/* TIMELINE */
+.timeline{display:flex;flex-direction:column;gap:0;}
+.tl-item{display:grid;grid-template-columns:80px 1fr;gap:1.5rem;align-items:start;padding:1.25rem 0;border-bottom:1px solid var(--border);}
+.tl-item:last-child{border-bottom:none;}
+.tl-when{font-family:var(--mono);font-size:11px;color:var(--muted);text-align:right;padding-top:3px;}
+.tl-when span{display:block;font-size:1rem;font-weight:700;color:var(--blue);line-height:1.2;}
+.tl-content h4{font-size:14px;font-weight:700;margin-bottom:4px;}
+.tl-content p{font-size:13px;color:var(--muted);line-height:1.7;}
+.tl-content .tl-action{font-family:var(--mono);font-size:11px;color:var(--green);margin-top:6px;}
+
+/* CERT GRID */
+.cert-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;}
+.cert-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;transition:border-color .15s;}
+.cert-card:hover{border-color:var(--yellow);}
+.cert-logo{font-size:2rem;margin-bottom:10px;}
+.cert-name{font-size:14px;font-weight:700;margin-bottom:4px;}
+.cert-level{font-family:var(--mono);font-size:11px;margin-bottom:8px;}
+.cert-free{color:var(--green);}
+.cert-paid{color:var(--yellow);}
+.cert-desc{font-size:12px;color:var(--muted);line-height:1.6;}
+.cert-val{font-family:var(--mono);font-size:10px;padding:2px 8px;border-radius:4px;display:inline-block;margin-top:8px;}
+.val-high{background:rgba(34,211,165,.1);color:var(--green);border:1px solid rgba(34,211,165,.18);}
+.val-med{background:rgba(245,158,11,.08);color:var(--yellow);border:1px solid rgba(245,158,11,.15);}
+
+/* PORTFOLIO */
+.portfolio-steps{display:flex;flex-direction:column;gap:.75rem;}
+.ps-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.1rem 1.25rem;display:grid;grid-template-columns:36px 1fr;gap:1rem;align-items:start;}
+.ps-num{width:28px;height:28px;border-radius:6px;background:rgba(79,142,247,.1);border:1px solid rgba(79,142,247,.2);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;font-weight:700;color:var(--blue);}
+.ps-item h4{font-size:14px;font-weight:700;margin-bottom:4px;}
+.ps-item p{font-size:13px;color:var(--muted);line-height:1.7;}
+.ps-item .ps-link{font-family:var(--mono);font-size:11px;color:var(--blue);margin-top:6px;}
+
+/* COPY TEXT AREA */
+.copy-area{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:1rem 1.25rem;font-family:var(--mono);font-size:12px;color:var(--text);line-height:1.9;white-space:pre-wrap;position:relative;margin-bottom:8px;}
+.copy-area .label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.5rem;display:block;}
+
+/* CHECKLIST */
+.checklist{display:flex;flex-direction:column;gap:.5rem;}
+.cl-item{display:flex;align-items:start;gap:10px;padding:.75rem 1rem;background:var(--card);border:1px solid var(--border);border-radius:8px;font-size:13px;cursor:pointer;transition:border-color .15s;}
+.cl-item:hover{border-color:var(--blue);}
+.cl-item input[type=checkbox]{width:16px;height:16px;margin-top:2px;accent-color:var(--green);cursor:pointer;flex-shrink:0;}
+.cl-item label{cursor:pointer;line-height:1.6;color:var(--text);}
+.cl-item.checked label{color:var(--muted);text-decoration:line-through;}
+
+footer{border-top:1px solid var(--border);padding:2rem;text-align:center;font-family:var(--mono);font-size:11px;color:var(--muted);}
+footer a{color:var(--blue);text-decoration:none;}
+
+@media(max-width:640px){
+  .linkedin-grid,.dd-grid{grid-template-columns:1fr;}
+  .hero h1{font-size:2rem;}
+  .sec{padding:0 1rem 3rem;}
+  nav{top:46px;}
+}
+</style>
+</head>
+<body>
+
+<!-- SHARED BANNER -->
+<div class="site-banner">
+  <div style="display:flex;align-items:center;gap:1.5rem;">
+    <a href="index.html" class="home">← HOME</a>
+    <span style="color:rgba(255,255,255,0.15);font-size:11px;">|</span>
+    <span style="font-size:11px;color:rgba(255,255,255,0.3);letter-spacing:.1em;text-transform:uppercase;font-family:var(--mono);">My DevOps Portal</span>
+  </div>
+  <div class="banner-links">
+    <a href="devops-bible.html">📖 Bible</a>
+    <a href="30day-challenge.html">📅 Challenge</a>
+    <a href="resume-guide.html" style="color:var(--blue);">📄 Resume</a>
+    <a href="https://akshc15.github.io">akshc15 Portal</a>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <span class="nav-brand">📄 Resume + Job Guide</span>
+  <div class="nav-links">
+    <a href="#skills">Skills</a>
+    <a href="#resume">Resume</a>
+    <a href="#linkedin">LinkedIn</a>
+    <a href="#jobs">Job Roles</a>
+    <a href="#certs">Certs</a>
+    <a href="#timeline">Timeline</a>
+    <a href="#checklist">Checklist</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">📄 Day 30 Complete → Get Hired ASAP</div>
+  <h1>Your Resume.<br><span class="hl">Your LinkedIn.</span><br><span class="hl2">Your First Job.</span></h1>
+  <p class="hero-sub">You finished 30 days. You built real things. Now you need to show it. This guide tells you exactly what to write, what to skip, which jobs to apply for, and how to get a callback within a week.</p>
+  <div class="warning-banner">
+    <b>⚡ Most DevOps freshers make 3 fatal resume mistakes:</b> listing tools they haven't actually used, writing vague bullet points with no numbers, and applying to senior roles. This guide fixes all 3.
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════════════
+     SKILLS TO LIST
+══════════════════════════════════════ -->
+<section class="sec" id="skills">
+  <div class="sec-eyebrow">// section 1 — what to put on your resume</div>
+  <div class="sec-title">Skills to List — After Day 30</div>
+  <div class="sec-sub">Only list what you have actually used in the challenge. Red = must have. Yellow = should have. Green = bonus.</div>
+
+  <div class="skill-group">
+    <div class="sg-header"><span class="sg-icon">🐧</span><span class="sg-title">Operating Systems & Scripting</span><span class="sg-level lvl-must">MUST HAVE</span></div>
+    <div class="skill-tags">
+      <div class="skill-tag"><span class="dot dot-r"></span>Linux (Ubuntu 22.04)</div>
+      <div class="skill-tag"><span class="dot dot-r"></span>Bash Shell Scripting</div>
+      <div class="skill-tag"><span class="dot dot-r"></span>SSH & Remote Access</div>
+      <div class="skill-tag"><span class="dot dot-r"></span>Cron Jobs</div>
+      <div class="skill-tag"><span class="dot dot-y"></span>Python (scripting)</div>
+    </div>
+  </div>
+
+  <div class="skill-group">
+    <div class="sg-header"><span class="sg-icon">🐳</span><span class="sg-title">Containerisation</span><span class="sg-level lvl-must">MUST HAVE</span></div>
+    <div class="skill-tags">
+      <div class="skill-tag"><span class="dot dot-r"></span>Docker</div>
+      <div class="skill-tag"><span class="dot dot-r"></span>Dockerfile</div>
+      <div class="skill-tag"><span class="dot dot-r"></span>Docker Compose</div>
+      <div class="skill-tag"><span class="dot dot-r"></span>Docker Hub</div>
+      <div class="skill-tag"><span class="dot dot-y"></span>Multi-stage builds</div>
+      <div class="skill-tag"><span class="dot dot-y"></span>Container security</div>
+    </div>
+  </div>
+
+  <div class="skill-group">
+    <div class="sg-header"><span class="sg-icon">☸️</span><span class="sg-title">Container Orchestration</span><span class="sg-level lvl-must">MUST HAVE</span></div>
+    <div class="skill-tags">
+      <div class="skill-tag"><span class="dot dot-r"></span>Kubernetes (K8s)</div>
+      <div class="skill-tag"><span class="dot dot-r"></span>kubectl</div>
+      <div class="skill-tag"><span class="dot dot-r"></span>Deployments & Services</div>
+      <div class="skill-tag"><span class="dot dot-r"></span>Ingress Controllers</div>
+      <div class="skill-tag"><span class="dot dot-r"></span>Helm</div>
+      <div class="skill-tag"><span class="dot dot-y"></span>GKE (Google Kubernetes Engine)</div>
+      <div class="skill-tag"><span class="dot dot-y"></span>Horizontal Pod Autoscaling</div>
+      <div class="skill-tag"><span class="dot dot-y"></span>RBAC</div>
+    </div>
+  </div>
+
+  <div class="skill-group">
+    <div class="sg-header"><span class="sg-icon">🏗️</span><span class="sg-title">Infrastructure as Code</span><span class="sg-level lvl-must">MUST HAVE</span></div>
+    <div class="skill-tags">
+      <div class="skill-tag"><span class="dot dot-r"></span>Terraform</div>
+      <div class="skill-tag"><span class="dot dot-r"></span>Infrastructure as Code (IaC)</div>
+      <div class="skill-tag"><span class="dot dot-y"></span>GCP / AWS</div>
+      <div class="skill-tag"><span class="dot dot-y"></span>Terraform State Management</div>
+    </div>
+  </div>
+
+  <div class="skill-group">
+    <div class="sg-header"><span class="sg-icon">⚙️</span><span class="sg-title">CI/CD & Version Control</span><span class="sg-level lvl-must">MUST HAVE</span></div>
+    <div class="skill-tags">
+      <div class="skill-tag"><span class="dot dot-r"></span>Git</div>
+      <div class="skill-tag"><span class="dot dot-r"></span>GitHub</div>
+      <div class="skill-tag"><span class="dot dot-r"></span>GitHub Actions</div>
+      <div class="skill-tag"><span class="dot dot-r"></span>CI/CD Pipelines</div>
+      <div class="skill-tag"><span class="dot dot-y"></span>GitOps</div>
+      <div class="skill-tag"><span class="dot dot-y"></span>Jenkins</div>
+    </div>
+  </div>
+
+  <div class="skill-group">
+    <div class="sg-header"><span class="sg-icon">📊</span><span class="sg-title">Monitoring & Observability</span><span class="sg-level lvl-good">GOOD TO HAVE</span></div>
+    <div class="skill-tags">
+      <div class="skill-tag"><span class="dot dot-y"></span>Prometheus</div>
+      <div class="skill-tag"><span class="dot dot-y"></span>Grafana</div>
+      <div class="skill-tag"><span class="dot dot-y"></span>Metrics & Alerting</div>
+      <div class="skill-tag"><span class="dot dot-g"></span>ELK Stack</div>
+      <div class="skill-tag"><span class="dot dot-g"></span>Loki</div>
+    </div>
+  </div>
+
+  <div class="skill-group">
+    <div class="sg-header"><span class="sg-icon">☁️</span><span class="sg-title">Cloud Platforms</span><span class="sg-level lvl-good">GOOD TO HAVE</span></div>
+    <div class="skill-tags">
+      <div class="skill-tag"><span class="dot dot-y"></span>Google Cloud Platform (GCP)</div>
+      <div class="skill-tag"><span class="dot dot-y"></span>Compute Engine</div>
+      <div class="skill-tag"><span class="dot dot-y"></span>GKE</div>
+      <div class="skill-tag"><span class="dot dot-g"></span>AWS (EC2, EKS, ECR)</div>
+      <div class="skill-tag"><span class="dot dot-g"></span>Azure</div>
+    </div>
+  </div>
+
+  <div class="skill-group">
+    <div class="sg-header"><span class="sg-icon">🔒</span><span class="sg-title">Security (Bonus — adds huge value)</span><span class="sg-level lvl-bonus">BONUS</span></div>
+    <div class="skill-tags">
+      <div class="skill-tag"><span class="dot dot-g"></span>Container security best practices</div>
+      <div class="skill-tag"><span class="dot dot-g"></span>Non-root containers</div>
+      <div class="skill-tag"><span class="dot dot-g"></span>Secrets management</div>
+      <div class="skill-tag"><span class="dot dot-g"></span>Trivy (image scanning)</div>
+      <div class="skill-tag"><span class="dot dot-g"></span>OWASP basics</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════════════
+     RESUME TEMPLATE
+══════════════════════════════════════ -->
+<section class="sec" id="resume">
+  <div class="sec-eyebrow">// section 2 — copy-paste ready</div>
+  <div class="sec-title">Resume Template — Copy, Edit, Submit</div>
+  <div class="sec-sub">Replace [HIGHLIGHTED] parts with your details. Every bullet point is written the way recruiters and ATS scanners want to see it.</div>
+
+  <div class="resume-card">
+    <div class="rc-header">
+      <span class="rc-title">📄 Your Full Resume — ATS Optimised</span>
+      <button class="copy-btn" onclick="copyResume()">Copy All Text</button>
+    </div>
+    <div class="rc-body" id="resume-text">
+
+      <div class="rc-section">
+        <div class="rc-section-title">Header</div>
+        <div class="rc-line"><b>AKSHAY [YOUR LAST NAME]</b></div>
+        <div class="rc-line">📧 [youremail@gmail.com]  &nbsp;|&nbsp; 📞 [+91 XXXXXXXXXX]  &nbsp;|&nbsp; 🌐 [yourusername.github.io]</div>
+        <div class="rc-line">🔗 linkedin.com/in/[yourprofile]  &nbsp;|&nbsp; 🐙 github.com/[yourusername]  &nbsp;|&nbsp; 📍 [City, India]</div>
+        <div class="rc-note">💡 The GitHub.io link is your biggest differentiator — it shows a live working system. Put it right under your name.</div>
+      </div>
+
+      <div class="rc-section">
+        <div class="rc-section-title">Professional Summary</div>
+        <div class="rc-line">DevOps Engineer with hands-on experience in containerisation, Kubernetes orchestration, and automated CI/CD pipelines. Built and deployed a production-grade REST API from scratch to a live GKE cluster using Docker, Terraform, and GitHub Actions. Passionate about infrastructure automation, reliability engineering, and cloud-native technologies.</div>
+        <div class="rc-note">💡 Keep this to 3 sentences. Start with your title. Include 3 specific tools. End with what you care about.</div>
+      </div>
+
+      <div class="rc-section">
+        <div class="rc-section-title">Technical Skills</div>
+        <div class="rc-line"><b>Containerisation:</b> Docker, Docker Compose, Multi-stage Builds, Docker Hub, Container Security</div>
+        <div class="rc-line"><b>Orchestration:</b> Kubernetes (K8s), kubectl, Helm, GKE, Deployments, Services, Ingress, RBAC, HPA</div>
+        <div class="rc-line"><b>Infrastructure as Code:</b> Terraform, GCP (Compute Engine, GKE, VPC), AWS (EC2, EKS)</div>
+        <div class="rc-line"><b>CI/CD:</b> GitHub Actions, Jenkins, GitOps, Automated Testing, Rolling Deployments</div>
+        <div class="rc-line"><b>Monitoring:</b> Prometheus, Grafana, Metrics, Alerting, Health Probes</div>
+        <div class="rc-line"><b>Linux & Scripting:</b> Ubuntu, Bash, Shell Scripting, SSH, Cron, Python</div>
+        <div class="rc-line"><b>Version Control:</b> Git, GitHub, Branching Strategy, Pull Requests</div>
+        <div class="rc-note">💡 This exact format gets past 95% of ATS scanners. Keywords match what recruiters search for.</div>
+      </div>
+
+      <div class="rc-section">
+        <div class="rc-section-title">Projects</div>
+        <div class="rc-line"><b>TaskAPI — Production Kubernetes Deployment</b> &nbsp;|&nbsp; <span style="color:var(--blue)">github.com/[you]/taskapi</span> &nbsp;|&nbsp; <span style="color:var(--muted);font-size:12px;font-family:var(--mono)">2025–2026</span></div>
+        <div class="rc-line"><span class="bullet">•</span>Designed and deployed a RESTful Python/FastAPI application on Google Kubernetes Engine (GKE) serving traffic via Ingress with zero-downtime rolling updates</div>
+        <div class="rc-line"><span class="bullet">•</span>Containerised the application using Docker with multi-stage builds, reducing image size by 65% and eliminating root-user security risk</div>
+        <div class="rc-line"><span class="bullet">•</span>Provisioned the entire cloud infrastructure (GKE cluster, VPC, node pools) using Terraform IaC — reducing setup time from 2 hours to 5 minutes</div>
+        <div class="rc-line"><span class="bullet">•</span>Built a full GitHub Actions CI/CD pipeline that automatically tests, builds, pushes to Docker Hub, and deploys to Kubernetes on every git push — cutting deployment time to under 90 seconds</div>
+        <div class="rc-line"><span class="bullet">•</span>Implemented Prometheus + Grafana monitoring with custom /metrics endpoint, liveness/readiness probes, and resource limits for production reliability</div>
+        <div class="rc-line"><span class="bullet">•</span>Packaged Kubernetes manifests as a reusable Helm chart, enabling single-command deployment across staging and production environments</div>
+        <div class="rc-note">💡 6 bullet points = 6 tools + 6 real outcomes. Every recruiter reading this knows exactly what you did and can verify it on GitHub.</div>
+      </div>
+
+      <div class="rc-section">
+        <div class="rc-section-title">Education</div>
+        <div class="rc-line"><b>[Your Degree]</b> — [Your College], [City] &nbsp;|&nbsp; [Year of passing]</div>
+        <div class="rc-line"><span class="bullet">•</span>Relevant coursework: [add if applicable] Operating Systems, Computer Networks, Cloud Computing</div>
+      </div>
+
+      <div class="rc-section">
+        <div class="rc-section-title">Certifications (add as you complete them)</div>
+        <div class="rc-line"><span class="bullet">•</span>Google Cloud Associate Cloud Engineer (ACE) — Google, 2026</div>
+        <div class="rc-line"><span class="bullet">•</span>Certified Kubernetes Administrator (CKA) — CNCF, 2026 <span style="color:var(--muted);font-family:var(--mono);font-size:11px;">(add when done)</span></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- WHAT NOT TO WRITE -->
+  <div class="dd-grid">
+    <div class="dd-card dd-do">
+      <div class="dd-header">✓ Write This</div>
+      <div class="dd-list">
+        <div class="dd-item">Deployed TaskAPI to GKE using Terraform, reducing infra setup from 2hr to 5min</div>
+        <div class="dd-item">Built GitHub Actions pipeline — push to deploy in 90 seconds</div>
+        <div class="dd-item">Reduced Docker image size by 65% with multi-stage builds</div>
+        <div class="dd-item">Configured Prometheus + Grafana monitoring with custom metrics</div>
+        <div class="dd-item">Implemented zero-downtime rolling updates with liveness probes</div>
+        <div class="dd-item">Tools: Docker, K8s, Terraform, GitHub Actions, Helm, Prometheus</div>
+      </div>
+    </div>
+    <div class="dd-card dd-dont">
+      <div class="dd-header">✗ Never Write This</div>
+      <div class="dd-list">
+        <div class="dd-item">Familiar with Docker and Kubernetes</div>
+        <div class="dd-item">Knowledge of CI/CD concepts</div>
+        <div class="dd-item">Worked on cloud technologies</div>
+        <div class="dd-item">Passionate about DevOps (without proof)</div>
+        <div class="dd-item">Experience with AWS, GCP, and Azure (if you've used only one)</div>
+        <div class="dd-item">Responsible for deployment (says nothing specific)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════════════
+     LINKEDIN
+══════════════════════════════════════ -->
+<section class="sec" id="linkedin">
+  <div class="sec-eyebrow">// section 3 — get found by recruiters</div>
+  <div class="sec-title">LinkedIn Profile — Optimised to Get Found</div>
+  <div class="sec-sub">70% of DevOps jobs are filled through LinkedIn. These 6 things get you in front of recruiters.</div>
+
+  <div class="linkedin-grid">
+    <div class="li-card">
+      <div class="li-title"><span class="num">01</span> Headline — The Most Important Line</div>
+      <p>Your headline appears in search results. It must have the exact words recruiters search for.</p>
+      <div class="li-example">
+        <div class="dont">✗ Fresher | Computer Science Graduate | Looking for Opportunities</div>
+        <br>
+        <div class="do">✓ DevOps Engineer | Docker · Kubernetes · Terraform · CI/CD | GCP | Open to Work</div>
+      </div>
+    </div>
+    <div class="li-card">
+      <div class="li-title"><span class="num">02</span> About Section — 3 Paragraphs Max</div>
+      <p>Tell your story. What you built. What tools you used. What you want next.</p>
+      <div class="li-example">
+        <div class="do">✓ "DevOps engineer who built and deployed a production Kubernetes app using Docker, Terraform, and GitHub Actions CI/CD — all from scratch, all free, all on GCP. Comfortable with the full lifecycle: code → container → cluster → monitor. Looking for junior/fresher DevOps roles where I can contribute from day one."</div>
+      </div>
+    </div>
+    <div class="li-card">
+      <div class="li-title"><span class="num">03</span> Featured Section — Pin Your Portfolio</div>
+      <p>Pin your GitHub.io site as the first featured item. Recruiters see it immediately. Many won't even read the resume — the live site says everything.</p>
+      <div class="li-example">
+        <div class="do">✓ Pin: yourusername.github.io (title: "DevOps Portfolio — TaskAPI on Kubernetes")<br>✓ Pin: github.com/you/taskapi<br>✓ Pin: A 1-minute screen recording of your CI/CD pipeline running</div>
+      </div>
+    </div>
+    <div class="li-card">
+      <div class="li-title"><span class="num">04</span> Skills Section — Add These Exactly</div>
+      <p>LinkedIn skills are searchable. Add the exact words. Get endorsements from peers.</p>
+      <div class="li-example">
+        <div class="do">Docker · Kubernetes · Terraform · GitHub Actions · Linux · Bash Scripting · CI/CD · GCP · Prometheus · Grafana · Helm · Git · Shell Scripting · DevOps · Site Reliability Engineering</div>
+      </div>
+    </div>
+    <div class="li-card">
+      <div class="li-title"><span class="num">05</span> Projects Section — Add TaskAPI</div>
+      <p>LinkedIn has a Projects section under your profile. Add TaskAPI here with a link to your GitHub.io portfolio.</p>
+      <div class="li-example">
+        <div class="do">✓ Project name: "TaskAPI — Production K8s Deployment"<br>✓ Description: Built a REST API deployed on GKE. Terraform for infra, Docker for containerisation, GitHub Actions for CI/CD, Prometheus+Grafana for monitoring.<br>✓ Link: github.com/you/taskapi</div>
+      </div>
+    </div>
+    <div class="li-card">
+      <div class="li-title"><span class="num">06</span> Open To Work — Set This Now</div>
+      <p>Turn on "Open to Work" privately (only visible to recruiters, not your network). Select these job titles for maximum reach.</p>
+      <div class="li-example">
+        <div class="do">✓ DevOps Engineer<br>✓ Junior DevOps Engineer<br>✓ Cloud Engineer<br>✓ Site Reliability Engineer<br>✓ Platform Engineer<br>✓ Infrastructure Engineer</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════════════
+     JOB ROLES
+══════════════════════════════════════ -->
+<section class="sec" id="jobs">
+  <div class="sec-eyebrow">// section 4 — where to apply</div>
+  <div class="sec-title">Job Roles to Apply For</div>
+  <div class="sec-sub">These are the realistic roles after 30 days. Apply for all of them — titles vary by company for the same work.</div>
+
+  <div class="roles-grid">
+    <div class="role-card">
+      <div class="r-title">🥇 Junior DevOps Engineer</div>
+      <div class="r-sal">₹4–8 LPA · Entry level</div>
+      <div class="r-skills">Docker + K8s + CI/CD + Linux. Your exact skillset. Most common title for freshers entering DevOps.</div>
+      <div class="r-where">LinkedIn · Naukri · Instahyre</div>
+    </div>
+    <div class="role-card">
+      <div class="r-title">☁️ Cloud Engineer (Junior)</div>
+      <div class="r-sal">₹4–9 LPA · Entry level</div>
+      <div class="r-skills">GCP/AWS + Terraform + Linux. Your GKE + Terraform work directly maps here. Cloud teams love IaC skills.</div>
+      <div class="r-where">LinkedIn · Naukri · company career pages</div>
+    </div>
+    <div class="role-card">
+      <div class="r-title">🔧 Platform Engineer</div>
+      <div class="r-sal">₹5–10 LPA · Slightly broader</div>
+      <div class="r-skills">K8s + Helm + CI/CD + monitoring. More developer-facing than traditional DevOps. Growing fast in product companies.</div>
+      <div class="r-where">LinkedIn · AngelList · startup job boards</div>
+    </div>
+    <div class="role-card">
+      <div class="r-title">🛡️ Site Reliability Engineer (SRE)</div>
+      <div class="r-sal">₹6–12 LPA · Reliability focus</div>
+      <div class="r-skills">Monitoring + K8s + incident response + SLOs. Your Prometheus/Grafana work is perfect here. Emphasise uptime and reliability.</div>
+      <div class="r-where">Big tech, banks, product startups</div>
+    </div>
+    <div class="role-card">
+      <div class="r-title">🔄 Build & Release Engineer</div>
+      <div class="r-sal">₹4–7 LPA · CI/CD focus</div>
+      <div class="r-skills">GitHub Actions + Docker + Jenkins. Your full CI/CD pipeline is exactly what this role does. Strong fit for service companies.</div>
+      <div class="r-where">Infosys · TCS · Wipro · HCL · Capgemini</div>
+    </div>
+    <div class="role-card">
+      <div class="r-title">🐳 Docker/K8s Admin</div>
+      <div class="r-sal">₹4–8 LPA · Ops-heavy</div>
+      <div class="r-skills">Pure container operations. Manage clusters, debug pods, handle deployments. Very common role in mid-size companies.</div>
+      <div class="r-where">Naukri · Indeed · company referrals</div>
+    </div>
+  </div>
+
+  <div style="background:rgba(34,211,165,.05);border:1px solid rgba(34,211,165,.15);border-radius:10px;padding:1.25rem 1.5rem;margin-top:1.5rem;">
+    <p style="font-size:13px;color:var(--green);font-family:var(--mono);font-weight:700;margin-bottom:8px;">🎯 APPLICATION STRATEGY — Apply Smart, Not Everywhere</p>
+    <p style="font-size:13px;color:var(--muted);line-height:1.8;"><b style="color:var(--text);">Week 1 after Day 30:</b> Apply to 10–15 roles on LinkedIn with "Easy Apply". Only roles that say "0–2 years" or "Fresher" or "Junior". <br><b style="color:var(--text);">Week 2:</b> Apply directly on company career pages — less competition than job boards.<br><b style="color:var(--text);">Every application:</b> Paste your github.io URL in every form that has an "optional website/portfolio" field. It gets opened.<br><b style="color:var(--text);">Don't apply to:</b> Roles requiring 3+ years. You'll get filtered before a human sees your resume.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════════════
+     CERTIFICATIONS
+══════════════════════════════════════ -->
+<section class="sec" id="certs">
+  <div class="sec-eyebrow">// section 5 — certifications that matter</div>
+  <div class="sec-title">Certifications — Which Ones Actually Help</div>
+  <div class="sec-sub">In order of value for getting your first job. Start with free ones while job hunting.</div>
+
+  <div class="cert-grid">
+    <div class="cert-card">
+      <div class="cert-logo">🏅</div>
+      <div class="cert-name">Google Cloud ACE</div>
+      <div class="cert-level cert-paid">₹12,000 one-time fee</div>
+      <div class="cert-desc">Associate Cloud Engineer. Directly validates your GCP + Kubernetes + Terraform skills from this challenge. Most in-demand GCP cert for freshers.</div>
+      <div class="cert-val val-high">⭐ Highest value — do this first</div>
+    </div>
+    <div class="cert-card">
+      <div class="cert-logo">☸️</div>
+      <div class="cert-name">CKA — Certified Kubernetes Administrator</div>
+      <div class="cert-level cert-paid">₹29,000 · valid 3 years</div>
+      <div class="cert-desc">The gold standard K8s cert. Linux Foundation exam. Purely hands-on — no MCQs, you actually operate a cluster. Instantly credible with any recruiter.</div>
+      <div class="cert-val val-high">⭐ Most respected DevOps cert</div>
+    </div>
+    <div class="cert-card">
+      <div class="cert-logo">🎓</div>
+      <div class="cert-name">Google Cloud Skill Badges</div>
+      <div class="cert-level cert-free">FREE on Google Cloud Skills Boost</div>
+      <div class="cert-desc">Hands-on labs on GCP. Complete "Deploy to Kubernetes in GCP" skill badge in 1–2 days. Adds verifiable badges to your LinkedIn. Start here while saving for CKA.</div>
+      <div class="cert-val val-med">✓ Free — do this week 1</div>
+    </div>
+    <div class="cert-card">
+      <div class="cert-logo">🐳</div>
+      <div class="cert-name">Docker Certified Associate (DCA)</div>
+      <div class="cert-level cert-paid">₹16,000 · valid 2 years</div>
+      <div class="cert-desc">Validates Docker expertise. Covers everything in Week 2 of the challenge plus more. Good for companies where Docker is the main focus vs K8s.</div>
+      <div class="cert-val val-med">✓ Good if applying to Docker-heavy roles</div>
+    </div>
+    <div class="cert-card">
+      <div class="cert-logo">🏗️</div>
+      <div class="cert-name">HashiCorp Terraform Associate</div>
+      <div class="cert-level cert-paid">₹6,500 · valid 2 years</div>
+      <div class="cert-desc">Cheapest meaningful cert. Validates your Terraform IaC skills. MCQ-based exam — easier than CKA. Good for roles at companies heavily using Terraform.</div>
+      <div class="cert-val val-med">✓ Easy win, affordable</div>
+    </div>
+    <div class="cert-card">
+      <div class="cert-logo">📜</div>
+      <div class="cert-name">Coursera / Udemy Certificates</div>
+      <div class="cert-level cert-free">₹499 – ₹1,499</div>
+      <div class="cert-desc">Do NOT list these on your resume. They carry zero weight with employers — anyone can buy them. Use them to learn, not to credential. Real hands-on experience beats any Udemy cert.</div>
+      <div class="cert-val" style="background:rgba(248,113,113,.08);color:var(--red);border:1px solid rgba(248,113,113,.15);">✗ Skip — no value to recruiters</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════════════
+     PORTFOLIO
+══════════════════════════════════════ -->
+<section class="sec">
+  <div class="sec-eyebrow">// section 6 — your portfolio is your superpower</div>
+  <div class="sec-title">Your Portfolio — What to Show</div>
+  <div class="sec-sub">Your GitHub.io site + your TaskAPI repo is already a stronger portfolio than 90% of fresher applicants. Here's how to make it bulletproof.</div>
+
+  <div class="portfolio-steps">
+    <div class="ps-item">
+      <div class="ps-num">1</div>
+      <div>
+        <h4>Polish your TaskAPI GitHub repo</h4>
+        <p>Write a real README.md: what the project does, architecture diagram (just ASCII is fine), how to run locally, how the CI/CD works, live URL. Recruiters DO click GitHub links. A clean repo = immediate credibility.</p>
+        <div class="ps-link">github.com/yourusername/taskapi ← this is your proof of work</div>
+      </div>
+    </div>
+    <div class="ps-item">
+      <div class="ps-num">2</div>
+      <div>
+        <h4>Your GitHub.io site is your portfolio</h4>
+        <p>The 3 pages you built (this portal) IS your portfolio. It shows you can build, deploy, and document. Put the URL everywhere: resume header, LinkedIn, email signature, job applications. Every recruiter who opens it sees real work.</p>
+        <div class="ps-link">yourusername.github.io ← live, public, impressive</div>
+      </div>
+    </div>
+    <div class="ps-item">
+      <div class="ps-num">3</div>
+      <div>
+        <h4>Record a 2-minute demo video</h4>
+        <p>Use Loom (free). Show: you push code → GitHub Actions runs → pod updates in Kubernetes → Grafana dashboard shows the request. Upload to YouTube (unlisted). Link in your resume, LinkedIn, and GitHub README. Very few freshers do this. It makes you unforgettable.</p>
+        <div class="ps-link">loom.com (free) → YouTube unlisted → paste link everywhere</div>
+      </div>
+    </div>
+    <div class="ps-item">
+      <div class="ps-num">4</div>
+      <div>
+        <h4>Add a second project (after job hunting starts)</h4>
+        <p>If you have time: deploy the DreamChat app from akshc15.github.io/dream-project.html. It's a React + Node.js + MongoDB app — much more impressive than TaskAPI for applications to product companies. Two projects = serious candidate.</p>
+        <div class="ps-link">akshc15.github.io/dream-project.html ← your next project</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════════════
+     JOB HUNT TIMELINE
+══════════════════════════════════════ -->
+<section class="sec" id="timeline">
+  <div class="sec-eyebrow">// section 7 — day by day after day 30</div>
+  <div class="sec-title">Job Hunt Timeline — Week by Week</div>
+  <div class="sec-sub">Follow this exactly. Most freshers spend 3 months applying randomly. This gets you in front of humans in week 1.</div>
+
+  <div class="resume-card">
+    <div class="rc-body">
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-when">DAY<span>31–32</span></div>
+          <div class="tl-content">
+            <h4>Polish everything</h4>
+            <p>Update GitHub README, make sure your GitHub.io site is live and all 3 pages work. Record the 2-min Loom demo. Update LinkedIn headline and add TaskAPI to Projects. Get resume reviewed by a friend.</p>
+            <div class="tl-action">→ Output: Resume PDF, LinkedIn updated, GitHub.io live, demo video ready</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-when">DAY<span>33–35</span></div>
+          <div class="tl-content">
+            <h4>Apply to 15 LinkedIn Easy Apply jobs</h4>
+            <p>Search: "Junior DevOps Engineer India" + filter: Experience level = Entry level. Apply to 15 in one sitting. Paste your github.io URL in every optional field. Write a 2-sentence note when there's a cover letter box.</p>
+            <div class="tl-action">→ Output: 15 applications sent. Track in a Google Sheet.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-when">DAY<span>36–40</span></div>
+          <div class="tl-content">
+            <h4>Apply directly on company career pages</h4>
+            <p>Go to: Infosys Careers, TCS iBegin, Wipro Careers, Capgemini, HCL, Razorpay, Zepto, Swiggy, Zomato, Meesho, CRED, PhonePe career pages. Apply directly — less ATS competition than job boards.</p>
+            <div class="tl-action">→ Output: 10 more direct applications. Total: 25 applications.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-when">DAY<span>41–45</span></div>
+          <div class="tl-content">
+            <h4>Referral outreach on LinkedIn</h4>
+            <p>Find people at target companies with titles "DevOps Engineer" or "SRE" — send a polite connection request with a note: "Hi [name], I'm a fresher DevOps engineer with K8s + Terraform experience. Built a live project: [github.io link]. Would love a referral if there are openings at [company]. Thanks!" 70% won't reply. 30% will. That's enough.</p>
+            <div class="tl-action">→ Output: 20 connection requests sent. Expect 5–8 replies.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-when">WEEK<span>6–8</span></div>
+          <div class="tl-content">
+            <h4>Interviews start coming in</h4>
+            <p>You will get calls. Prepare using the DevOps Bible interview section + your Dream Interview Quiz. For every interview: re-read your resume, rehearse the 10 Q&As, and be ready to walk through your TaskAPI project in detail — they will ask about it.</p>
+            <div class="tl-action">→ Offer expected: week 6–10 depending on market.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════════════
+     CHECKLIST
+══════════════════════════════════════ -->
+<section class="sec" id="checklist">
+  <div class="sec-eyebrow">// section 8 — before you apply</div>
+  <div class="sec-title">Pre-Application Checklist</div>
+  <div class="sec-sub">Tick every box before sending a single application. Saves hours of rejections.</div>
+
+  <div class="checklist" id="cl">
+    <div class="cl-item"><input type="checkbox" id="c1" onchange="clk(this)"><label for="c1">✅ Resume has your GitHub.io URL in the header</label></div>
+    <div class="cl-item"><input type="checkbox" id="c2" onchange="clk(this)"><label for="c2">✅ Resume has 6 bullet points for TaskAPI project — each with a specific tool + outcome</label></div>
+    <div class="cl-item"><input type="checkbox" id="c3" onchange="clk(this)"><label for="c3">✅ Resume has Technical Skills section with exact keywords (Docker, Kubernetes, Terraform, etc.)</label></div>
+    <div class="cl-item"><input type="checkbox" id="c4" onchange="clk(this)"><label for="c4">✅ GitHub.io site is live and all 3 pages load correctly on mobile</label></div>
+    <div class="cl-item"><input type="checkbox" id="c5" onchange="clk(this)"><label for="c5">✅ TaskAPI GitHub repo has a README explaining the project and architecture</label></div>
+    <div class="cl-item"><input type="checkbox" id="c6" onchange="clk(this)"><label for="c6">✅ LinkedIn headline includes: DevOps Engineer | Docker · K8s · Terraform | Open to Work</label></div>
+    <div class="cl-item"><input type="checkbox" id="c7" onchange="clk(this)"><label for="c7">✅ LinkedIn Skills section has at least 10 DevOps keywords added</label></div>
+    <div class="cl-item"><input type="checkbox" id="c8" onchange="clk(this)"><label for="c8">✅ LinkedIn "Open to Work" turned on for recruiter visibility</label></div>
+    <div class="cl-item"><input type="checkbox" id="c9" onchange="clk(this)"><label for="c9">✅ LinkedIn Featured section has your GitHub.io link pinned as #1</label></div>
+    <div class="cl-item"><input type="checkbox" id="c10" onchange="clk(this)"><label for="c10">✅ Google Cloud Skill Badge "Deploy to Kubernetes in GCP" completed (free)</label></div>
+    <div class="cl-item"><input type="checkbox" id="c11" onchange="clk(this)"><label for="c11">✅ Loom 2-minute demo video recorded and link added to GitHub README</label></div>
+    <div class="cl-item"><input type="checkbox" id="c12" onchange="clk(this)"><label for="c12">✅ Practiced answering: "Tell me about your project" out loud — 2 minutes, no notes</label></div>
+    <div class="cl-item"><input type="checkbox" id="c13" onchange="clk(this)"><label for="c13">✅ Completed all 10 interview Q&As in the DevOps Bible — can answer without reading</label></div>
+    <div class="cl-item"><input type="checkbox" id="c14" onchange="clk(this)"><label for="c14">✅ Resume saved as PDF named: "Akshay_DevOps_Resume.pdf" (not "Resume_final_v3.pdf")</label></div>
+    <div class="cl-item"><input type="checkbox" id="c15" onchange="clk(this)"><label for="c15">✅ Applied to at least 15 jobs this week</label></div>
+  </div>
+
+  <div style="margin-top:1.5rem;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.25rem 1.5rem;">
+    <p style="font-family:var(--mono);font-size:12px;color:var(--green);margin-bottom:4px;">Progress: <span id="cl-count">0</span> / 15 complete</p>
+    <div style="background:var(--bg3);border-radius:100px;height:5px;overflow:hidden;"><div id="cl-bar" style="height:100%;background:linear-gradient(90deg,var(--green),var(--blue));border-radius:100px;width:0%;transition:width .3s;"></div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- QUICK LINKS -->
+<section class="sec">
+  <div class="sec-eyebrow">// you're ready — now go get it</div>
+  <div class="sec-title">Your Next Steps</div>
+  <div class="sec-sub">In order. Don't skip steps.</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;">
+    <a href="devops-bible.html" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.25rem;text-decoration:none;transition:border-color .2s;" onmouseover="this.style.borderColor='var(--blue)'" onmouseout="this.style.borderColor='var(--border)'">
+      <div style="font-size:1.4rem;margin-bottom:8px;">📖</div>
+      <div style="font-weight:700;font-size:14px;color:var(--text);margin-bottom:4px;">DevOps Bible</div>
+      <div style="font-size:12px;color:var(--muted);">Review all tools + interview Q&As before each interview</div>
+    </a>
+    <a href="30day-challenge.html" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.25rem;text-decoration:none;transition:border-color .2s;" onmouseover="this.style.borderColor='var(--green)'" onmouseout="this.style.borderColor='var(--border)'">
+      <div style="font-size:1.4rem;margin-bottom:8px;">📅</div>
+      <div style="font-weight:700;font-size:14px;color:var(--text);margin-bottom:4px;">30-Day Challenge</div>
+      <div style="font-size:12px;color:var(--muted);">Mark all 30 days complete — then come here</div>
+    </a>
+    <a href="https://akshc15.github.io/dream-interview.html" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.25rem;text-decoration:none;transition:border-color .2s;" onmouseover="this.style.borderColor='var(--yellow)'" onmouseout="this.style.borderColor='var(--border)'">
+      <div style="font-size:1.4rem;margin-bottom:8px;">🧠</div>
+      <div style="font-weight:700;font-size:14px;color:var(--text);margin-bottom:4px;">Interview Quiz</div>
+      <div style="font-size:12px;color:var(--muted);">100 real questions. Practice until 90%+ accuracy.</div>
+    </a>
+    <a href="https://akshc15.github.io/dream-project.html" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.25rem;text-decoration:none;transition:border-color .2s;" onmouseover="this.style.borderColor='var(--pink)'" onmouseout="this.style.borderColor='var(--border)'">
+      <div style="font-size:1.4rem;margin-bottom:8px;">💬</div>
+      <div style="font-weight:700;font-size:14px;color:var(--text);margin-bottom:4px;">Dream Project</div>
+      <div style="font-size:12px;color:var(--muted);">Your second project — for senior role applications</div>
+    </a>
+  </div>
+</section>
+
+<footer>
+  My DevOps Portal · Resume + Job Guide · Built by <a href="https://akshc15.github.io">Akshay (akshc15)</a> ·
+  <a href="index.html">Home</a> · <a href="devops-bible.html">Bible</a> · <a href="30day-challenge.html">Challenge</a>
+</footer>
+
+<script>
+// checklist
+function clk(cb){
+  const item=cb.closest('.cl-item');
+  item.classList.toggle('checked',cb.checked);
+  const done=document.querySelectorAll('#cl .cl-item input:checked').length;
+  document.getElementById('cl-count').textContent=done;
+  document.getElementById('cl-bar').style.width=Math.round(done/15*100)+'%';
+}
+
+// copy resume
+function copyResume(){
+  const el=document.getElementById('resume-text');
+  const text=el.innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.querySelector('.copy-btn');
+    btn.textContent='Copied! ✓';
+    btn.style.color='var(--green)';
+    setTimeout(()=>{btn.textContent='Copy All Text';btn.style.color='';},2000);
+  });
+}
+</script>
+</body>
+</html>

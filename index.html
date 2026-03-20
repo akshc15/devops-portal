@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My DevOps Portal — by Akshay</title>
+<meta name="description" content="The complete free DevOps learning system. Docker, Kubernetes, Terraform, CI/CD. Zero to interview-ready in 30 days.">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+:root {
+  --ink: #05050d;
+  --paper: #f5f2eb;
+  --paper2: #ede9e0;
+  --paper3: #e4e0d6;
+  --accent: #e84a1e;
+  --accent2: #1a56f0;
+  --accent3: #00b87a;
+  --text: #1a1814;
+  --muted: #7a756b;
+  --dim: #b8b3a8;
+  --mono: 'DM Mono', monospace;
+  --display: 'Bebas Neue', sans-serif;
+  --body: 'DM Sans', sans-serif;
+  --border: rgba(26,24,20,0.12);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--paper);
+  color: var(--text);
+  font-family: var(--body);
+  font-size: 15px;
+  overflow-x: hidden;
+  cursor: crosshair;
+}
+
+/* ── GRAIN OVERLAY ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0.4;
+}
+
+/* ── MARQUEE ── */
+.marquee-wrap {
+  background: var(--ink);
+  overflow: hidden;
+  padding: 9px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.marquee-track {
+  display: flex;
+  gap: 0;
+  animation: scroll 20s linear infinite;
+  width: max-content;
+}
+.marquee-item {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: rgba(255,255,255,0.45);
+  padding: 0 2rem;
+  white-space: nowrap;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.marquee-item.hi { color: var(--accent); }
+@keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* ── NAV ── */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--paper);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.nav-logo {
+  font-family: var(--display);
+  font-size: 1.3rem;
+  letter-spacing: 0.06em;
+  color: var(--text);
+  text-decoration: none;
+}
+.nav-logo span { color: var(--accent); }
+.nav-links { display: flex; align-items: center; gap: 2rem; }
+.nav-links a {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  text-decoration: none;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: color 0.15s;
+}
+.nav-links a:hover { color: var(--text); }
+.nav-cta {
+  font-family: var(--mono);
+  font-size: 11px;
+  background: var(--ink);
+  color: var(--paper) !important;
+  padding: 8px 18px;
+  border-radius: 2px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: background 0.15s !important;
+}
+.nav-cta:hover { background: var(--accent) !important; color: #fff !important; }
+
+/* ── HERO ── */
+.hero {
+  min-height: calc(100vh - 85px);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 4rem 2rem 2rem;
+  gap: 4rem;
+  position: relative;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  right: -100px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(232,74,30,0.06) 0%, transparent 65%);
+  pointer-events: none;
+}
+.hero-left { position: relative; }
+.hero-eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--accent);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.hero-eyebrow::before {
+  content: '';
+  display: block;
+  width: 28px;
+  height: 1px;
+  background: var(--accent);
+}
+.hero-h1 {
+  font-family: var(--display);
+  font-size: clamp(4rem, 8vw, 7rem);
+  line-height: 0.92;
+  letter-spacing: 0.03em;
+  color: var(--ink);
+  margin-bottom: 1.5rem;
+}
+.hero-h1 .outline {
+  -webkit-text-stroke: 2px var(--ink);
+  color: transparent;
+}
+.hero-h1 .red { color: var(--accent); }
+.hero-desc {
+  font-size: 15px;
+  color: var(--muted);
+  line-height: 1.8;
+  max-width: 420px;
+  margin-bottom: 2.5rem;
+}
+.hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 14px 28px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 2px;
+  transition: all 0.15s;
+  cursor: pointer;
+}
+.btn-primary:hover { background: var(--accent); }
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  color: var(--text);
+  padding: 14px 28px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 1.5px solid var(--border);
+  border-radius: 2px;
+  transition: all 0.15s;
+}
+.btn-secondary:hover { border-color: var(--ink); }
+
+/* ── HERO RIGHT — terminal ── */
+.hero-terminal {
+  background: var(--ink);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 40px 80px rgba(5,5,13,0.2);
+  transform: rotate(1.5deg);
+  transition: transform 0.3s;
+}
+.hero-terminal:hover { transform: rotate(0deg); }
+.t-titlebar {
+  background: #111120;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.t-dot { width: 11px; height: 11px; border-radius: 50%; }
+.td1 { background: #f87171; }
+.td2 { background: #f59e0b; }
+.td3 { background: #22d3a5; }
+.t-title { font-family: var(--mono); font-size: 11px; color: rgba(255,255,255,0.3); margin-left: 8px; }
+.t-body { padding: 1.25rem 1.5rem; font-family: var(--mono); font-size: 12.5px; line-height: 2; }
+.t-prompt { color: #22d3a5; }
+.t-cmd { color: #e2e8f0; }
+.t-out { color: rgba(255,255,255,0.35); }
+.t-ok { color: #22d3a5; }
+.t-blue { color: #4f8ef7; }
+.t-yellow { color: #f59e0b; }
+.cursor { display: inline-block; width: 8px; height: 14px; background: #22d3a5; animation: blink 1.1s step-end infinite; vertical-align: middle; }
+@keyframes blink { 50% { opacity: 0; } }
+
+/* ── STATS BAR ── */
+.stats-bar {
+  background: var(--ink);
+  padding: 2.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 5rem;
+  flex-wrap: wrap;
+}
+.stat { text-align: center; }
+.stat-n {
+  font-family: var(--display);
+  font-size: 3.5rem;
+  color: var(--paper);
+  line-height: 1;
+  letter-spacing: 0.05em;
+}
+.stat-n span { color: var(--accent); }
+.stat-l { font-family: var(--mono); font-size: 11px; color: rgba(255,255,255,0.35); letter-spacing: 0.12em; text-transform: uppercase; margin-top: 4px; }
+
+/* ── CARDS SECTION ── */
+.cards-section {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 6rem 2rem;
+}
+.section-header { margin-bottom: 3rem; }
+.s-eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+.s-title {
+  font-family: var(--display);
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  color: var(--ink);
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+.s-title span { color: var(--accent); }
+
+/* ── THE TWO MAIN CARDS ── */
+.main-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.card-bible {
+  background: var(--ink);
+  border-radius: 12px;
+  padding: 2.5rem;
+  text-decoration: none;
+  display: block;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s;
+  min-height: 420px;
+}
+.card-bible:hover { transform: translateY(-4px); }
+.card-bible::before {
+  content: '📖';
+  position: absolute;
+  right: -10px;
+  bottom: -20px;
+  font-size: 10rem;
+  opacity: 0.06;
+  pointer-events: none;
+}
+.card-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 100px;
+  display: inline-block;
+  margin-bottom: 1.5rem;
+}
+.card-bible .card-label { background: rgba(232,74,30,0.15); color: #ff6b45; border: 1px solid rgba(232,74,30,0.25); }
+.card-bible h2 {
+  font-family: var(--display);
+  font-size: 3rem;
+  color: var(--paper);
+  line-height: 1;
+  letter-spacing: 0.05em;
+  margin-bottom: 1rem;
+}
+.card-bible p { font-size: 14px; color: rgba(245,242,235,0.5); line-height: 1.8; margin-bottom: 2rem; max-width: 340px; }
+.card-bible .pills { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 2rem; }
+.pill {
+  font-family: var(--mono);
+  font-size: 10px;
+  padding: 4px 10px;
+  border-radius: 100px;
+  letter-spacing: 0.06em;
+}
+.pill-light { background: rgba(245,242,235,0.08); color: rgba(245,242,235,0.5); border: 1px solid rgba(245,242,235,0.1); }
+.card-bible .cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--accent);
+  color: #fff;
+  padding: 12px 24px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-radius: 4px;
+  font-weight: 600;
+}
+.card-bible .card-num {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  font-family: var(--display);
+  font-size: 5rem;
+  color: rgba(255,255,255,0.04);
+  line-height: 1;
+  letter-spacing: 0.05em;
+}
+
+.card-30 {
+  background: var(--paper2);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 2.5rem;
+  text-decoration: none;
+  display: block;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s;
+  min-height: 420px;
+}
+.card-30:hover { transform: translateY(-4px); border-color: var(--ink); }
+.card-30::before {
+  content: '📅';
+  position: absolute;
+  right: -10px;
+  bottom: -20px;
+  font-size: 10rem;
+  opacity: 0.08;
+  pointer-events: none;
+}
+.card-30 .card-label { background: rgba(26,86,240,0.08); color: var(--accent2); border: 1px solid rgba(26,86,240,0.15); }
+.card-30 h2 {
+  font-family: var(--display);
+  font-size: 3rem;
+  color: var(--ink);
+  line-height: 1;
+  letter-spacing: 0.05em;
+  margin-bottom: 1rem;
+}
+.card-30 p { font-size: 14px; color: var(--muted); line-height: 1.8; margin-bottom: 2rem; max-width: 340px; }
+.card-30 .card-num {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  font-family: var(--display);
+  font-size: 5rem;
+  color: rgba(26,24,20,0.04);
+  line-height: 1;
+}
+.card-30 .cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 12px 24px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+/* ── MINI FEATURE CARDS ── */
+.mini-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+.mini-card {
+  background: var(--paper2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.5rem;
+  transition: border-color 0.2s;
+}
+.mini-card:hover { border-color: var(--ink); }
+.mini-icon { font-size: 1.5rem; margin-bottom: 0.75rem; }
+.mini-title { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+.mini-desc { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+/* ── ROADMAP STRIP ── */
+.roadmap-strip {
+  background: var(--ink);
+  padding: 5rem 2rem;
+  overflow: hidden;
+  position: relative;
+}
+.roadmap-strip::before {
+  content: 'ROADMAP';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--display);
+  font-size: 18rem;
+  color: rgba(255,255,255,0.015);
+  white-space: nowrap;
+  pointer-events: none;
+  letter-spacing: 0.1em;
+}
+.strip-inner { max-width: 1100px; margin: 0 auto; }
+.strip-header { display: flex; justify-content: space-between; align-items: end; margin-bottom: 3rem; }
+.strip-title {
+  font-family: var(--display);
+  font-size: 3rem;
+  color: var(--paper);
+  letter-spacing: 0.05em;
+}
+.strip-title span { color: var(--accent); }
+.strip-sub { font-family: var(--mono); font-size: 12px; color: rgba(255,255,255,0.3); }
+.weeks-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.week-col { background: var(--ink); padding: 1.5rem; }
+.week-col:hover { background: #0e0e1e; }
+.wc-num {
+  font-family: var(--display);
+  font-size: 4rem;
+  line-height: 1;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+.wc-n1 { color: var(--accent); }
+.wc-n2 { color: #22d3a5; }
+.wc-n3 { color: #4f8ef7; }
+.wc-n4 { color: #f59e0b; }
+.wc-title { font-size: 13px; font-weight: 600; color: var(--paper); margin-bottom: 0.75rem; }
+.wc-days { display: flex; flex-direction: column; gap: 4px; }
+.wc-day { font-family: var(--mono); font-size: 11px; color: rgba(255,255,255,0.35); display: flex; align-items: center; gap: 6px; }
+.wc-day::before { content: ''; width: 4px; height: 4px; border-radius: 50%; background: rgba(255,255,255,0.2); flex-shrink: 0; }
+
+/* ── ABOUT STRIP ── */
+.about-strip {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 6rem 2rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5rem;
+  align-items: center;
+}
+.about-left .big-text {
+  font-family: var(--display);
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  line-height: 1.1;
+  letter-spacing: 0.04em;
+  color: var(--ink);
+  margin-bottom: 1.5rem;
+}
+.about-left .big-text span { color: var(--accent); }
+.about-left p { font-size: 14px; color: var(--muted); line-height: 1.9; margin-bottom: 1rem; }
+.about-right { display: flex; flex-direction: column; gap: 1rem; }
+.feature-row {
+  display: flex;
+  align-items: start;
+  gap: 1rem;
+  padding: 1.1rem 1.25rem;
+  border-radius: 8px;
+  background: var(--paper2);
+  border: 1px solid var(--border);
+  transition: border-color 0.2s;
+}
+.feature-row:hover { border-color: var(--ink); }
+.fr-icon { font-size: 1.25rem; flex-shrink: 0; margin-top: 2px; }
+.fr-title { font-weight: 600; font-size: 14px; margin-bottom: 2px; }
+.fr-desc { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+/* ── TOOLS STRIP ── */
+.tools-strip {
+  background: var(--paper2);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 2rem;
+  overflow: hidden;
+}
+.tools-track {
+  display: flex;
+  gap: 1.5rem;
+  animation: scroll 25s linear infinite;
+  width: max-content;
+  align-items: center;
+}
+.tool-chip {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 16px;
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  white-space: nowrap;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text);
+  font-weight: 500;
+}
+
+/* ── GITHUB GUIDE ── */
+.github-section {
+  background: var(--ink);
+  padding: 6rem 2rem;
+}
+.gh-inner { max-width: 900px; margin: 0 auto; }
+.gh-header { text-align: center; margin-bottom: 3rem; }
+.gh-title {
+  font-family: var(--display);
+  font-size: 3rem;
+  color: var(--paper);
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+.gh-title span { color: var(--accent); }
+.gh-sub { font-family: var(--mono); font-size: 12px; color: rgba(255,255,255,0.3); }
+.gh-steps { display: flex; flex-direction: column; gap: 1px; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden; }
+.gh-step {
+  background: #0b0b18;
+  padding: 1.5rem 2rem;
+  display: grid;
+  grid-template-columns: 60px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+  transition: background 0.15s;
+}
+.gh-step:hover { background: #0f0f20; }
+.gh-n {
+  font-family: var(--display);
+  font-size: 2.5rem;
+  color: rgba(255,255,255,0.08);
+  line-height: 1;
+  letter-spacing: 0.05em;
+  text-align: center;
+  padding-top: 4px;
+}
+.gh-step:hover .gh-n { color: var(--accent); }
+.gh-step h4 { font-size: 15px; font-weight: 600; color: var(--paper); margin-bottom: 6px; }
+.gh-step p { font-size: 13px; color: rgba(255,255,255,0.4); line-height: 1.8; }
+.gh-step code {
+  display: inline-block;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: #22d3a5;
+}
+.gh-step .url-badge {
+  display: inline-block;
+  margin-top: 10px;
+  background: rgba(232,74,30,0.15);
+  border: 1px solid rgba(232,74,30,0.25);
+  color: #ff6b45;
+  padding: 5px 14px;
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+}
+
+/* ── FOOTER ── */
+footer {
+  background: var(--ink);
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding: 2rem;
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: rgba(255,255,255,0.25);
+  letter-spacing: 0.06em;
+}
+footer a { color: rgba(255,255,255,0.45); text-decoration: none; }
+footer a:hover { color: var(--accent); }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+.hero-left > * { animation: fadeUp 0.6s ease both; }
+.hero-left > *:nth-child(1) { animation-delay: 0.1s; }
+.hero-left > *:nth-child(2) { animation-delay: 0.2s; }
+.hero-left > *:nth-child(3) { animation-delay: 0.3s; }
+.hero-left > *:nth-child(4) { animation-delay: 0.4s; }
+.hero-terminal { animation: fadeUp 0.6s ease 0.3s both; }
+
+@media (max-width: 768px) {
+  .hero { grid-template-columns: 1fr; min-height: auto; padding-top: 3rem; gap: 2rem; }
+  .hero-terminal { display: none; }
+  .main-cards { grid-template-columns: 1fr; }
+  .mini-cards { grid-template-columns: 1fr 1fr; }
+  .weeks-grid { grid-template-columns: 1fr 1fr; }
+  .about-strip { grid-template-columns: 1fr; gap: 2rem; }
+  .strip-header { flex-direction: column; align-items: start; gap: 0.5rem; }
+  .nav-links a:not(.nav-cta) { display: none; }
+  .stats-bar { gap: 2rem; padding: 2rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span class="marquee-item hi">● LIVE</span>
+    <span class="marquee-item">Docker</span>
+    <span class="marquee-item">Kubernetes</span>
+    <span class="marquee-item">Terraform</span>
+    <span class="marquee-item">CI/CD</span>
+    <span class="marquee-item">GitHub Actions</span>
+    <span class="marquee-item">Prometheus</span>
+    <span class="marquee-item">Grafana</span>
+    <span class="marquee-item hi">● FREE FOREVER</span>
+    <span class="marquee-item">Linux</span>
+    <span class="marquee-item">Shell Scripting</span>
+    <span class="marquee-item">Helm</span>
+    <span class="marquee-item">Minikube</span>
+    <span class="marquee-item">GKE</span>
+    <span class="marquee-item hi">● 30 DAYS</span>
+    <span class="marquee-item">Docker</span>
+    <span class="marquee-item">Kubernetes</span>
+    <span class="marquee-item">Terraform</span>
+    <span class="marquee-item">CI/CD</span>
+    <span class="marquee-item">GitHub Actions</span>
+    <span class="marquee-item">Prometheus</span>
+    <span class="marquee-item">Grafana</span>
+    <span class="marquee-item hi">● FREE FOREVER</span>
+    <span class="marquee-item">Linux</span>
+    <span class="marquee-item">Shell Scripting</span>
+    <span class="marquee-item">Helm</span>
+    <span class="marquee-item">Minikube</span>
+    <span class="marquee-item">GKE</span>
+    <span class="marquee-item hi">● 30 DAYS</span>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">MY <span>DEVOPS</span> PORTAL</a>
+  <div class="nav-links">
+    <a href="devops-bible.html">Bible</a>
+    <a href="30day-challenge.html">Challenge</a>
+    <a href="resume-guide.html">Resume Guide</a>
+    <a href="#guide">GitHub Guide</a>
+    <a href="devops-bible.html" class="nav-cta">Start Now →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow">Zero to Interview-Ready · All Free</div>
+    <h1 class="hero-h1">
+      BECOME<br>
+      A <span class="red">DEVOPS</span><br>
+      <span class="outline">ENGINEER</span>
+    </h1>
+    <p class="hero-desc">The complete free DevOps learning system. Docker, Kubernetes, Terraform, CI/CD. Two resources — a full Bible and a 30-Day Challenge. Built for serious learners.</p>
+    <div class="hero-btns">
+      <a href="devops-bible.html" class="btn-primary">📖 Open the Bible →</a>
+      <a href="30day-challenge.html" class="btn-secondary">📅 30-Day Challenge</a>
+    </div>
+  </div>
+  <div class="hero-terminal">
+    <div class="t-titlebar">
+      <div class="t-dot td1"></div><div class="t-dot td2"></div><div class="t-dot td3"></div>
+      <span class="t-title">my-devops-portal — day 30</span>
+    </div>
+    <div class="t-body">
+      <div><span class="t-prompt">$ </span><span class="t-cmd">git push origin main</span></div>
+      <div class="t-out">Enumerating objects: 5, done.</div>
+      <div class="t-out">Writing objects: 100% (5/5), 1.23 KiB</div>
+      <div class="t-ok">✓ Pushed to github.com/you/taskapi</div>
+      <br>
+      <div><span class="t-prompt">$ </span><span class="t-cmd">watch kubectl get pods</span></div>
+      <div class="t-out">NAME                      READY   STATUS</div>
+      <div class="t-yellow">taskapi-6d4f9b-xk2p1      1/1     Terminating</div>
+      <div class="t-blue">taskapi-7c8a2d-mn9q3      0/1     ContainerCreating</div>
+      <div class="t-ok">taskapi-7c8a2d-mn9q3      1/1     Running ✓</div>
+      <br>
+      <div><span class="t-prompt">$ </span><span class="t-cmd">curl https://taskapi.yourdomain.com/health</span></div>
+      <div class="t-ok">{"status":"ok","version":"2.1.0","uptime":"99.9%"}</div>
+      <br>
+      <div><span class="t-prompt">$ </span><span class="t-blue">▌</span><span class="cursor"></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat"><div class="stat-n">30<span>D</span></div><div class="stat-l">to master it</div></div>
+  <div class="stat"><div class="stat-n">12<span>+</span></div><div class="stat-l">tools covered</div></div>
+  <div class="stat"><div class="stat-n">₹<span>0</span></div><div class="stat-l">total cost</div></div>
+  <div class="stat"><div class="stat-n">1<span>K+</span></div><div class="stat-l">commands explained</div></div>
+  <div class="stat"><div class="stat-n">∞</div><div class="stat-l">interviews cracked</div></div>
+</div>
+
+<!-- TOOLS SCROLL -->
+<div class="tools-strip">
+  <div class="tools-track">
+    <div class="tool-chip">🐧 Linux</div>
+    <div class="tool-chip">🐙 Git</div>
+    <div class="tool-chip">🐳 Docker</div>
+    <div class="tool-chip">☸️ Kubernetes</div>
+    <div class="tool-chip">🏗️ Terraform</div>
+    <div class="tool-chip">⚙️ GitHub Actions</div>
+    <div class="tool-chip">⛵ Helm</div>
+    <div class="tool-chip">📈 Prometheus</div>
+    <div class="tool-chip">📊 Grafana</div>
+    <div class="tool-chip">☁️ GCP</div>
+    <div class="tool-chip">📝 Shell Script</div>
+    <div class="tool-chip">💻 VS Code SSH</div>
+    <div class="tool-chip">🐧 Linux</div>
+    <div class="tool-chip">🐙 Git</div>
+    <div class="tool-chip">🐳 Docker</div>
+    <div class="tool-chip">☸️ Kubernetes</div>
+    <div class="tool-chip">🏗️ Terraform</div>
+    <div class="tool-chip">⚙️ GitHub Actions</div>
+    <div class="tool-chip">⛵ Helm</div>
+    <div class="tool-chip">📈 Prometheus</div>
+    <div class="tool-chip">📊 Grafana</div>
+    <div class="tool-chip">☁️ GCP</div>
+    <div class="tool-chip">📝 Shell Script</div>
+    <div class="tool-chip">💻 VS Code SSH</div>
+  </div>
+</div>
+
+<!-- MAIN CARDS -->
+<section class="cards-section">
+  <div class="section-header">
+    <div class="s-eyebrow">// two resources. one mission.</div>
+    <div class="s-title">PICK YOUR<br><span>WEAPON</span></div>
+  </div>
+
+  <div class="main-cards">
+    <a href="devops-bible.html" class="card-bible">
+      <div class="card-num">01</div>
+      <div class="card-label">📖 Reference Guide</div>
+      <h2>THE<br>DEVOPS<br>BIBLE</h2>
+      <p>Every tool, every command, every concept. Accounts to monitoring. The single page you keep open during your entire DevOps journey.</p>
+      <div class="pills">
+        <span class="pill pill-light">Linux</span>
+        <span class="pill pill-light">Docker</span>
+        <span class="pill pill-light">Kubernetes</span>
+        <span class="pill pill-light">Terraform</span>
+        <span class="pill pill-light">CI/CD</span>
+        <span class="pill pill-light">Monitoring</span>
+        <span class="pill pill-light">Error Bible</span>
+        <span class="pill pill-light">Interview Q&A</span>
+      </div>
+      <div class="cta">Open Bible →</div>
+    </a>
+
+    <a href="30day-challenge.html" class="card-30">
+      <div class="card-num">02</div>
+      <div class="card-label">📅 Structured Plan</div>
+      <h2>30-DAY<br>CHALLENGE</h2>
+      <p>One deliverable per day. Track your progress. Each day builds on the last. From zero to a fully deployed app on Kubernetes.</p>
+      <div class="pills" style="margin-bottom:2rem;">
+        <span class="pill" style="background:rgba(26,86,240,0.07);color:var(--accent2);border:1px solid rgba(26,86,240,0.12);">Week 1 Linux+Git</span>
+        <span class="pill" style="background:rgba(26,86,240,0.07);color:var(--accent2);border:1px solid rgba(26,86,240,0.12);">Week 2 Docker</span>
+        <span class="pill" style="background:rgba(26,86,240,0.07);color:var(--accent2);border:1px solid rgba(26,86,240,0.12);">Week 3 K8s+Terraform</span>
+        <span class="pill" style="background:rgba(26,86,240,0.07);color:var(--accent2);border:1px solid rgba(26,86,240,0.12);">Week 4 CI/CD+Monitor</span>
+      </div>
+      <div class="cta">Start Day 1 →</div>
+    </a>
+  </div>
+
+
+  <!-- RESUME CARD -->
+  <div style="margin-top:1.5rem;">
+    <a href="resume-guide.html" style="display:block;background:linear-gradient(135deg,#0a1628 0%,#0d1f3c 100%);border-radius:12px;padding:2.5rem;text-decoration:none;position:relative;overflow:hidden;transition:transform .2s;border:1px solid rgba(79,142,247,0.2);" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
+      <div style="position:absolute;right:-10px;bottom:-20px;font-size:10rem;opacity:.05;pointer-events:none;">📄</div>
+      <div style="position:absolute;top:2rem;right:2rem;font-family:var(--display);font-size:5rem;color:rgba(79,142,247,0.06);line-height:1;letter-spacing:.05em;">03</div>
+      <span style="font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;padding:4px 12px;border-radius:100px;background:rgba(79,142,247,0.12);color:#6ba3ff;border:1px solid rgba(79,142,247,0.2);display:inline-block;margin-bottom:1.5rem;">📄 Career Guide</span>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:center;">
+        <div>
+          <h2 style="font-family:var(--display);font-size:3rem;color:#f5f2eb;line-height:1;letter-spacing:.05em;margin-bottom:1rem;">RESUME<br>+ JOB<br>GUIDE</h2>
+          <p style="font-size:14px;color:rgba(245,242,235,0.45);line-height:1.8;margin-bottom:1.5rem;">Exactly what to write on your resume after Day 30. Skills list, project descriptions, LinkedIn, what recruiters look for. Land a job ASAP.</p>
+          <span style="display:inline-flex;align-items:center;gap:8px;background:#4f8ef7;color:#fff;padding:12px 24px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;border-radius:4px;font-weight:600;">Get the Guide →</span>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+          <span style="font-family:var(--mono);font-size:11px;padding:5px 12px;border-radius:100px;background:rgba(79,142,247,0.1);color:#6ba3ff;border:1px solid rgba(79,142,247,0.15);">Skills to list</span>
+          <span style="font-family:var(--mono);font-size:11px;padding:5px 12px;border-radius:100px;background:rgba(79,142,247,0.1);color:#6ba3ff;border:1px solid rgba(79,142,247,0.15);">Project bullet points</span>
+          <span style="font-family:var(--mono);font-size:11px;padding:5px 12px;border-radius:100px;background:rgba(79,142,247,0.1);color:#6ba3ff;border:1px solid rgba(79,142,247,0.15);">LinkedIn profile</span>
+          <span style="font-family:var(--mono);font-size:11px;padding:5px 12px;border-radius:100px;background:rgba(79,142,247,0.1);color:#6ba3ff;border:1px solid rgba(79,142,247,0.15);">Copy-paste resume</span>
+          <span style="font-family:var(--mono);font-size:11px;padding:5px 12px;border-radius:100px;background:rgba(79,142,247,0.1);color:#6ba3ff;border:1px solid rgba(79,142,247,0.15);">What NOT to write</span>
+          <span style="font-family:var(--mono);font-size:11px;padding:5px 12px;border-radius:100px;background:rgba(79,142,247,0.1);color:#6ba3ff;border:1px solid rgba(79,142,247,0.15);">Job search strategy</span>
+          <span style="font-family:var(--mono);font-size:11px;padding:5px 12px;border-radius:100px;background:rgba(34,211,165,0.1);color:#22d3a5;border:1px solid rgba(34,211,165,0.2);">FREE</span>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <div class="mini-cards">
+    <div class="mini-card"><div class="mini-icon">🆓</div><div class="mini-title">Completely Free</div><div class="mini-desc">GCP $300 credit covers everything. No paid tools. No paid courses. Ever.</div></div>
+    <div class="mini-card"><div class="mini-icon">🎯</div><div class="mini-title">Interview Ready</div><div class="mini-desc">10 real interview Q&As with perfect answers. Used by engineers at top companies.</div></div>
+    <div class="mini-card"><div class="mini-icon">📋</div><div class="mini-title">Progress Tracker</div><div class="mini-desc">Check off each day. Progress saves in your browser. Never lose your place.</div></div>
+    <div class="mini-card"><div class="mini-icon">🔧</div><div class="mini-title">Real Project</div><div class="mini-desc">Build TaskAPI — a real app — from scratch to live on cloud Kubernetes.</div></div>
+  </div>
+</section>
+
+<!-- ROADMAP STRIP -->
+<section class="roadmap-strip">
+  <div class="strip-inner">
+    <div class="strip-header">
+      <div class="strip-title">THE <span>30-DAY</span><br>JOURNEY</div>
+      <div class="strip-sub">// one deliverable per day<br>// everything builds on the last</div>
+    </div>
+    <div class="weeks-grid">
+      <div class="week-col">
+        <div class="wc-num wc-n1">WK1</div>
+        <div class="wc-title">Linux + Git + VM</div>
+        <div class="wc-days">
+          <div class="wc-day">GCP Cloud VM setup</div>
+          <div class="wc-day">Master install script</div>
+          <div class="wc-day">Linux crash course</div>
+          <div class="wc-day">Git + GitHub</div>
+          <div class="wc-day">Write TaskAPI app</div>
+          <div class="wc-day">Shell scripting</div>
+          <div class="wc-day">VS Code SSH</div>
+        </div>
+      </div>
+      <div class="week-col">
+        <div class="wc-num wc-n2">WK2</div>
+        <div class="wc-title">Docker</div>
+        <div class="wc-days">
+          <div class="wc-day">Docker concepts</div>
+          <div class="wc-day">Write Dockerfile</div>
+          <div class="wc-day">Build + run image</div>
+          <div class="wc-day">Docker Compose</div>
+          <div class="wc-day">Tests in container</div>
+          <div class="wc-day">Push to Docker Hub</div>
+          <div class="wc-day">Security + multi-stage</div>
+        </div>
+      </div>
+      <div class="week-col">
+        <div class="wc-num wc-n3">WK3</div>
+        <div class="wc-title">Kubernetes + Terraform</div>
+        <div class="wc-days">
+          <div class="wc-day">Minikube local cluster</div>
+          <div class="wc-day">deployment.yaml</div>
+          <div class="wc-day">Service + Ingress</div>
+          <div class="wc-day">Terraform main.tf</div>
+          <div class="wc-day">Real GKE cluster</div>
+          <div class="wc-day">Deploy to cloud</div>
+          <div class="wc-day">Scale + rollback</div>
+        </div>
+      </div>
+      <div class="week-col">
+        <div class="wc-num wc-n4">WK4</div>
+        <div class="wc-title">CI/CD + Monitoring</div>
+        <div class="wc-days">
+          <div class="wc-day">GitHub Actions CI</div>
+          <div class="wc-day">Auto-deploy pipeline</div>
+          <div class="wc-day">Helm chart</div>
+          <div class="wc-day">Prometheus + Grafana</div>
+          <div class="wc-day">/metrics endpoint</div>
+          <div class="wc-day">Liveness probes</div>
+          <div class="wc-day">🎉 Live on internet</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about-strip">
+  <div class="about-left">
+    <div class="big-text">WHY THIS<br>EXISTS<span>.</span></div>
+    <p>Most DevOps courses cost ₹50,000+. Most tutorials give you 10% of what you need. This is the resource I wish existed when I started — everything, free, in one place.</p>
+    <p>The Bible is your reference. The Challenge is your daily plan. Together they take you from opening a terminal for the first time to deploying a production-grade app on Kubernetes with a full CI/CD pipeline.</p>
+    <p style="color:var(--accent);font-weight:600;font-family:var(--mono);font-size:13px;letter-spacing:.05em;">— Built by Akshay · akshc15</p>
+  </div>
+  <div class="about-right">
+    <div class="feature-row"><div class="fr-icon">📖</div><div><div class="fr-title">The Bible — Your Permanent Reference</div><div class="fr-desc">Account creation → install scripts → annotated configs → error fixes → interview answers. One page, open always.</div></div></div>
+    <div class="feature-row"><div class="fr-icon">📅</div><div><div class="fr-title">The Challenge — Your Daily Structure</div><div class="fr-desc">30 days, 30 deliverables, one real project that grows from script to live K8s deployment.</div></div></div>
+    <div class="feature-row"><div class="fr-icon">🎯</div><div><div class="fr-title">Interview-First Design</div><div class="fr-desc">Every concept taught the way interviewers ask about it. Real Q&As with "say this" tips throughout.</div></div></div>
+    <div class="feature-row"><div class="fr-icon">☁️</div><div><div class="fr-title">All Free — GCP $300 Credit</div><div class="fr-desc">Real cloud, real Kubernetes cluster, real deployment — all free with Google's $300 trial credit.</div></div></div>
+  </div>
+</section>
+
+<!-- GITHUB GUIDE -->
+<section class="github-section" id="guide">
+  <div class="gh-inner">
+    <div class="gh-header">
+      <div class="gh-title">CREATE YOUR <span>OWN</span> SITE</div>
+      <div class="gh-sub">// new github.io · free forever · live in 10 minutes</div>
+    </div>
+    <div class="gh-steps">
+      <div class="gh-step">
+        <div class="gh-n">01</div>
+        <div>
+          <h4>Create a new GitHub account (or use existing)</h4>
+          <p>Go to <code>github.com</code> → Sign up → choose a username. This username becomes your URL. Pick something professional like <code>yourname-devops</code> or keep your existing username.</p>
+        </div>
+      </div>
+      <div class="gh-step">
+        <div class="gh-n">02</div>
+        <div>
+          <h4>Create the magic repository</h4>
+          <p>Click <code>+</code> (top right) → <code>New repository</code> → Repository name: <strong>type exactly</strong> <code>yourusername.github.io</code> (replace yourusername with your actual username) → tick <code>Public</code> → tick <code>Add a README file</code> → click <code>Create repository</code>. This exact naming is what activates GitHub Pages.</p>
+        </div>
+      </div>
+      <div class="gh-step">
+        <div class="gh-n">03</div>
+        <div>
+          <h4>Upload all 3 files</h4>
+          <p>Go to your new repo → click <code>Add file</code> → <code>Upload files</code> → drag all 3 files: <code>index.html</code>, <code>devops-bible.html</code>, <code>30day-challenge.html</code> → scroll down → click <code>Commit changes</code>.</p>
+        </div>
+      </div>
+      <div class="gh-step">
+        <div class="gh-n">04</div>
+        <div>
+          <h4>Enable GitHub Pages</h4>
+          <p>In your repo → click <code>Settings</code> tab → left sidebar scroll to <code>Pages</code> → Source: <code>Deploy from a branch</code> → Branch: <code>main</code> → folder: <code>/ (root)</code> → click <code>Save</code>. Wait 60 seconds.</p>
+          <div class="url-badge">✓ Your site is live at: yourusername.github.io</div>
+        </div>
+      </div>
+      <div class="gh-step">
+        <div class="gh-n">05</div>
+        <div>
+          <h4>Your 3 URLs are live</h4>
+          <p>
+            Homepage: <code>yourusername.github.io</code><br>
+            The Bible: <code>yourusername.github.io/devops-bible.html</code><br>
+            30-Day Challenge: <code>yourusername.github.io/30day-challenge.html</code>
+          </p>
+          <p style="margin-top:10px;color:rgba(255,255,255,0.25);font-size:13px;">Share these links. Put them in your resume. Add to LinkedIn. Every recruiter who sees this knows you're serious.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  My DevOps Portal · Built by <a href="#">Akshay (akshc15)</a> · Free forever ·
+  <a href="devops-bible.html">Bible</a> · <a href="30day-challenge.html">Challenge</a> · <a href="resume-guide.html">Resume Guide</a> ·
+  <a href="https://akshc15.github.io">Original Portal →</a>
+</footer>
+
+</body>
+</html>

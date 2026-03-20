@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>30-Day DevOps Challenge — akshc15</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --bg: #0a0a0f;
+    --bg2: #0f0f1a;
+    --bg3: #141428;
+    --card: #111120;
+    --border: #1e1e35;
+    --accent: #4f8ef7;
+    --accent2: #7c3aed;
+    --green: #22d3a5;
+    --yellow: #f59e0b;
+    --red: #f87171;
+    --pink: #f472b6;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --dim: #334155;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Space Grotesk', sans-serif;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* ── NAV ── */
+  nav {
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 54px;
+    position: sticky;
+    top: 0;
+    background: rgba(10,10,15,0.92);
+    backdrop-filter: blur(12px);
+    z-index: 100;
+  }
+  .nav-brand { font-family: var(--mono); font-size: 13px; color: var(--green); font-weight: 700; letter-spacing: 0.05em; }
+  .nav-links { display: flex; gap: 1.5rem; }
+  .nav-links a { font-family: var(--mono); font-size: 12px; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--text); }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 5rem 2rem 3rem;
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .badge {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--green);
+    background: rgba(34,211,165,0.08);
+    border: 1px solid rgba(34,211,165,0.2);
+    padding: 4px 14px;
+    border-radius: 100px;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .hero h1 {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+  }
+  .hero h1 span { color: var(--accent); }
+  .hero p {
+    color: var(--muted);
+    font-size: 1.05rem;
+    max-width: 600px;
+    margin: 0 auto 2rem;
+  }
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 2.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 2.5rem;
+  }
+  .stat { text-align: center; }
+  .stat-num { font-family: var(--mono); font-size: 1.8rem; font-weight: 700; color: var(--accent); }
+  .stat-label { font-size: 12px; color: var(--muted); font-family: var(--mono); }
+
+  /* ── PROGRESS BAR ── */
+  .progress-section {
+    max-width: 900px;
+    margin: 0 auto 3rem;
+    padding: 0 2rem;
+  }
+  .progress-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+  .progress-header span { font-family: var(--mono); font-size: 13px; color: var(--muted); }
+  .progress-header strong { font-family: var(--mono); font-size: 1.1rem; color: var(--green); }
+  .progress-bar-outer { background: var(--bg3); border-radius: 100px; height: 8px; overflow: hidden; }
+  .progress-bar-inner { height: 100%; background: linear-gradient(90deg, var(--green), var(--accent)); border-radius: 100px; transition: width 0.5s ease; }
+  .progress-days { display: flex; gap: 4px; margin-top: 1rem; flex-wrap: wrap; }
+  .day-dot {
+    width: 22px; height: 22px;
+    border-radius: 4px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px;
+    font-family: var(--mono);
+    color: var(--dim);
+  }
+  .day-dot.done { background: rgba(34,211,165,0.15); border-color: var(--green); color: var(--green); }
+  .day-dot:hover { border-color: var(--accent); }
+
+  /* ── SECTION HEADERS ── */
+  .section {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 2rem 4rem;
+  }
+  .section-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+  .section-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+  }
+  .section-sub { color: var(--muted); font-size: 14px; margin-bottom: 2rem; }
+
+  /* ── BIG PICTURE (mental model) ── */
+  .mental-model {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
+  .story-box {
+    background: var(--bg3);
+    border-left: 3px solid var(--accent);
+    padding: 1rem 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 1.5rem;
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+  .story-box strong { color: var(--text); }
+  .pipeline-visual {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 1rem 0;
+  }
+  .pipe-step {
+    text-align: center;
+    padding: 0.75rem 1rem;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    min-width: 100px;
+  }
+  .pipe-step .icon { font-size: 1.4rem; margin-bottom: 4px; }
+  .pipe-step .name { font-family: var(--mono); font-size: 11px; color: var(--accent); }
+  .pipe-step .tool { font-size: 10px; color: var(--muted); margin-top: 2px; }
+  .pipe-arrow { color: var(--dim); padding: 0 6px; font-size: 1.2rem; font-weight: 700; }
+
+  /* ── TOOL CARDS ── */
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  .tool-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .tool-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .tool-header { display: flex; align-items: center; gap: 10px; margin-bottom: 0.75rem; }
+  .tool-icon { font-size: 1.5rem; }
+  .tool-name { font-weight: 600; font-size: 15px; }
+  .tool-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 100px;
+    margin-left: auto;
+  }
+  .tag-docker { background: rgba(79,142,247,0.12); color: var(--accent); border: 1px solid rgba(79,142,247,0.2); }
+  .tag-k8s { background: rgba(34,211,165,0.1); color: var(--green); border: 1px solid rgba(34,211,165,0.2); }
+  .tag-cicd { background: rgba(245,158,11,0.1); color: var(--yellow); border: 1px solid rgba(245,158,11,0.2); }
+  .tool-analogy {
+    font-size: 13px;
+    color: var(--muted);
+    background: var(--bg3);
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    font-style: italic;
+  }
+  .tool-analogy strong { color: var(--yellow); font-style: normal; }
+  .tool-role { font-size: 13px; color: var(--text); }
+
+  /* ── WEEK CARDS ── */
+  .week {
+    margin-bottom: 2.5rem;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .week-header {
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border);
+  }
+  .week-header.w1 { background: linear-gradient(135deg, rgba(79,142,247,0.08), transparent); }
+  .week-header.w2 { background: linear-gradient(135deg, rgba(34,211,165,0.08), transparent); }
+  .week-header.w3 { background: linear-gradient(135deg, rgba(245,158,11,0.08), transparent); }
+  .week-header.w4 { background: linear-gradient(135deg, rgba(244,114,182,0.08), transparent); }
+  .week-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-weight: 700;
+  }
+  .w1 .week-num { background: rgba(79,142,247,0.15); color: var(--accent); }
+  .w2 .week-num { background: rgba(34,211,165,0.12); color: var(--green); }
+  .w3 .week-num { background: rgba(245,158,11,0.12); color: var(--yellow); }
+  .w4 .week-num { background: rgba(244,114,182,0.12); color: var(--pink); }
+  .week-title { font-size: 1.1rem; font-weight: 600; }
+  .week-desc { font-size: 13px; color: var(--muted); margin-left: auto; }
+
+  /* ── DAY ROWS ── */
+  .day-row {
+    display: grid;
+    grid-template-columns: 52px 1fr 1fr auto;
+    align-items: start;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    gap: 1rem;
+    transition: background 0.15s;
+  }
+  .day-row:last-child { border-bottom: none; }
+  .day-row:hover { background: rgba(255,255,255,0.015); }
+  .day-row.completed { background: rgba(34,211,165,0.03); }
+  .day-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    padding-top: 2px;
+  }
+  .day-num span {
+    display: block;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--dim);
+  }
+  .day-row.completed .day-num span { color: var(--green); }
+  .day-task { font-size: 14px; font-weight: 500; }
+  .day-task small {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 400;
+    margin-top: 3px;
+    font-family: var(--mono);
+  }
+  .day-deliverable {
+    font-size: 12px;
+    color: var(--muted);
+    font-family: var(--mono);
+    padding-top: 3px;
+  }
+  .day-deliverable::before { content: '→ '; color: var(--dim); }
+  .check-btn {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    border: 1.5px solid var(--border);
+    background: transparent;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    transition: all 0.15s;
+    flex-shrink: 0;
+    color: transparent;
+  }
+  .check-btn:hover { border-color: var(--green); }
+  .day-row.completed .check-btn {
+    background: rgba(34,211,165,0.15);
+    border-color: var(--green);
+    color: var(--green);
+  }
+
+  /* ── INSTALL GUIDE ── */
+  .install-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  .install-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .install-header {
+    padding: 0.9rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .install-header .iicon { font-size: 1.2rem; }
+  .install-header .iname { font-weight: 600; font-size: 14px; }
+  .install-header .istep {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    margin-left: auto;
+  }
+  .install-body { padding: 1.25rem; }
+  .install-body p { font-size: 13px; color: var(--muted); margin-bottom: 10px; }
+  .install-body .where {
+    background: rgba(79,142,247,0.07);
+    border: 1px solid rgba(79,142,247,0.15);
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 12px;
+    color: var(--text);
+    margin-bottom: 8px;
+    line-height: 1.6;
+  }
+  .install-body .where b { color: var(--accent); font-family: var(--mono); }
+  code, .cmd {
+    display: block;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--green);
+    margin: 6px 0;
+    white-space: pre;
+    overflow-x: auto;
+  }
+  .cmd-comment { color: var(--dim); }
+
+  /* ── INTERVIEW ── */
+  .interview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+    gap: 1rem;
+  }
+  .qa-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .qa-q {
+    padding: 1rem 1.25rem;
+    font-size: 14px;
+    font-weight: 500;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    display: flex;
+    align-items: start;
+    gap: 10px;
+    transition: background 0.15s;
+  }
+  .qa-q:hover { background: var(--bg3); }
+  .qa-q .qnum {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    background: rgba(79,142,247,0.1);
+    padding: 2px 7px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .qa-a {
+    padding: 1rem 1.25rem;
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.8;
+    display: none;
+    border-bottom: 1px solid var(--border);
+  }
+  .qa-a.open { display: block; }
+  .qa-a strong { color: var(--green); }
+  .qa-tip {
+    padding: 0.75rem 1.25rem;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--yellow);
+    background: rgba(245,158,11,0.05);
+    display: none;
+  }
+  .qa-tip.open { display: block; }
+
+  /* ── MISTAKES ── */
+  .mistakes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 1rem;
+  }
+  .mistake-card {
+    background: var(--card);
+    border: 1px solid rgba(248,113,113,0.2);
+    border-radius: 10px;
+    padding: 1.25rem;
+  }
+  .mistake-card .mtitle {
+    display: flex; align-items: center; gap: 8px;
+    font-weight: 600; font-size: 14px; margin-bottom: 8px;
+  }
+  .mistake-card .mtitle .mnum {
+    font-family: var(--mono); font-size: 10px;
+    background: rgba(248,113,113,0.1);
+    color: var(--red);
+    padding: 2px 8px; border-radius: 4px;
+  }
+  .mistake-card p { font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+  .fix-box {
+    background: rgba(34,211,165,0.06);
+    border: 1px solid rgba(34,211,165,0.15);
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 12px;
+    color: var(--green);
+    font-family: var(--mono);
+  }
+  .fix-box::before { content: '✓ FIX: '; opacity: 0.6; }
+
+  /* ── RESOURCES ── */
+  .resources-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
+  }
+  .res-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s, transform 0.2s;
+    display: block;
+  }
+  .res-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .res-card .ricon { font-size: 1.5rem; margin-bottom: 8px; }
+  .res-card .rtitle { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+  .res-card .rdesc { font-size: 12px; color: var(--muted); line-height: 1.6; }
+  .res-card .rlink { font-family: var(--mono); font-size: 11px; color: var(--accent); margin-top: 10px; }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem;
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+
+  /* ── CONCEPT BOX ── */
+  .concept-box {
+    margin-top: 1rem;
+    background: rgba(124,58,237,0.06);
+    border: 1px solid rgba(124,58,237,0.2);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .concept-box strong { color: #a78bfa; font-family: var(--mono); }
+
+  /* ── GITHUB SECTION ── */
+  .github-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 2rem;
+    align-items: center;
+  }
+  .github-box h3 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+  .github-box p { font-size: 13px; color: var(--muted); line-height: 1.7; }
+  .btn {
+    display: inline-block;
+    padding: 10px 22px;
+    border-radius: 8px;
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.15s;
+    white-space: nowrap;
+    cursor: pointer;
+    border: none;
+  }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: #3a7eef; }
+  .btn-outline { background: transparent; border: 1.5px solid var(--border); color: var(--text); }
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+  @media (max-width: 640px) {
+    .day-row { grid-template-columns: 40px 1fr; }
+    .day-deliverable, .check-btn { display: none; }
+    .github-box { grid-template-columns: 1fr; }
+    .pipeline-visual { gap: 4px; }
+    .pipe-arrow { display: none; }
+    nav { padding: 0 1rem; }
+    .nav-links { gap: 1rem; }
+    .hero { padding: 3rem 1.5rem 2rem; }
+    .section { padding: 0 1.5rem 3rem; }
+  }
+</style>
+</head>
+<body>
+<!-- SITE NAV -->
+<div style="background:#05050d;border-bottom:1px solid rgba(255,255,255,0.07);padding:0 1.5rem;height:46px;display:flex;align-items:center;justify-content:space-between;font-family:'DM Mono',monospace;position:sticky;top:0;z-index:999;backdrop-filter:blur(10px);">
+  <div style="display:flex;align-items:center;gap:1.5rem;">
+    <a href="index.html" style="font-size:13px;font-weight:700;color:#f5f2eb;text-decoration:none;letter-spacing:.08em;">← HOME</a>
+    <span style="color:rgba(255,255,255,0.15);font-size:11px;">|</span>
+    <span style="font-size:11px;color:rgba(255,255,255,0.3);letter-spacing:.1em;text-transform:uppercase;">DevOpsZero</span>
+  </div>
+  <div style="display:flex;align-items:center;gap:1.25rem;">
+    <a href="devops-bible.html" style="font-size:11px;color:rgba(255,255,255,0.4);text-decoration:none;letter-spacing:.08em;text-transform:uppercase;transition:color .15s;" onmouseover="this.style.color='#e84a1e'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">📖 Bible</a>
+    <a href="30day-challenge.html" style="font-size:11px;color:rgba(255,255,255,0.4);text-decoration:none;letter-spacing:.08em;text-transform:uppercase;" onmouseover="this.style.color='#4f8ef7'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">📅 Challenge</a>
+    <a href="resume-guide.html" style="font-size:11px;color:rgba(255,255,255,0.4);text-decoration:none;letter-spacing:.08em;text-transform:uppercase;" onmouseover="this.style.color='#4f8ef7'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">📄 Resume</a>
+    <a href="https://akshc15.github.io" style="font-size:11px;color:rgba(255,255,255,0.4);text-decoration:none;letter-spacing:.08em;text-transform:uppercase;" onmouseover="this.style.color='#22d3a5'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">akshc15 Portal</a>
+  </div>
+</div>
+
+
+<nav>
+  <span class="nav-brand">akshc15 — 30-Day Challenge</span>
+  <div class="nav-links">
+    <a href="https://akshc15.github.io/devpath.html">DevPath</a>
+    <a href="https://akshc15.github.io/dream-project.html">Dream Project</a>
+    <a href="https://akshc15.github.io/dream-interview.html">Interview Quiz</a>
+    <a href="https://akshc15.github.io/index.html">Portal</a>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="badge">📅 30-Day DevOps Challenge · 2026</div>
+  <h1>Zero to <span>Interview-Ready</span><br>DevOps Engineer</h1>
+  <p>Docker → Kubernetes → CI/CD. One real project. Every tool explained like you're 5. Every command copy-paste ready.</p>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-num">30</div><div class="stat-label">days</div></div>
+    <div class="stat"><div class="stat-num">8</div><div class="stat-label">tools</div></div>
+    <div class="stat"><div class="stat-num">1</div><div class="stat-label">project</div></div>
+    <div class="stat"><div class="stat-num">∞</div><div class="stat-label">jobs</div></div>
+  </div>
+</section>
+
+<!-- ── PROGRESS ── -->
+<div class="progress-section">
+  <div class="progress-card">
+    <div class="progress-header">
+      <span>Your progress</span>
+      <strong id="progress-text">0 / 30 days</strong>
+    </div>
+    <div class="progress-bar-outer">
+      <div class="progress-bar-inner" id="progress-bar" style="width:0%"></div>
+    </div>
+    <div class="progress-days" id="day-dots"></div>
+    <p style="font-size:12px;color:var(--muted);margin-top:10px;font-family:var(--mono);">Click any circle to mark a day complete. Progress saves in your browser automatically.</p>
+  </div>
+</div>
+
+<!-- ── BIG PICTURE ── -->
+<section class="section">
+  <div class="section-label">// understand first</div>
+  <div class="section-title">The Big Picture — Explained Like You're 5</div>
+  <div class="section-sub">Before any commands, understand WHAT you're building and WHY.</div>
+
+  <div class="mental-model">
+    <div class="story-box">
+      <strong>🧒 Imagine this story:</strong><br><br>
+      You bake a cake (your app). Right now the cake only works in YOUR kitchen (your laptop).
+      <strong>Docker</strong> puts the cake in a lunchbox — now it works in ANY kitchen, anywhere.<br><br>
+      But what if millions of people want cake? You need a <strong>factory</strong>.
+      <strong>Kubernetes</strong> is that factory — it runs hundreds of lunchboxes, replaces broken ones automatically, and scales up when orders spike.<br><br>
+      And instead of manually baking every time you change the recipe, you set up a <strong>robot assembly line</strong>.
+      That's <strong>CI/CD (GitHub Actions)</strong> — every time you push code, the robot tests it, bakes it, puts it in a lunchbox, and ships it to the factory. Automatically.<br><br>
+      <strong>That's the entire DevOps cycle. In 30 days, you'll build all of this.</strong>
+    </div>
+
+    <div class="pipeline-visual">
+      <div class="pipe-step"><div class="icon">💻</div><div class="name">YOU CODE</div><div class="tool">your laptop</div></div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step"><div class="icon">🐳</div><div class="name">DOCKER</div><div class="tool">lunchbox it</div></div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step"><div class="icon">📦</div><div class="name">REGISTRY</div><div class="tool">store it</div></div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step"><div class="icon">☸️</div><div class="name">KUBERNETES</div><div class="tool">run it</div></div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step"><div class="icon">📊</div><div class="name">MONITOR</div><div class="tool">watch it</div></div>
+    </div>
+    <div class="concept-box">
+      <strong>The loop that runs on every git push:</strong><br>
+      git push → GitHub Actions runs tests → builds Docker image → pushes to registry → updates Kubernetes → your new code is LIVE in 90 seconds.
+    </div>
+  </div>
+</section>
+
+<!-- ── TOOLS ── -->
+<section class="section">
+  <div class="section-label">// your toolkit</div>
+  <div class="section-title">8 Tools You Will Master</div>
+  <div class="section-sub">Each explained with a 5-year-old analogy + what it does in the real project.</div>
+
+  <div class="tools-grid">
+    <div class="tool-card">
+      <div class="tool-header">
+        <span class="tool-icon">🐳</span>
+        <span class="tool-name">Docker</span>
+        <span class="tool-tag tag-docker">Week 1</span>
+      </div>
+      <div class="tool-analogy">Like packing everything your app needs (code, libraries, settings) into one magic <strong>lunchbox</strong> that works anywhere.</div>
+      <div class="tool-role">Packages TaskAPI into a portable image that runs identically on your laptop, on a server, anywhere.</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-header">
+        <span class="tool-icon">🔧</span>
+        <span class="tool-name">Docker Compose</span>
+        <span class="tool-tag tag-docker">Week 1</span>
+      </div>
+      <div class="tool-analogy">Like a <strong>recipe card</strong> that says "start the app AND the database together with one command".</div>
+      <div class="tool-role">Runs TaskAPI + Postgres database together locally with <code style="display:inline;padding:1px 6px;font-size:11px;">docker-compose up</code></div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-header">
+        <span class="tool-icon">☸️</span>
+        <span class="tool-name">Kubernetes</span>
+        <span class="tool-tag tag-k8s">Week 2</span>
+      </div>
+      <div class="tool-analogy">The <strong>factory manager</strong>. You say "I want 3 copies of my app running". K8s makes it happen and fixes broken ones automatically.</div>
+      <div class="tool-role">Runs TaskAPI across multiple servers, auto-restarts crashed pods, scales on demand.</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-header">
+        <span class="tool-icon">🗂️</span>
+        <span class="tool-name">kubectl</span>
+        <span class="tool-tag tag-k8s">Week 2</span>
+      </div>
+      <div class="tool-analogy">The <strong>walkie-talkie</strong> you use to talk to Kubernetes. "Hey K8s, deploy this. Show me the pods. Scale to 5."</div>
+      <div class="tool-role">CLI tool to control everything in your Kubernetes cluster via commands.</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-header">
+        <span class="tool-icon">⚙️</span>
+        <span class="tool-name">GitHub Actions</span>
+        <span class="tool-tag tag-cicd">Week 3</span>
+      </div>
+      <div class="tool-analogy">A <strong>robot employee</strong>. Every time you push code, it automatically runs tests, builds, and deploys — no human needed.</div>
+      <div class="tool-role">Runs test → build Docker image → push to registry → deploy to K8s on every git push.</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-header">
+        <span class="tool-icon">📦</span>
+        <span class="tool-name">Container Registry</span>
+        <span class="tool-tag tag-cicd">Week 3</span>
+      </div>
+      <div class="tool-analogy">Like <strong>iCloud for Docker images</strong>. You upload your lunchbox there, and Kubernetes downloads it from there.</div>
+      <div class="tool-role">Docker Hub stores your built TaskAPI images. K8s pulls from here during deployment.</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-header">
+        <span class="tool-icon">⛵</span>
+        <span class="tool-name">Helm</span>
+        <span class="tool-tag tag-k8s">Week 4</span>
+      </div>
+      <div class="tool-analogy">Like an <strong>IKEA flat-pack kit</strong> for Kubernetes. Instead of writing 6 YAML files, you write one values file and Helm does the rest.</div>
+      <div class="tool-role">Packages all your K8s YAML files into one reusable chart. Deploy with one command.</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-header">
+        <span class="tool-icon">📈</span>
+        <span class="tool-name">Prometheus + Grafana</span>
+        <span class="tool-tag tag-k8s">Week 4</span>
+      </div>
+      <div class="tool-analogy">Prometheus is the <strong>doctor taking vitals</strong>. Grafana is the <strong>screen showing the heart monitor</strong>.</div>
+      <div class="tool-role">Scrapes /metrics from TaskAPI and displays CPU, memory, request rate on a live dashboard.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── INSTALL GUIDE ── -->
+<section class="section">
+  <div class="section-label">// before day 1</div>
+  <div class="section-title">Install Everything — Step by Step</div>
+  <div class="section-sub">From scratch. Where to click. What to type. Nothing assumed.</div>
+
+  <div class="install-grid">
+    <div class="install-card">
+      <div class="install-header">
+        <span class="iicon">🐳</span>
+        <span class="iname">Docker Desktop</span>
+        <span class="istep">Step 1</span>
+      </div>
+      <div class="install-body">
+        <p>Docker Desktop runs Docker on your Mac/Windows. It gives you a nice UI and the docker command in terminal.</p>
+        <div class="where"><b>Where to go:</b> Open Chrome → go to <b>docker.com/products/docker-desktop</b> → click the big green Download button → pick Mac (Apple chip) or Mac (Intel) → open the .dmg file → drag Docker to Applications → open Docker from Applications → wait for the whale icon to stop moving in your menu bar ✓</div>
+        <code>docker --version
+# Should print: Docker version 25.x.x</code>
+      </div>
+    </div>
+
+    <div class="install-card">
+      <div class="install-header">
+        <span class="iicon">☸️</span>
+        <span class="iname">Minikube (local K8s)</span>
+        <span class="istep">Step 2</span>
+      </div>
+      <div class="install-body">
+        <p>Minikube creates a tiny Kubernetes cluster on your own laptop. Free. No cloud needed to learn.</p>
+        <div class="where"><b>Mac (Homebrew):</b> Open Terminal → paste these commands one by one:</div>
+        <code>/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+brew install minikube
+brew install kubectl
+minikube start</code>
+        <div class="where"><b>Windows:</b> Go to <b>minikube.sigs.k8s.io</b> → Installation → Windows → download the .exe → run it → open new terminal → type <b>minikube start</b></div>
+      </div>
+    </div>
+
+    <div class="install-card">
+      <div class="install-header">
+        <span class="iicon">🐙</span>
+        <span class="iname">Git + GitHub</span>
+        <span class="istep">Step 3</span>
+      </div>
+      <div class="install-body">
+        <p>Git saves versions of your code. GitHub stores it online and runs your CI/CD pipeline.</p>
+        <div class="where"><b>Install Git:</b> Mac → open Terminal → type <b>git --version</b> (Mac auto-installs it). Windows → go to <b>git-scm.com</b> → Download → run installer → all defaults → Finish.</div>
+        <div class="where"><b>GitHub account:</b> Go to <b>github.com</b> → Sign up (free) → verify email → done.</div>
+        <code>git config --global user.name "Your Name"
+git config --global user.email "<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0d7462784d68606c6461236e6260">[email&#160;protected]</a>"</code>
+      </div>
+    </div>
+
+    <div class="install-card">
+      <div class="install-header">
+        <span class="iicon">🐍</span>
+        <span class="iname">Python + FastAPI</span>
+        <span class="istep">Step 4</span>
+      </div>
+      <div class="install-body">
+        <p>This is the app we'll build, containerize, and deploy across all 30 days — TaskAPI.</p>
+        <div class="where"><b>Install Python:</b> Go to <b>python.org/downloads</b> → click yellow Download button → run installer → ✅ tick "Add Python to PATH" (important!) → Install Now.</div>
+        <code>python --version   # should say 3.11+
+pip install fastapi uvicorn
+# Now you can run the app!</code>
+      </div>
+    </div>
+
+    <div class="install-card">
+      <div class="install-header">
+        <span class="iicon">⛵</span>
+        <span class="iname">Helm</span>
+        <span class="istep">Step 5 — Week 4</span>
+      </div>
+      <div class="install-body">
+        <p>Install in Week 4. Helm is the package manager for Kubernetes — like npm but for K8s apps.</p>
+        <div class="where"><b>Mac:</b> Open Terminal → <code style="display:inline;padding:1px 4px;font-size:11px;">brew install helm</code><br><b>Windows:</b> Open PowerShell as admin → <code style="display:inline;padding:1px 4px;font-size:11px;">choco install kubernetes-helm</code></div>
+        <code>helm version
+# version.BuildInfo{Version:"v3.x.x"...}</code>
+      </div>
+    </div>
+
+    <div class="install-card">
+      <div class="install-header">
+        <span class="iicon">🔑</span>
+        <span class="iname">GitHub Secrets (CI/CD)</span>
+        <span class="istep">Step 6 — Week 3</span>
+      </div>
+      <div class="install-body">
+        <p>Your pipeline needs passwords (Docker Hub, K8s config) stored safely — not in your code.</p>
+        <div class="where"><b>Where to click:</b> Go to your GitHub repo → click <b>Settings</b> tab → left sidebar click <b>Secrets and variables</b> → <b>Actions</b> → click <b>New repository secret</b> → Name: <b>DOCKERHUB_USERNAME</b> → paste your Docker Hub username → Add secret. Repeat for <b>DOCKERHUB_TOKEN</b> (get token from hub.docker.com → Account Settings → Security → New Access Token).</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── 30 DAY ROADMAP ── -->
+<section class="section">
+  <div class="section-label">// the plan</div>
+  <div class="section-title">30-Day Roadmap</div>
+  <div class="section-sub">Click ✓ on each day as you complete it. One real deliverable per day.</div>
+
+  <!-- WEEK 1 -->
+  <div class="week">
+    <div class="week-header w1">
+      <span class="week-num">WEEK 1</span>
+      <span class="week-title">🐳 Docker — Pack Your App in a Box</span>
+      <span class="week-desc">Days 1–7</span>
+    </div>
+    <div id="week1-rows">
+      <div class="day-row" data-day="1">
+        <div class="day-num">DAY <span>01</span></div>
+        <div class="day-task">Install Docker + run hello-world<small>docker run hello-world</small></div>
+        <div class="day-deliverable">Docker whale icon in menu bar, hello-world printed</div>
+        <button class="check-btn" onclick="toggleDay(1)">✓</button>
+      </div>
+      <div class="day-row" data-day="2">
+        <div class="day-num">DAY <span>02</span></div>
+        <div class="day-task">Write TaskAPI app code<small>app/main.py — FastAPI with /health and /tasks</small></div>
+        <div class="day-deliverable">uvicorn app.main:app runs, test at localhost:8000/health</div>
+        <button class="check-btn" onclick="toggleDay(2)">✓</button>
+      </div>
+      <div class="day-row" data-day="3">
+        <div class="day-num">DAY <span>03</span></div>
+        <div class="day-task">Write Dockerfile + build image<small>docker build -t taskapi .</small></div>
+        <div class="day-deliverable">docker images shows taskapi listed</div>
+        <button class="check-btn" onclick="toggleDay(3)">✓</button>
+      </div>
+      <div class="day-row" data-day="4">
+        <div class="day-num">DAY <span>04</span></div>
+        <div class="day-task">Run container, test the API<small>docker run -p 8000:8000 taskapi</small></div>
+        <div class="day-deliverable">curl localhost:8000/health returns {"status":"ok"}</div>
+        <button class="check-btn" onclick="toggleDay(4)">✓</button>
+      </div>
+      <div class="day-row" data-day="5">
+        <div class="day-num">DAY <span>05</span></div>
+        <div class="day-task">Write docker-compose.yml + add Postgres<small>docker-compose up</small></div>
+        <div class="day-deliverable">App + DB both running, docker-compose ps shows green</div>
+        <button class="check-btn" onclick="toggleDay(5)">✓</button>
+      </div>
+      <div class="day-row" data-day="6">
+        <div class="day-num">DAY <span>06</span></div>
+        <div class="day-task">Write tests + run them inside container<small>docker-compose run app pytest</small></div>
+        <div class="day-deliverable">pytest shows 3 passed in green</div>
+        <button class="check-btn" onclick="toggleDay(6)">✓</button>
+      </div>
+      <div class="day-row" data-day="7">
+        <div class="day-num">DAY <span>07</span></div>
+        <div class="day-task">Push image to Docker Hub<small>docker push yourusername/taskapi</small></div>
+        <div class="day-deliverable">Image visible at hub.docker.com/u/yourusername/taskapi</div>
+        <button class="check-btn" onclick="toggleDay(7)">✓</button>
+      </div>
+    </div>
+    <div class="concept-box" style="margin:0;border-radius:0 0 12px 12px;border-top:1px solid var(--border);">
+      <strong>Week 1 interview concept:</strong> "A Docker image is a read-only template. A container is a running instance of that image — like a class vs an object in programming."
+    </div>
+  </div>
+
+  <!-- WEEK 2 -->
+  <div class="week" style="margin-top:1.5rem;">
+    <div class="week-header w2">
+      <span class="week-num">WEEK 2</span>
+      <span class="week-title">☸️ Kubernetes — Run It at Scale</span>
+      <span class="week-desc">Days 8–14</span>
+    </div>
+    <div id="week2-rows">
+      <div class="day-row" data-day="8">
+        <div class="day-num">DAY <span>08</span></div>
+        <div class="day-task">Install Minikube + start local cluster<small>minikube start</small></div>
+        <div class="day-deliverable">kubectl get nodes shows 1 node Ready</div>
+        <button class="check-btn" onclick="toggleDay(8)">✓</button>
+      </div>
+      <div class="day-row" data-day="9">
+        <div class="day-num">DAY <span>09</span></div>
+        <div class="day-task">Write k8s/deployment.yaml<small>Understand: Pod, ReplicaSet, Deployment</small></div>
+        <div class="day-deliverable">File written, understand what each line means</div>
+        <button class="check-btn" onclick="toggleDay(9)">✓</button>
+      </div>
+      <div class="day-row" data-day="10">
+        <div class="day-num">DAY <span>10</span></div>
+        <div class="day-task">Apply deployment — see pods running<small>kubectl apply -f k8s/deployment.yaml</small></div>
+        <div class="day-deliverable">kubectl get pods shows 2/2 Running</div>
+        <button class="check-btn" onclick="toggleDay(10)">✓</button>
+      </div>
+      <div class="day-row" data-day="11">
+        <div class="day-num">DAY <span>11</span></div>
+        <div class="day-task">Write service.yaml + expose the app<small>kubectl apply -f k8s/service.yaml</small></div>
+        <div class="day-deliverable">minikube service taskapi-svc opens app in browser</div>
+        <button class="check-btn" onclick="toggleDay(11)">✓</button>
+      </div>
+      <div class="day-row" data-day="12">
+        <div class="day-num">DAY <span>12</span></div>
+        <div class="day-task">Scale to 3 replicas — zero downtime<small>kubectl scale deployment taskapi --replicas=3</small></div>
+        <div class="day-deliverable">kubectl get pods shows 3 running pods</div>
+        <button class="check-btn" onclick="toggleDay(12)">✓</button>
+      </div>
+      <div class="day-row" data-day="13">
+        <div class="day-num">DAY <span>13</span></div>
+        <div class="day-task">Rolling update — change image version<small>kubectl set image deployment/taskapi taskapi=yourusername/taskapi:v2</small></div>
+        <div class="day-deliverable">kubectl rollout status shows "successfully rolled out"</div>
+        <button class="check-btn" onclick="toggleDay(13)">✓</button>
+      </div>
+      <div class="day-row" data-day="14">
+        <div class="day-num">DAY <span>14</span></div>
+        <div class="day-task">Write ingress.yaml + set up Ingress<small>Expose app via hostname instead of IP</small></div>
+        <div class="day-deliverable">taskapi.local in browser loads the app</div>
+        <button class="check-btn" onclick="toggleDay(14)">✓</button>
+      </div>
+    </div>
+    <div class="concept-box" style="margin:0;border-radius:0 0 12px 12px;border-top:1px solid var(--border);">
+      <strong>Week 2 interview concept:</strong> "Kubernetes is declarative — you describe the desired state in YAML, and K8s makes it happen. If a pod crashes, K8s restarts it automatically to match the desired state."
+    </div>
+  </div>
+
+  <!-- WEEK 3 -->
+  <div class="week" style="margin-top:1.5rem;">
+    <div class="week-header w3">
+      <span class="week-num">WEEK 3</span>
+      <span class="week-title">⚙️ CI/CD — Automate Everything</span>
+      <span class="week-desc">Days 15–21</span>
+    </div>
+    <div id="week3-rows">
+      <div class="day-row" data-day="15">
+        <div class="day-num">DAY <span>15</span></div>
+        <div class="day-task">Create GitHub repo + push TaskAPI code<small>git init, git push</small></div>
+        <div class="day-deliverable">github.com/yourusername/taskapi repo live with all files</div>
+        <button class="check-btn" onclick="toggleDay(15)">✓</button>
+      </div>
+      <div class="day-row" data-day="16">
+        <div class="day-num">DAY <span>16</span></div>
+        <div class="day-task">Write .github/workflows/ci.yml — run tests<small>On every push: pip install + pytest</small></div>
+        <div class="day-deliverable">GitHub Actions tab shows green checkmark on push</div>
+        <button class="check-btn" onclick="toggleDay(16)">✓</button>
+      </div>
+      <div class="day-row" data-day="17">
+        <div class="day-num">DAY <span>17</span></div>
+        <div class="day-task">Add Docker build + push step to CI<small>docker/build-push-action in workflow</small></div>
+        <div class="day-deliverable">New image auto-appears on Docker Hub after push</div>
+        <button class="check-btn" onclick="toggleDay(17)">✓</button>
+      </div>
+      <div class="day-row" data-day="18">
+        <div class="day-num">DAY <span>18</span></div>
+        <div class="day-task">Add deploy step: kubectl apply from CI<small>Full pipeline: push code → live in 90 seconds</small></div>
+        <div class="day-deliverable">git push → GitHub Actions → new version live in K8s</div>
+        <button class="check-btn" onclick="toggleDay(18)">✓</button>
+      </div>
+      <div class="day-row" data-day="19">
+        <div class="day-num">DAY <span>19</span></div>
+        <div class="day-task">Add secrets to GitHub<small>DOCKERHUB_USERNAME, DOCKERHUB_TOKEN, KUBECONFIG</small></div>
+        <div class="day-deliverable">Pipeline uses secrets, no passwords visible in code</div>
+        <button class="check-btn" onclick="toggleDay(19)">✓</button>
+      </div>
+      <div class="day-row" data-day="20">
+        <div class="day-num">DAY <span>20</span></div>
+        <div class="day-task">Add staging vs production environments<small>main branch → prod, staging branch → staging</small></div>
+        <div class="day-deliverable">Two separate K8s namespaces: staging + production</div>
+        <button class="check-btn" onclick="toggleDay(20)">✓</button>
+      </div>
+      <div class="day-row" data-day="21">
+        <div class="day-num">DAY <span>21</span></div>
+        <div class="day-task">Break something — watch pipeline catch it<small>Write a failing test, push, see pipeline go red</small></div>
+        <div class="day-deliverable">Red pipeline prevents broken code from deploying</div>
+        <button class="check-btn" onclick="toggleDay(21)">✓</button>
+      </div>
+    </div>
+    <div class="concept-box" style="margin:0;border-radius:0 0 12px 12px;border-top:1px solid var(--border);">
+      <strong>Week 3 interview concept:</strong> "CI = Continuous Integration — automatically test every code change. CD = Continuous Delivery — automatically deploy passing code. Together: no human needs to manually deploy ever again."
+    </div>
+  </div>
+
+  <!-- WEEK 4 -->
+  <div class="week" style="margin-top:1.5rem;">
+    <div class="week-header w4">
+      <span class="week-num">WEEK 4</span>
+      <span class="week-title">🚀 Production Hardening — Make It Real</span>
+      <span class="week-desc">Days 22–30</span>
+    </div>
+    <div id="week4-rows">
+      <div class="day-row" data-day="22">
+        <div class="day-num">DAY <span>22</span></div>
+        <div class="day-task">Add resource limits to K8s manifests<small>requests + limits for CPU and memory</small></div>
+        <div class="day-deliverable">kubectl describe pod shows Resources section</div>
+        <button class="check-btn" onclick="toggleDay(22)">✓</button>
+      </div>
+      <div class="day-row" data-day="23">
+        <div class="day-num">DAY <span>23</span></div>
+        <div class="day-task">Add liveness + readiness probes<small>K8s knows when your app is healthy</small></div>
+        <div class="day-deliverable">Kill the /health endpoint → watch K8s restart the pod</div>
+        <button class="check-btn" onclick="toggleDay(23)">✓</button>
+      </div>
+      <div class="day-row" data-day="24">
+        <div class="day-num">DAY <span>24</span></div>
+        <div class="day-task">Create a Helm chart for TaskAPI<small>helm install taskapi ./taskapi-chart</small></div>
+        <div class="day-deliverable">helm list shows taskapi deployed, helm upgrade works</div>
+        <button class="check-btn" onclick="toggleDay(24)">✓</button>
+      </div>
+      <div class="day-row" data-day="25">
+        <div class="day-num">DAY <span>25</span></div>
+        <div class="day-task">Add Prometheus metrics endpoint<small>Add /metrics to TaskAPI, scrape with Prometheus</small></div>
+        <div class="day-deliverable">curl localhost:8000/metrics shows request counts</div>
+        <button class="check-btn" onclick="toggleDay(25)">✓</button>
+      </div>
+      <div class="day-row" data-day="26">
+        <div class="day-num">DAY <span>26</span></div>
+        <div class="day-task">Deploy to a real cloud cluster<small>GKE (free $300 credit) or EKS or AKS</small></div>
+        <div class="day-deliverable">TaskAPI accessible via a real public URL on the internet</div>
+        <button class="check-btn" onclick="toggleDay(26)">✓</button>
+      </div>
+      <div class="day-row" data-day="27">
+        <div class="day-num">DAY <span>27</span></div>
+        <div class="day-task">K8s RBAC — namespaces and roles<small>Create a read-only user, understand Role + RoleBinding</small></div>
+        <div class="day-deliverable">kubectl auth can-i shows correct permissions</div>
+        <button class="check-btn" onclick="toggleDay(27)">✓</button>
+      </div>
+      <div class="day-row" data-day="28">
+        <div class="day-num">DAY <span>28</span></div>
+        <div class="day-task">Disaster recovery practice<small>kubectl delete pod — watch it self-heal instantly</small></div>
+        <div class="day-deliverable">Pod deleted → new pod running in under 10 seconds</div>
+        <button class="check-btn" onclick="toggleDay(28)">✓</button>
+      </div>
+      <div class="day-row" data-day="29">
+        <div class="day-num">DAY <span>29</span></div>
+        <div class="day-task">Write a runbook for TaskAPI<small>How to deploy, rollback, debug, scale</small></div>
+        <div class="day-deliverable">README.md covers every operational task</div>
+        <button class="check-btn" onclick="toggleDay(29)">✓</button>
+      </div>
+      <div class="day-row" data-day="30">
+        <div class="day-num">DAY <span>30</span></div>
+        <div class="day-task">🎉 Full end-to-end demo + retrospective<small>Push code → watch pipeline → live on the internet</small></div>
+        <div class="day-deliverable">YOU ARE NOW INTERVIEW-READY 🚀</div>
+        <button class="check-btn" onclick="toggleDay(30)">✓</button>
+      </div>
+    </div>
+    <div class="concept-box" style="margin:0;border-radius:0 0 12px 12px;border-top:1px solid var(--border);">
+      <strong>Week 4 interview concept:</strong> "Production readiness = resource limits + health probes + rollback strategy + monitoring + runbook. A senior engineer doesn't just deploy — they ensure the system is observable, recoverable, and secure."
+    </div>
+  </div>
+</section>
+
+<!-- ── INTERVIEW Q&A ── -->
+<section class="section">
+  <div class="section-label">// crack the interview</div>
+  <div class="section-title">Top Interview Questions — With Answers</div>
+  <div class="section-sub">Click any question to reveal the answer. Real questions from real DevOps interviews.</div>
+
+  <div class="interview-grid">
+    <div class="qa-card">
+      <div class="qa-q" onclick="toggleQA(this)"><span class="qnum">Q1</span>What is the difference between a Docker image and a container?</div>
+      <div class="qa-a"><strong>Image</strong> = the blueprint (read-only). Like a class in programming, or a cake recipe. <strong>Container</strong> = a running instance of that image. Like an object, or a baked cake. You can run 10 containers from 1 image simultaneously. Images are built once, containers are created and destroyed.</div>
+      <div class="qa-tip">Say: "Image is immutable and stored in a registry. Container is ephemeral and runs in memory."</div>
+    </div>
+    <div class="qa-card">
+      <div class="qa-q" onclick="toggleQA(this)"><span class="qnum">Q2</span>What is Kubernetes and why do we need it?</div>
+      <div class="qa-a">Docker runs one container on one machine. Kubernetes orchestrates thousands of containers across hundreds of machines. It handles: <strong>scheduling</strong> (which container runs where), <strong>self-healing</strong> (restarts crashed pods), <strong>scaling</strong> (adds pods when traffic spikes), <strong>rolling updates</strong> (zero-downtime deploys), and <strong>service discovery</strong> (pods find each other by name).</div>
+      <div class="qa-tip">Say: "Docker solves packaging. Kubernetes solves running at scale."</div>
+    </div>
+    <div class="qa-card">
+      <div class="qa-q" onclick="toggleQA(this)"><span class="qnum">Q3</span>What is a Pod in Kubernetes?</div>
+      <div class="qa-a">The smallest deployable unit in Kubernetes. A Pod wraps one or more containers that share the same network namespace and storage. Think of it as a "logical host" — containers inside a Pod talk to each other via localhost. In practice, most Pods have one container. K8s doesn't manage containers directly — it manages Pods.</div>
+      <div class="qa-tip">Say: "Pod is to K8s what container is to Docker — the basic unit."</div>
+    </div>
+    <div class="qa-card">
+      <div class="qa-q" onclick="toggleQA(this)"><span class="qnum">Q4</span>What is the difference between a Deployment and a Service?</div>
+      <div class="qa-a"><strong>Deployment</strong> manages Pods — how many replicas, what image to run, how to update. It ensures desired state matches actual state. <strong>Service</strong> exposes those Pods to the network — gives them a stable IP and DNS name. Pods come and go (they're ephemeral), but a Service always points to the right Pods. Without a Service, you can't reliably reach your Deployment.</div>
+      <div class="qa-tip">Say: "Deployment = what runs. Service = how to reach it."</div>
+    </div>
+    <div class="qa-card">
+      <div class="qa-q" onclick="toggleQA(this)"><span class="qnum">Q5</span>What is CI/CD? Explain the full pipeline.</div>
+      <div class="qa-a"><strong>CI (Continuous Integration):</strong> Every code push automatically triggers: code checkout → install deps → run tests → build Docker image. If tests fail, the pipeline stops. No broken code moves forward. <strong>CD (Continuous Delivery/Deployment):</strong> On success: push image to registry → update Kubernetes manifest → kubectl apply → rolling update deploys new version. Full pipeline: git push → tested → built → deployed in ~90 seconds with zero manual steps.</div>
+      <div class="qa-tip">Say: "CI catches bugs. CD ships fast. Together: safe, rapid delivery."</div>
+    </div>
+    <div class="qa-card">
+      <div class="qa-q" onclick="toggleQA(this)"><span class="qnum">Q6</span>What is a liveness probe vs readiness probe?</div>
+      <div class="qa-a"><strong>Liveness probe:</strong> "Is this container alive?" K8s sends an HTTP GET to /health every N seconds. If it fails, K8s kills and restarts the container. Fixes deadlocks and stuck processes. <strong>Readiness probe:</strong> "Is this container ready to receive traffic?" If it fails, K8s removes the Pod from the Service's endpoints — it won't receive requests until it's ready again. This prevents sending traffic to a starting-up or overloaded Pod.</div>
+      <div class="qa-tip">Say: "Liveness = restart if sick. Readiness = stop traffic if not ready."</div>
+    </div>
+    <div class="qa-card">
+      <div class="qa-q" onclick="toggleQA(this)"><span class="qnum">Q7</span>How do you roll back a bad deployment in Kubernetes?</div>
+      <div class="qa-a">Kubernetes stores deployment history. Three ways: <strong>1.</strong> <code style="display:inline;padding:1px 6px;font-size:11px;">kubectl rollout undo deployment/taskapi</code> — reverts to previous version instantly. <strong>2.</strong> <code style="display:inline;padding:1px 6px;font-size:11px;">kubectl rollout undo deployment/taskapi --to-revision=2</code> — go to specific revision. <strong>3.</strong> Update the image tag in your manifest to a known-good version and kubectl apply. Always use image tags (not :latest) so you know exactly which version is running.</div>
+      <div class="qa-tip">Say: "undo is instant. For production, I'd update the image tag and apply, so the rollback is tracked in git."</div>
+    </div>
+    <div class="qa-card">
+      <div class="qa-q" onclick="toggleQA(this)"><span class="qnum">Q8</span>What is Helm and why use it?</div>
+      <div class="qa-a">Helm is the package manager for Kubernetes. A Helm chart bundles all your K8s YAML files into one reusable package with variables. Without Helm: 6 YAML files, manually update image tags, duplicate configs for staging/prod. With Helm: one <code style="display:inline;padding:1px 6px;font-size:11px;">values.yaml</code> file to customise, <code style="display:inline;padding:1px 6px;font-size:11px;">helm install taskapi ./chart</code> deploys everything, <code style="display:inline;padding:1px 6px;font-size:11px;">helm upgrade taskapi ./chart --set image.tag=v2</code> updates. Also handles rollback, versioning, and templating across environments.</div>
+      <div class="qa-tip">Say: "Helm solves configuration management for K8s — it's like npm for your infrastructure."</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── COMMON MISTAKES ── -->
+<section class="section">
+  <div class="section-label">// don't do this</div>
+  <div class="section-title">6 Mistakes That Kill Junior DevOps Engineers</div>
+  <div class="section-sub">Learn these now. They come up in every interview and cost hours in production.</div>
+
+  <div class="mistakes-grid">
+    <div class="mistake-card">
+      <div class="mtitle"><span class="mnum">01</span>Using :latest image tag in production</div>
+      <p>":latest" means "whatever was last pushed" — nobody knows which version is actually running. When a bug appears, you can't roll back to "the previous latest".</p>
+      <div class="fix-box">Use commit SHA tags: image: yourusername/taskapi:a3f2c91</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mtitle"><span class="mnum">02</span>Hardcoding secrets in YAML files</div>
+      <p>If you put passwords or API keys in your K8s manifests or GitHub workflow files, they end up in git history — visible to everyone forever.</p>
+      <div class="fix-box">Use GitHub Secrets + K8s Secrets objects. Never commit credentials.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mtitle"><span class="mnum">03</span>No resource limits on pods</div>
+      <p>One runaway pod can consume all CPU/memory on the node, crashing every other pod on that machine. This is called the "noisy neighbour" problem.</p>
+      <div class="fix-box">Always set requests AND limits for cpu and memory in every deployment.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mtitle"><span class="mnum">04</span>Running containers as root</div>
+      <p>If an attacker exploits your app inside a container running as root, they effectively have root on the container and potentially the host node.</p>
+      <div class="fix-box">Add USER appuser in Dockerfile. Add securityContext: runAsNonRoot: true in K8s.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mtitle"><span class="mnum">05</span>EXPOSE in Dockerfile doesn't publish ports</div>
+      <p>EXPOSE is documentation only — it tells humans what port the app uses but does NOT actually expose it. Beginners waste hours wondering why they can't connect.</p>
+      <div class="fix-box">Use -p 8000:8000 in docker run OR ports: in docker-compose to actually publish.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mtitle"><span class="mnum">06</span>No health probes = silent failures</div>
+      <p>Without liveness probes, K8s doesn't know your app is stuck in a deadlock. It keeps sending traffic to a frozen container thinking it's healthy.</p>
+      <div class="fix-box">Add livenessProbe + readinessProbe pointing to /health in every deployment.yaml.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── RESOURCES ── -->
+<section class="section">
+  <div class="section-label">// learn more</div>
+  <div class="section-title">Free Resources — No Fluff</div>
+  <div class="section-sub">The best free learning for each tool. Use these alongside the 30-day plan.</div>
+
+  <div class="resources-grid">
+    <a class="res-card" href="https://docs.docker.com/get-started/" target="_blank">
+      <div class="ricon">🐳</div>
+      <div class="rtitle">Docker Official Docs — Get Started</div>
+      <div class="rdesc">The only Docker tutorial you need. Covers images, containers, Compose from scratch.</div>
+      <div class="rlink">docs.docker.com/get-started →</div>
+    </a>
+    <a class="res-card" href="https://kubernetes.io/docs/tutorials/kubernetes-basics/" target="_blank">
+      <div class="ricon">☸️</div>
+      <div class="rtitle">Kubernetes Basics — Interactive</div>
+      <div class="rdesc">Official K8s tutorial with a browser-based cluster. No install needed to learn the basics.</div>
+      <div class="rlink">kubernetes.io/docs/tutorials →</div>
+    </a>
+    <a class="res-card" href="https://docs.github.com/en/actions" target="_blank">
+      <div class="ricon">⚙️</div>
+      <div class="rtitle">GitHub Actions Docs</div>
+      <div class="rdesc">Complete guide to writing workflows. Has hundreds of copy-paste examples for Docker, K8s, and more.</div>
+      <div class="rlink">docs.github.com/en/actions →</div>
+    </a>
+    <a class="res-card" href="https://helm.sh/docs/intro/quickstart/" target="_blank">
+      <div class="ricon">⛵</div>
+      <div class="rtitle">Helm Quickstart Guide</div>
+      <div class="rdesc">Official 10-minute guide. Install Helm, deploy your first chart, understand values.yaml.</div>
+      <div class="rlink">helm.sh/docs/intro/quickstart →</div>
+    </a>
+    <a class="res-card" href="https://labs.play-with-docker.com/" target="_blank">
+      <div class="ricon">🧪</div>
+      <div class="rtitle">Play with Docker — Free Browser Lab</div>
+      <div class="rdesc">Full Docker environment in your browser. No install. Perfect for Day 1–7 practice.</div>
+      <div class="rlink">labs.play-with-docker.com →</div>
+    </a>
+    <a class="res-card" href="https://killercoda.com/playgrounds/scenario/kubernetes" target="_blank">
+      <div class="ricon">⚔️</div>
+      <div class="rtitle">Killercoda — Free K8s Playground</div>
+      <div class="rdesc">Browser-based Kubernetes cluster. Run kubectl commands without installing anything.</div>
+      <div class="rlink">killercoda.com →</div>
+    </a>
+    <a class="res-card" href="https://akshc15.github.io/devpath.html" target="_blank">
+      <div class="ricon">⚡</div>
+      <div class="rtitle">Your DevPath — 90+ Missions</div>
+      <div class="rdesc">Every tool in this challenge has a full track on DevPath with hands-on missions on a real cloud VM.</div>
+      <div class="rlink">akshc15.github.io/devpath →</div>
+    </a>
+    <a class="res-card" href="https://akshc15.github.io/dream-interview.html" target="_blank">
+      <div class="ricon">🧠</div>
+      <div class="rtitle">Your Interview Quiz — 100 Questions</div>
+      <div class="rdesc">After Day 30, go here. 100 real DevOps interview questions with instant feedback.</div>
+      <div class="rlink">akshc15.github.io/dream-interview →</div>
+    </a>
+  </div>
+</section>
+
+<!-- ── GITHUB INTEGRATION ── -->
+<section class="section">
+  <div class="section-label">// your project repo</div>
+  <div class="section-title">How to Upload This to GitHub Pages</div>
+  <div class="section-sub">3 steps. This page becomes live on your site in under 2 minutes.</div>
+
+  <div class="github-box">
+    <div>
+      <h3>Step 1 — Download this file</h3>
+      <p>You already have <strong>30day-challenge.html</strong> downloaded. That's it — it's one self-contained file with no dependencies.</p>
+    </div>
+  </div>
+  <div class="github-box">
+    <div>
+      <h3>Step 2 — Add to your GitHub repo</h3>
+      <p>Go to <strong>github.com/akshc15/akshc15.github.io</strong> → click <strong>Add file</strong> → <strong>Upload files</strong> → drag and drop <strong>30day-challenge.html</strong> → scroll down → click <strong>Commit changes</strong>. GitHub Pages automatically deploys in ~30 seconds.</p>
+    </div>
+  </div>
+  <div class="github-box">
+    <div>
+      <h3>Step 3 — Add the card to your homepage</h3>
+      <p>Open <strong>index.html</strong> in your repo → find the cards section → add this card alongside the others. Click the pencil icon to edit directly on GitHub.</p>
+      <code style="margin-top:12px;font-size:11px;">&lt;a href="30day-challenge.html"&gt;
+  📅  30-Day Challenge
+  Docker → K8s → CI/CD in one month.
+  Daily tasks. Real project. Track progress.
+&lt;/a&gt;</code>
+    </div>
+  </div>
+
+  <p style="font-size:13px;color:var(--muted);margin-top:0.5rem;">Your progress (checked days) saves automatically in your browser's localStorage — it persists between visits.</p>
+</section>
+
+<footer>
+  akshc15 · DevOps Learning Portal ·
+  <a href="https://akshc15.github.io/devpath.html">DevPath</a> ·
+  <a href="https://akshc15.github.io/dream-project.html">Dream Project</a> ·
+  <a href="https://akshc15.github.io/dream-interview.html">Interview Quiz</a> ·
+  Built with GitHub Pages · Free forever
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  // ── PROGRESS TRACKER ──
+  const STORAGE_KEY = 'devops30_progress';
+
+  function loadProgress() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch { return {}; }
+  }
+
+  function saveProgress(data) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch {}
+  }
+
+  function updateProgressUI() {
+    const data = loadProgress();
+    const done = Object.values(data).filter(Boolean).length;
+    const pct = Math.round((done / 30) * 100);
+    document.getElementById('progress-text').textContent = done + ' / 30 days';
+    document.getElementById('progress-bar').style.width = pct + '%';
+
+    // update day dots
+    const dots = document.querySelectorAll('.day-dot');
+    dots.forEach(dot => {
+      const d = parseInt(dot.dataset.day);
+      dot.classList.toggle('done', !!data[d]);
+      dot.textContent = data[d] ? '✓' : d;
+    });
+
+    // update day rows
+    document.querySelectorAll('.day-row[data-day]').forEach(row => {
+      const d = parseInt(row.dataset.day);
+      row.classList.toggle('completed', !!data[d]);
+    });
+  }
+
+  function toggleDay(day) {
+    const data = loadProgress();
+    data[day] = !data[day];
+    saveProgress(data);
+    updateProgressUI();
+  }
+
+  // Build day dots
+  const dotsContainer = document.getElementById('day-dots');
+  for (let i = 1; i <= 30; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'day-dot';
+    dot.dataset.day = i;
+    dot.textContent = i;
+    dot.onclick = () => toggleDay(i);
+    dotsContainer.appendChild(dot);
+  }
+
+  updateProgressUI();
+
+  // ── Q&A TOGGLE ──
+  function toggleQA(qEl) {
+    const card = qEl.parentElement;
+    const answer = card.querySelector('.qa-a');
+    const tip = card.querySelector('.qa-tip');
+    const isOpen = answer.classList.contains('open');
+    // close all
