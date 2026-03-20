@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Linux — My DevOps Portal</title>
+<link rel="stylesheet" href="../style.css">
+<style>
+/* page-specific extras */
+.file-tree {
+  background: #0d1117;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 2;
+  margin: 12px 0;
+}
+.ft-dir  { color: var(--blue); }
+.ft-file { color: var(--text-secondary); }
+.ft-exec { color: var(--green); }
+.ft-link { color: var(--cyan); }
+.ft-dim  { color: var(--text-tertiary); }
+
+.permission-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin: 12px 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+.perm-cell {
+  background: var(--bg-elevated);
+  padding: 12px 16px;
+  text-align: center;
+}
+.perm-cell .perm-who { font-size: 10px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px; }
+.perm-cell .perm-val { font-size: 1.4rem; font-weight: 700; }
+.perm-owner { color: var(--red); }
+.perm-group { color: var(--yellow); }
+.perm-other { color: var(--blue); }
+
+.os-compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin: 12px 0;
+}
+.os-card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  text-align: center;
+}
+.os-card .os-icon { font-size: 2rem; margin-bottom: 8px; }
+.os-card .os-name { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+.os-card .os-desc { font-size: 11px; color: var(--text-tertiary); line-height: 1.5; }
+.os-card.active { border-color: var(--blue); background: var(--blue-dim); }
+.os-card.active .os-name { color: var(--blue); }
+</style>
+</head>
+<body>
+
+<!-- SHARED BANNER -->
+<div class="site-banner">
+  <div class="brand">
+    <span class="dot"></span>
+    <span>My DevOps Portal</span>
+  </div>
+  <nav class="banner-nav">
+    <a href="../index.html">🏠 Home</a>
+    <a href="../devops-bible.html">📖 Bible</a>
+    <a href="../30day-challenge.html">📅 Challenge</a>
+    <a href="../resume-guide.html">📄 Resume</a>
+    <a href="linux.html" class="active">🐧 Linux</a>
+  </nav>
+</div>
+
+<!-- PAGE NAV -->
+<div class="page-nav">
+  <span class="page-nav-title">🐧 Linux — Complete Guide</span>
+  <div class="page-nav-links">
+    <a href="#story">Story</a>
+    <a href="#whatisit">What is it</a>
+    <a href="#install">Install</a>
+    <a href="#terminal">Terminal</a>
+    <a href="#filesystem">Files</a>
+    <a href="#permissions">Permissions</a>
+    <a href="#commands">Commands</a>
+    <a href="#scripting">Scripting</a>
+    <a href="#processes">Processes</a>
+    <a href="#networking">Networking</a>
+    <a href="#errors">Errors</a>
+    <a href="#interview">Interview</a>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="page-hero" id="story">
+  <div class="hero-eyebrow">Chapter 01 · Foundation of Everything</div>
+  <h1 class="hero-title">🐧 Linux<br><span class="accent">From Zero</span> to <span class="accent-green">Confident</span></h1>
+  <p class="hero-sub">Before Docker, Kubernetes, Terraform — before any DevOps tool — there is Linux. Every server you will ever touch runs Linux. This is where everything begins.</p>
+</div>
+
+<!-- ═══════════════════════════════════
+     THE STORY
+═══════════════════════════════════ -->
+<section class="section" id="story">
+  <div class="section-label">// why linux exists</div>
+  <div class="section-title">The Story — Why Linux Was Born</div>
+
+  <div class="story-box animate-fade-up">
+    <span class="story-icon">📺</span>
+    <strong>1991. A 21-year-old Finnish student named Linus Torvalds was frustrated.</strong><br><br>
+    The best operating systems at the time — Unix and Windows — cost thousands of dollars. Students and hobbyists couldn't afford them. Linus wanted a free, open, powerful OS he could study, modify, and share.<br><br>
+    So he built one. In his bedroom. He posted it online with a message: <em>"I'm doing a free operating system — just a hobby, won't be big and professional like GNU."</em><br><br>
+    That "hobby" now runs <strong>96% of the world's servers</strong>, every Android phone, every supercomputer, every cloud platform — AWS, GCP, Azure all run Linux underneath. Your Docker containers run Linux. Your Kubernetes nodes run Linux. Even when you use a Mac, the commands you'll learn here are the same ones professionals use every day.
+  </div>
+
+  <div class="analogy-box animate-fade-up-1">
+    <div class="analogy-label">🧒 Explain Like I'm 5</div>
+    <p>Imagine your computer is a house. <b>Windows</b> is like renting a fancy apartment — everything is decided for you, you can't change the walls, and you pay monthly. <b>Linux</b> is like owning an empty plot of land — you build exactly what you want, nothing is hidden, and it's completely free. DevOps engineers live on that plot of land because they need total control over their servers.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════
+     WHAT IS IT
+═══════════════════════════════════ -->
+<section class="section" id="whatisit">
+  <div class="section-label">// understand before installing</div>
+  <div class="section-title">What Linux Actually Is</div>
+  <div class="section-sub">Three things you must understand before touching a command.</div>
+
+  <div class="card-grid stagger-children" style="margin-bottom:24px;">
+    <div class="card reveal">
+      <div style="font-size:1.5rem;margin-bottom:10px;">🧠</div>
+      <div style="font-weight:700;margin-bottom:6px;">The Kernel</div>
+      <div style="font-size:13px;color:var(--text-secondary);line-height:1.7;">The core of Linux. It's the software that talks directly to hardware — CPU, RAM, storage. Like the engine of a car. You never touch it directly.</div>
+    </div>
+    <div class="card reveal">
+      <div style="font-size:1.5rem;margin-bottom:10px;">🐚</div>
+      <div style="font-weight:700;margin-bottom:6px;">The Shell</div>
+      <div style="font-size:13px;color:var(--text-secondary);line-height:1.7;">The shell is how you talk TO Linux by typing commands. Bash is the most common shell. When you open a terminal and type, you're talking to the shell. The shell sends your request to the kernel.</div>
+    </div>
+    <div class="card reveal">
+      <div style="font-size:1.5rem;margin-bottom:10px;">📦</div>
+      <div style="font-weight:700;margin-bottom:6px;">The Distro</div>
+      <div style="font-size:13px;color:var(--text-secondary);line-height:1.7;">Linux comes in flavours called distributions (distros). Ubuntu, Debian, CentOS, Alpine. We use Ubuntu 22.04 — it's the most popular for DevOps. All distros use the same core commands.</div>
+    </div>
+  </div>
+
+  <div class="os-compare">
+    <div class="os-card">
+      <div class="os-icon">🪟</div>
+      <div class="os-name">Windows</div>
+      <div class="os-desc">Great for desktop. Expensive licences. Limited for servers. Most cloud servers don't run it.</div>
+    </div>
+    <div class="os-card active">
+      <div class="os-icon">🐧</div>
+      <div class="os-name">Linux (Ubuntu)</div>
+      <div class="os-desc">Free. Runs 96% of servers. What AWS, GCP, Azure use. What Docker, K8s run on. Learn this.</div>
+    </div>
+    <div class="os-card">
+      <div class="os-icon">🍎</div>
+      <div class="os-name">macOS</div>
+      <div class="os-desc">Unix-based (like Linux). Terminal commands are similar. Good for development but too expensive for servers.</div>
+    </div>
+  </div>
+
+  <div class="info-box reveal">
+    <span class="box-icon">💡</span>
+    <div><b>You don't install Linux on your laptop.</b> You create a free cloud VM on GCP that runs Linux, and you connect to it from your Mac/Windows. Your laptop stays untouched. All commands run safely in the cloud.</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════
+     INSTALL / SETUP
+═══════════════════════════════════ -->
+<section class="section" id="install">
+  <div class="section-label">// your linux computer in the cloud</div>
+  <div class="section-title">Get Your Linux Environment — Step by Step</div>
+  <div class="section-sub">We set up a free GCP cloud VM running Ubuntu 22.04. This is your Linux playground for everything in this course.</div>
+
+  <div class="steps stagger-children">
+
+    <div class="step-card">
+      <div class="step-head">
+        <span class="step-num sn-blue">STEP 1</span>
+        <span class="step-title">Create a Google Cloud Account — Free $300 Credit</span>
+        <span class="step-chevron">›</span>
+      </div>
+      <div class="step-body">
+        <p>Google gives every new user $300 free credit that lasts 90 days. That's enough to run your VM for this entire course — for free.</p>
+        <div class="info-box"><span class="box-icon">👆</span><div>Go to <b>cloud.google.com/free</b> → Click <b>"Get started for free"</b> → Sign in with Google → Country: India → Accept terms → Add debit/credit card (required for verification — you will NOT be charged) → Click <b>"Start free trial"</b></div></div>
+        <div class="success-box"><span class="box-icon">✓</span><div>You'll see <b>"$300 credit"</b> confirmed in the top bar. You now have a real cloud account.</div></div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head">
+        <span class="step-num sn-blue">STEP 2</span>
+        <span class="step-title">Create Your Linux VM — Every Click Explained</span>
+        <span class="step-chevron">›</span>
+      </div>
+      <div class="step-body">
+        <p>A VM (Virtual Machine) is a computer running inside Google's data centre. You rent it, use it, stop it when done.</p>
+        <div class="info-box"><span class="box-icon">🖱️</span>
+          <div>
+            <b>1.</b> Go to <b>console.cloud.google.com</b><br>
+            <b>2.</b> Click <b>☰ menu</b> (top left) → <b>Compute Engine</b> → <b>VM Instances</b><br>
+            <b>3.</b> Click <b>CREATE INSTANCE</b> (blue button)<br>
+            <b>4.</b> Name: <code>devops-vm</code><br>
+            <b>5.</b> Region: <code>us-central1</code> (cheapest)<br>
+            <b>6.</b> Machine: click CHANGE → Series: E2 → Type: <code>e2-standard-2</code> (2 CPU, 8GB RAM)<br>
+            <b>7.</b> Boot disk: click CHANGE → OS: <b>Ubuntu</b> → Version: <b>Ubuntu 22.04 LTS</b> → Size: <b>50GB</b> → SELECT<br>
+            <b>8.</b> Firewall: ✅ Allow HTTP ✅ Allow HTTPS<br>
+            <b>9.</b> Click <b>CREATE</b> → wait 60 seconds → green ✓ appears
+          </div>
+        </div>
+        <div class="warn-box"><span class="box-icon">⚠️</span><div>Cost is ~₹5/hour. <b>Always STOP your VM</b> when not studying. Go to VM Instances → click the 3 dots next to your VM → Stop. Costs nothing when stopped.</div></div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head">
+        <span class="step-num sn-blue">STEP 3</span>
+        <span class="step-title">Connect to Your VM — Open the Linux Terminal</span>
+        <span class="step-chevron">›</span>
+      </div>
+      <div class="step-body">
+        <p>Connecting means opening a terminal window that is running INSIDE the GCP server. Your commands run in the cloud, not on your laptop.</p>
+        <div class="info-box"><span class="box-icon">🖱️</span>
+          <div>
+            <b>Easiest way:</b> Go to console.cloud.google.com → Compute Engine → VM Instances → Find your VM → Click the <b>SSH</b> button in the Connect column → A black terminal window opens in your browser.<br><br>
+            <b>You'll see:</b> <code>yourname@devops-vm:~$</code> — the <code>$</code> means Linux is ready for your command.
+          </div>
+        </div>
+        <div class="terminal">
+          <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">GCP SSH — devops-vm</span></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-ok">yourname@devops-vm</span><span class="t-out">:</span><span class="t-path">~</span><span class="t-out">$ </span><span class="t-cmd">whoami</span></div>
+            <div class="t-line"><span class="t-out">yourname</span></div>
+            <div class="t-line"><span class="t-ok">yourname@devops-vm</span><span class="t-out">:</span><span class="t-path">~</span><span class="t-out">$ </span><span class="t-cmd">uname -a</span></div>
+            <div class="t-line"><span class="t-out">Linux devops-vm 5.15.0 #1 SMP Ubuntu x86_64 GNU/Linux</span></div>
+            <div class="t-line"><span class="t-ok">yourname@devops-vm</span><span class="t-out">:</span><span class="t-path">~</span><span class="t-out">$ </span><span class="t-cmd">pwd</span></div>
+            <div class="t-line"><span class="t-path">/home/yourname</span></div>
+            <div class="t-line"><span class="t-ok">yourname@devops-vm</span><span class="t-out">:</span><span class="t-path">~</span><span class="t-out">$ </span><span class="cursor"></span></div>
+          </div>
+        </div>
+        <div class="success-box"><span class="box-icon">✓</span><div>You are now inside a real Linux server running in Google's data centre. Everything you type here runs on that server.</div></div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head">
+        <span class="step-num sn-green">STEP 4</span>
+        <span class="step-title">Connect VS Code to Your Cloud VM — Best Way to Work</span>
+        <span class="step-chevron">›</span>
+      </div>
+      <div class="step-body">
+        <p>VS Code Remote SSH lets you edit files on the cloud VM from your laptop — like the files are local but they're actually running in the cloud.</p>
+        <div class="info-box"><span class="box-icon">🖱️</span>
+          <div>
+            <b>1.</b> Download VS Code: <b>code.visualstudio.com</b> → Download → Install<br>
+            <b>2.</b> Open VS Code → click Extensions icon (left sidebar, 4 squares) → search <b>"Remote - SSH"</b> → Install<br>
+            <b>3.</b> Press <b>Ctrl+Shift+P</b> (or Cmd+Shift+P on Mac) → type <b>"Remote-SSH: Connect to Host"</b> → Enter<br>
+            <b>4.</b> Type: <code>yourname@YOUR_GCP_EXTERNAL_IP</code> (find IP in GCP Console VM list)<br>
+            <b>5.</b> VS Code opens a new window → bottom left shows <b>"SSH: devops-vm"</b> in green<br>
+            <b>6.</b> Open terminal in VS Code: <b>Ctrl+`</b> → you're now in Linux!
+          </div>
+        </div>
+        <div class="tip-box"><span class="box-icon">💡</span><div>For now, the <b>GCP browser SSH</b> is perfectly fine. Come back to VS Code Remote SSH setup when you're comfortable with Linux basics. Don't let setup block your learning.</div></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════
+     THE TERMINAL
+═══════════════════════════════════ -->
+<section class="section" id="terminal">
+  <div class="section-label">// your most important tool</div>
+  <div class="section-title">Understanding the Terminal</div>
+  <div class="section-sub">Before any command — understand what you're looking at.</div>
+
+  <div class="terminal reveal" style="margin-bottom:20px;">
+    <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">anatomy of a prompt</span></div>
+    <div class="terminal-body">
+      <div class="t-line">
+        <span class="t-ok">akshay</span>
+        <span class="t-out">@</span>
+        <span class="t-info">devops-vm</span>
+        <span class="t-out">:</span>
+        <span class="t-path">/home/akshay/projects</span>
+        <span class="t-out">$ </span>
+        <span class="t-cmd">your command goes here</span>
+      </div>
+      <div class="t-line" style="margin-top:12px;"><span class="t-out">│         │            │                      │</span></div>
+      <div class="t-line"><span class="t-ok">username  </span><span class="t-info">server name  </span><span class="t-path">current folder         </span><span class="t-out">prompt ($=normal, #=root)</span></div>
+    </div>
+  </div>
+
+  <div class="card-grid reveal">
+    <div class="card">
+      <div style="font-family:var(--font-mono);color:var(--green);font-size:1.2rem;margin-bottom:8px;">$</div>
+      <div style="font-weight:600;margin-bottom:4px;">Dollar sign</div>
+      <div style="font-size:13px;color:var(--text-secondary);">You are a normal user. Safe. This is what you'll see 99% of the time.</div>
+    </div>
+    <div class="card">
+      <div style="font-family:var(--font-mono);color:var(--red);font-size:1.2rem;margin-bottom:8px;">#</div>
+      <div style="font-weight:600;margin-bottom:4px;">Hash sign</div>
+      <div style="font-size:13px;color:var(--text-secondary);">You are root (admin). Be careful. One wrong command can break everything.</div>
+    </div>
+    <div class="card">
+      <div style="font-family:var(--font-mono);color:var(--cyan);font-size:1.2rem;margin-bottom:8px;">~</div>
+      <div style="font-weight:600;margin-bottom:4px;">Tilde</div>
+      <div style="font-size:13px;color:var(--text-secondary);">Shortcut for your home directory. /home/yourname. You always start here.</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════
+     FILE SYSTEM
+═══════════════════════════════════ -->
+<section class="section" id="filesystem">
+  <div class="section-label">// everything is a file</div>
+  <div class="section-title">The Linux File System</div>
+  <div class="section-sub">Linux organises everything as files in a tree. No drive letters like C:\ or D:\. Everything starts from /</div>
+
+  <div class="analogy-box reveal">
+    <div class="analogy-label">🧒 Explain Like I'm 5</div>
+    <p>In Windows you have <b>C:\</b> and <b>D:\</b>. In Linux there's only one tree, starting from <b>/</b> (called "root"). Think of it like a building — the basement is <b>/</b>, and every room is a folder inside it. Your stuff lives in <b>/home/yourname</b> — that's your flat in the building.</p>
+  </div>
+
+  <div class="file-tree reveal">
+    <div><span class="ft-dir">/</span>  <span class="ft-dim">← the ROOT of everything (like C:\ in Windows)</span></div>
+    <div><span class="ft-dim">├── </span><span class="ft-dir">home/</span>  <span class="ft-dim">← user home directories</span></div>
+    <div><span class="ft-dim">│   └── </span><span class="ft-dir">akshay/</span>  <span class="ft-dim">← YOUR home folder (~)</span></div>
+    <div><span class="ft-dim">│       ├── </span><span class="ft-dir">projects/</span>  <span class="ft-dim">← you create this</span></div>
+    <div><span class="ft-dim">│       └── </span><span class="ft-file">notes.txt</span></div>
+    <div><span class="ft-dim">├── </span><span class="ft-dir">etc/</span>  <span class="ft-dim">← system config files (nginx.conf, ssh config live here)</span></div>
+    <div><span class="ft-dim">├── </span><span class="ft-dir">var/</span>  <span class="ft-dim">← logs and variable data (var/log/syslog)</span></div>
+    <div><span class="ft-dim">├── </span><span class="ft-dir">usr/</span>  <span class="ft-dim">← installed programs (usr/bin/python3)</span></div>
+    <div><span class="ft-dim">├── </span><span class="ft-dir">bin/</span>  <span class="ft-dim">← essential commands (ls, cat, echo live here)</span></div>
+    <div><span class="ft-dim">├── </span><span class="ft-dir">tmp/</span>  <span class="ft-dim">← temporary files, deleted on reboot</span></div>
+    <div><span class="ft-dim">└── </span><span class="ft-dir">proc/</span>  <span class="ft-dim">← running processes (virtual, not real files)</span></div>
+  </div>
+
+  <div class="tip-box reveal"><span class="box-icon">💡</span><div>The most important folder for you: <code>~</code> = <code>/home/yourname</code>. Always work here. Never run random commands in <code>/etc</code> or <code>/</code> unless you know what you're doing.</div></div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════
+     ESSENTIAL COMMANDS
+═══════════════════════════════════ -->
+<section class="section" id="commands">
+  <div class="section-label">// learn these first — use them every day</div>
+  <div class="section-title">Essential Commands — Every One Explained</div>
+  <div class="section-sub">Don't memorise. Run each one, see what it does, understand it. Then it sticks forever.</div>
+
+  <div class="tab-container">
+    <div class="tabs">
+      <button class="tab-btn" data-tab="navigation">📂 Navigation</button>
+      <button class="tab-btn" data-tab="files">📄 Files</button>
+      <button class="tab-btn" data-tab="viewing">👁️ Viewing</button>
+      <button class="tab-btn" data-tab="search">🔍 Search</button>
+      <button class="tab-btn" data-tab="system">⚙️ System</button>
+      <button class="tab-btn" data-tab="network">🌐 Network</button>
+    </div>
+
+    <!-- NAVIGATION -->
+    <div class="tab-panel" data-panel="navigation">
+      <div class="terminal">
+        <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">navigation commands</span><button class="terminal-copy">Copy</button></div>
+        <div class="terminal-body">
+          <div class="t-line"><span class="t-out"># pwd — Print Working Directory — where am I right now?</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">pwd</span></div>
+          <div class="t-line"><span class="t-path">/home/akshay</span></div>
+          <br>
+          <div class="t-line"><span class="t-out"># ls — list files in current directory</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">ls</span></div>
+          <div class="t-line"><span class="t-dir">projects  downloads  notes.txt</span></div>
+          <br>
+          <div class="t-line"><span class="t-out"># ls -la — list ALL files including hidden, with details</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">ls -la</span></div>
+          <div class="t-line"><span class="t-out">drwxr-xr-x  akshay  projects</span></div>
+          <div class="t-line"><span class="t-out">-rw-r--r--  akshay  notes.txt</span></div>
+          <div class="t-line"><span class="t-out">drwxr-xr-x  akshay  .hidden-folder</span></div>
+          <br>
+          <div class="t-line"><span class="t-out"># cd — change directory</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">cd projects</span>            <span class="t-comment">  # go into projects folder</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">cd ..</span>                  <span class="t-comment">  # go up one level</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">cd ~</span>                   <span class="t-comment">  # go home instantly</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">cd /etc</span>                <span class="t-comment">  # go to absolute path</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">cd -</span>                   <span class="t-comment">  # go back to previous directory</span></div>
+        </div>
+      </div>
+      <table class="cmd-table">
+        <tr><th>Command</th><th>What it does</th><th>Real use</th></tr>
+        <tr><td>pwd</td><td>Show current location</td><td>First thing to run when you get lost</td></tr>
+        <tr><td>ls</td><td>List files</td><td>See what's in a folder</td></tr>
+        <tr><td>ls -la</td><td>List all files with details</td><td>See hidden files, permissions, owners</td></tr>
+        <tr><td>ls -lh</td><td>List with human-readable sizes</td><td>See file sizes (MB, GB)</td></tr>
+        <tr><td>cd folder</td><td>Enter a folder</td><td>Navigate the file system</td></tr>
+        <tr><td>cd ..</td><td>Go up one level</td><td>Get out of current folder</td></tr>
+        <tr><td>cd ~</td><td>Go to home directory</td><td>Quick escape back to safety</td></tr>
+        <tr><td>cd /path</td><td>Go to absolute path</td><td>Jump anywhere directly</td></tr>
+      </table>
+    </div>
+
+    <!-- FILES -->
+    <div class="tab-panel" data-panel="files">
+      <div class="terminal">
+        <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">file operations</span><button class="terminal-copy">Copy</button></div>
+        <div class="terminal-body">
+          <div class="t-line"><span class="t-out"># mkdir — make a new directory</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">mkdir projects</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">mkdir -p projects/taskapi/k8s</span>  <span class="t-comment">  # create nested folders in one go</span></div>
+          <br>
+          <div class="t-line"><span class="t-out"># touch — create empty file</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">touch app.py</span>               <span class="t-comment">  # creates empty app.py</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">touch notes.txt README.md</span>  <span class="t-comment">  # create multiple at once</span></div>
+          <br>
+          <div class="t-line"><span class="t-out"># cp — copy files or folders</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">cp app.py app_backup.py</span>    <span class="t-comment">  # copy a file</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">cp -r projects projects_bak</span><span class="t-comment">  # copy entire folder (-r = recursive)</span></div>
+          <br>
+          <div class="t-line"><span class="t-out"># mv — move or rename</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">mv old_name.txt new_name.txt</span>   <span class="t-comment">  # rename a file</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">mv app.py projects/app.py</span>      <span class="t-comment">  # move file to folder</span></div>
+          <br>
+          <div class="t-line"><span class="t-out"># rm — delete (BE CAREFUL — no recycle bin!)</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">rm notes.txt</span>               <span class="t-comment">  # delete a file</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">rm -rf old_project/</span>        <span class="t-comment">  # delete entire folder (DANGEROUS)</span></div>
+        </div>
+      </div>
+      <div class="err-box"><span class="box-icon">🚨</span><div><b>Never run rm -rf / or rm -rf *</b> — this deletes everything on the server with no undo. The most feared command in Linux. Always double-check what you're deleting.</div></div>
+    </div>
+
+    <!-- VIEWING -->
+    <div class="tab-panel" data-panel="viewing">
+      <div class="terminal">
+        <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">viewing file contents</span><button class="terminal-copy">Copy</button></div>
+        <div class="terminal-body">
+          <div class="t-line"><span class="t-out"># cat — print entire file contents</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">cat app.py</span></div>
+          <div class="t-line"><span class="t-out">from fastapi import FastAPI</span></div>
+          <div class="t-line"><span class="t-out">app = FastAPI()</span></div>
+          <br>
+          <div class="t-line"><span class="t-out"># less — view large files page by page (press q to quit)</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">less /var/log/syslog</span></div>
+          <br>
+          <div class="t-line"><span class="t-out"># head — see first 10 lines</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">head -20 app.py</span>   <span class="t-comment">  # first 20 lines</span></div>
+          <br>
+          <div class="t-line"><span class="t-out"># tail — see last lines (critical for logs!)</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">tail app.log</span>      <span class="t-comment">  # last 10 lines</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">tail -f app.log</span>   <span class="t-comment">  # LIVE follow — watch logs update in real time</span></div>
+          <br>
+          <div class="t-line"><span class="t-out"># nano — simple text editor in terminal</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">nano app.py</span>       <span class="t-comment">  # Ctrl+S save, Ctrl+X exit</span></div>
+        </div>
+      </div>
+      <div class="tip-box"><span class="box-icon">💡</span><div><b>tail -f</b> is one of the most used DevOps commands. When something breaks in production, the first thing you run is <code>tail -f /var/log/app.log</code> — watch logs stream live and see exactly what's going wrong.</div></div>
+    </div>
+
+    <!-- SEARCH -->
+    <div class="tab-panel" data-panel="search">
+      <div class="terminal">
+        <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">search commands</span><button class="terminal-copy">Copy</button></div>
+        <div class="terminal-body">
+          <div class="t-line"><span class="t-out"># grep — search for text INSIDE files</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">grep "ERROR" app.log</span>            <span class="t-comment">  # find lines with ERROR</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">grep -r "database" projects/</span>    <span class="t-comment">  # search in all files recursively</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">grep -i "error" app.log</span>         <span class="t-comment">  # case-insensitive search</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">grep -n "import" app.py</span>         <span class="t-comment">  # show line numbers</span></div>
+          <br>
+          <div class="t-line"><span class="t-out"># find — search for FILES by name</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">find . -name "*.py"</span>             <span class="t-comment">  # find all Python files</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">find / -name "nginx.conf"</span>       <span class="t-comment">  # find nginx config anywhere</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">find . -newer app.py</span>            <span class="t-comment">  # files newer than app.py</span></div>
+          <br>
+          <div class="t-line"><span class="t-out"># pipe | — send output of one command to another</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">cat app.log | grep "ERROR" | tail -20</span></div>
+          <div class="t-line"><span class="t-out">ERROR: database connection failed</span></div>
+          <div class="t-line"><span class="t-out">ERROR: timeout after 30s</span></div>
+        </div>
+      </div>
+      <div class="info-box"><span class="box-icon">💡</span><div>The <b>pipe</b> <code>|</code> is one of Linux's superpowers. It chains commands — output of the left command becomes input of the right. <code>cat log | grep ERROR | wc -l</code> counts how many errors in a log file. One line. Powerful.</div></div>
+    </div>
+
+    <!-- SYSTEM -->
+    <div class="tab-panel" data-panel="system">
+      <div class="terminal">
+        <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">system commands</span><button class="terminal-copy">Copy</button></div>
+        <div class="terminal-body">
+          <div class="t-line"><span class="t-out"># system info</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">uname -a</span>          <span class="t-comment">  # OS and kernel version</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">df -h</span>             <span class="t-comment">  # disk space (h = human readable: GB, MB)</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">free -h</span>           <span class="t-comment">  # RAM usage</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">uptime</span>            <span class="t-comment">  # how long server has been running</span></div>
+          <br>
+          <div class="t-line"><span class="t-out"># processes</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">ps aux</span>            <span class="t-comment">  # list all running processes</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">ps aux | grep python</span>   <span class="t-comment">  # find python processes</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">htop</span>              <span class="t-comment">  # live process monitor (q to quit)</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">kill -9 1234</span>      <span class="t-comment">  # force stop process with ID 1234</span></div>
+          <br>
+          <div class="t-line"><span class="t-out"># install packages (Ubuntu uses apt)</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">sudo apt update</span>   <span class="t-comment">  # refresh package list (do this first)</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">sudo apt install htop curl wget git -y</span></div>
+          <div class="t-line"><span class="t-ok">Reading package lists... Done</span></div>
+          <div class="t-line"><span class="t-ok">Setting up htop... Done</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NETWORK -->
+    <div class="tab-panel" data-panel="network">
+      <div class="terminal">
+        <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">networking commands</span><button class="terminal-copy">Copy</button></div>
+        <div class="terminal-body">
+          <div class="t-line"><span class="t-out"># curl — make HTTP requests from terminal</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">curl localhost:8000/health</span></div>
+          <div class="t-line"><span class="t-ok">{"status":"ok"}</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">curl -X POST localhost:8000/tasks -d '{"title":"buy milk"}'</span></div>
+          <br>
+          <div class="t-line"><span class="t-out"># wget — download files</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">wget https://example.com/file.zip</span></div>
+          <br>
+          <div class="t-line"><span class="t-out"># ping — check if server is reachable</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">ping google.com</span>            <span class="t-comment">  # Ctrl+C to stop</span></div>
+          <br>
+          <div class="t-line"><span class="t-out"># netstat / ss — see open ports</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">ss -tlnp</span>                   <span class="t-comment">  # show listening ports</span></div>
+          <div class="t-line"><span class="t-out">tcp  LISTEN  0.0.0.0:8000  (python)</span></div>
+          <div class="t-line"><span class="t-out">tcp  LISTEN  0.0.0.0:22    (sshd)</span></div>
+          <br>
+          <div class="t-line"><span class="t-out"># ssh — connect to another server</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">ssh user@34.1.2.3</span>          <span class="t-comment">  # connect to remote server by IP</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════
+     PERMISSIONS
+═══════════════════════════════════ -->
+<section class="section" id="permissions">
+  <div class="section-label">// who can do what</div>
+  <div class="section-title">File Permissions — Demystified</div>
+  <div class="section-sub">Every file has 3 permission groups. Once you understand this, it never confuses you again.</div>
+
+  <div class="analogy-box reveal">
+    <div class="analogy-label">🧒 Explain Like I'm 5</div>
+    <p>Imagine a notebook in an office. <b>The owner</b> (you) can read and write it. <b>Your team</b> can only read it. <b>Visitors</b> (strangers) can't touch it at all. Linux does the same with every file — it assigns read (r), write (w), execute (x) permissions for 3 groups: owner, group, others.</p>
+  </div>
+
+  <div class="terminal reveal">
+    <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">reading permissions</span></div>
+    <div class="terminal-body">
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">ls -la</span></div>
+      <div class="t-line"><span class="t-out">-rwxr-xr--  akshay  staff  deploy.sh</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-out"> │ ││││ │││  │</span></div>
+      <div class="t-line"><span class="t-out"> │ ││││ │││  └── filename</span></div>
+      <div class="t-line"><span class="t-err"> │ rwx</span><span class="t-out">  = OWNER can Read+Write+Execute</span></div>
+      <div class="t-line"><span class="t-warn">   r-x</span><span class="t-out">  = GROUP can Read+Execute (no write)</span></div>
+      <div class="t-line"><span class="t-info">      r--</span><span class="t-out">  = OTHERS can only Read</span></div>
+    </div>
+  </div>
+
+  <div class="permission-grid reveal">
+    <div class="perm-cell"><div class="perm-who">Owner (you)</div><div class="perm-val perm-owner">rwx</div></div>
+    <div class="perm-cell"><div class="perm-who">Group (team)</div><div class="perm-val perm-group">r-x</div></div>
+    <div class="perm-cell"><div class="perm-who">Others (world)</div><div class="perm-val perm-other">r--</div></div>
+  </div>
+
+  <div class="terminal reveal" style="margin-top:16px;">
+    <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">chmod — change permissions</span><button class="terminal-copy">Copy</button></div>
+    <div class="terminal-body">
+      <div class="t-line"><span class="t-out"># Make a script executable (you'll do this constantly)</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">chmod +x deploy.sh</span>       <span class="t-comment">  # add execute permission</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">./deploy.sh</span>              <span class="t-comment">  # now you can run it</span></div>
+      <br>
+      <div class="t-line"><span class="t-out"># Numeric method (very common)</span></div>
+      <div class="t-line"><span class="t-out"># 4=read  2=write  1=execute  (add them up)</span></div>
+      <div class="t-line"><span class="t-out"># 7=rwx   6=rw-   5=r-x   4=r--</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">chmod 755 deploy.sh</span>      <span class="t-comment">  # owner=rwx group=r-x others=r-x</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">chmod 600 secret.key</span>     <span class="t-comment">  # only owner can read/write (private key)</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">chmod 644 app.py</span>         <span class="t-comment">  # standard for files</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════
+     SHELL SCRIPTING
+═══════════════════════════════════ -->
+<section class="section" id="scripting">
+  <div class="section-label">// automate everything</div>
+  <div class="section-title">Shell Scripting — Your First Automation</div>
+  <div class="section-sub">A shell script is just a text file with Linux commands. Instead of typing 10 commands manually, you write them once and run the file.</div>
+
+  <div class="story-box green reveal">
+    <strong>Why scripting matters in DevOps:</strong><br><br>
+    Imagine you deploy your app every day. You run the same 8 commands every time. One day you forget step 5. Production breaks. A shell script means you write those 8 commands once — then you just run one file. Same result, every time, no human error. That's automation. That's DevOps.
+  </div>
+
+  <div class="terminal reveal">
+    <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">deploy.sh — your first real script</span><button class="terminal-copy">Copy</button></div>
+    <div class="terminal-body">
+      <div class="t-line"><span class="t-comment">#!/bin/bash</span></div>
+      <div class="t-line"><span class="t-comment"># The first line MUST be #!/bin/bash — tells Linux: use bash to run this file</span></div>
+      <div class="t-line"><span class="t-comment"># Lines starting with # are comments — ignored by Linux, read by humans</span></div>
+      <br>
+      <div class="t-line"><span class="t-comment"># set -e = stop script immediately if any command fails</span></div>
+      <div class="t-line"><span class="t-comment"># Without this, script continues even after errors — very dangerous</span></div>
+      <div class="t-line"><span class="t-cmd">set -e</span></div>
+      <br>
+      <div class="t-line"><span class="t-comment"># VARIABLES — store values you reuse</span></div>
+      <div class="t-line"><span class="t-cmd">APP_NAME="taskapi"</span>           <span class="t-comment">  # no spaces around =</span></div>
+      <div class="t-line"><span class="t-cmd">VERSION="1.0.0"</span></div>
+      <div class="t-line"><span class="t-cmd">PORT=8000</span></div>
+      <br>
+      <div class="t-line"><span class="t-comment"># echo = print something (like print() in Python)</span></div>
+      <div class="t-line"><span class="t-cmd">echo "Deploying $APP_NAME version $VERSION..."</span></div>
+      <br>
+      <div class="t-line"><span class="t-comment"># FUNCTIONS — reusable blocks (define first, call later)</span></div>
+      <div class="t-line"><span class="t-cmd">check_requirements() {</span></div>
+      <div class="t-line"><span class="t-cmd">  echo "Checking requirements..."</span></div>
+      <div class="t-line"><span class="t-cmd">  if ! command -v docker &> /dev/null; then</span></div>
+      <div class="t-line"><span class="t-cmd">    echo "ERROR: Docker not installed!"</span></div>
+      <div class="t-line"><span class="t-cmd">    exit 1</span>                   <span class="t-comment">  # exit with error code 1</span></div>
+      <div class="t-line"><span class="t-cmd">  fi</span></div>
+      <div class="t-line"><span class="t-cmd">  echo "Docker found: $(docker --version)"</span></div>
+      <div class="t-line"><span class="t-cmd">}</span></div>
+      <br>
+      <div class="t-line"><span class="t-comment"># IF statement</span></div>
+      <div class="t-line"><span class="t-cmd">deploy() {</span></div>
+      <div class="t-line"><span class="t-cmd">  if [ "$1" == "production" ]; then</span>  <span class="t-comment">  # $1 = first argument passed to script</span></div>
+      <div class="t-line"><span class="t-cmd">    echo "Deploying to PRODUCTION"</span></div>
+      <div class="t-line"><span class="t-cmd">  else</span></div>
+      <div class="t-line"><span class="t-cmd">    echo "Deploying to STAGING"</span></div>
+      <div class="t-line"><span class="t-cmd">  fi</span></div>
+      <br>
+      <div class="t-line"><span class="t-comment">  # FOR loop — iterate over items</span></div>
+      <div class="t-line"><span class="t-cmd">  for service in app db redis; do</span></div>
+      <div class="t-line"><span class="t-cmd">    echo "Starting $service..."</span></div>
+      <div class="t-line"><span class="t-cmd">    docker start $service 2>/dev/null || echo "$service already running"</span></div>
+      <div class="t-line"><span class="t-cmd">  done</span></div>
+      <div class="t-line"><span class="t-cmd">}</span></div>
+      <br>
+      <div class="t-line"><span class="t-comment"># MAIN — call functions in order</span></div>
+      <div class="t-line"><span class="t-cmd">check_requirements</span></div>
+      <div class="t-line"><span class="t-cmd">deploy "$1"</span>                  <span class="t-comment">  # pass first argument to deploy function</span></div>
+      <div class="t-line"><span class="t-cmd">echo "Done! App running on port $PORT"</span></div>
+    </div>
+  </div>
+
+  <div class="terminal reveal" style="margin-top:12px;">
+    <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">run the script</span><button class="terminal-copy">Copy</button></div>
+    <div class="terminal-body">
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">chmod +x deploy.sh</span>            <span class="t-comment">  # make executable (only needed once)</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">./deploy.sh production</span>         <span class="t-comment">  # run with "production" as argument</span></div>
+      <div class="t-line"><span class="t-ok">Deploying taskapi version 1.0.0...</span></div>
+      <div class="t-line"><span class="t-ok">Checking requirements...</span></div>
+      <div class="t-line"><span class="t-ok">Docker found: Docker version 25.0.4</span></div>
+      <div class="t-line"><span class="t-ok">Deploying to PRODUCTION</span></div>
+      <div class="t-line"><span class="t-ok">Starting app...</span></div>
+      <div class="t-line"><span class="t-ok">Starting db...</span></div>
+      <div class="t-line"><span class="t-ok">Done! App running on port 8000</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════
+     PROCESSES
+═══════════════════════════════════ -->
+<section class="section" id="processes">
+  <div class="section-label">// what's running on your server</div>
+  <div class="section-title">Processes — Running and Managing Them</div>
+
+  <div class="terminal reveal">
+    <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">process management</span><button class="terminal-copy">Copy</button></div>
+    <div class="terminal-body">
+      <div class="t-line"><span class="t-out"># Run process in BACKGROUND with &</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">python3 app.py &</span>           <span class="t-comment">  # starts, returns prompt immediately</span></div>
+      <div class="t-line"><span class="t-out">[1] 12345</span>                  <span class="t-comment">  # job number + process ID (PID)</span></div>
+      <br>
+      <div class="t-line"><span class="t-out"># Find a process ID</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">ps aux | grep python</span></div>
+      <div class="t-line"><span class="t-out">akshay  12345  python3 app.py</span></div>
+      <br>
+      <div class="t-line"><span class="t-out"># Kill a process by PID</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">kill 12345</span>                 <span class="t-comment">  # polite stop (SIGTERM)</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">kill -9 12345</span>              <span class="t-comment">  # force stop (SIGKILL) — if normal kill fails</span></div>
+      <br>
+      <div class="t-line"><span class="t-out"># Port already in use? Find what's using it</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">lsof -i :8000</span></div>
+      <div class="t-line"><span class="t-out">COMMAND   PID    USER   TYPE  NODE NAME</span></div>
+      <div class="t-line"><span class="t-out">python3   12345  akshay  TCP  *:8000 (LISTEN)</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">kill -9 12345</span>              <span class="t-comment">  # kill whatever is on port 8000</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════
+     ERRORS
+═══════════════════════════════════ -->
+<section class="section" id="errors">
+  <div class="section-label">// when things go wrong</div>
+  <div class="section-title">Common Errors — Exact Fix for Each</div>
+
+  <div class="steps stagger-children">
+    <div class="step-card">
+      <div class="step-head">
+        <span class="step-num sn-orange">ERR 01</span>
+        <span class="step-title">Permission denied</span>
+        <span class="step-chevron">›</span>
+      </div>
+      <div class="step-body">
+        <div class="terminal"><div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">./deploy.sh</span></div>
+            <div class="t-line"><span class="t-err">bash: ./deploy.sh: Permission denied</span></div>
+            <div class="t-line"><span class="t-out"># FIX: make it executable first</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">chmod +x deploy.sh</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">./deploy.sh</span></div>
+            <div class="t-line"><span class="t-ok">Deploying...</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head">
+        <span class="step-num sn-orange">ERR 02</span>
+        <span class="step-title">command not found</span>
+        <span class="step-chevron">›</span>
+      </div>
+      <div class="step-body">
+        <div class="terminal"><div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">docker ps</span></div>
+            <div class="t-line"><span class="t-err">command not found: docker</span></div>
+            <div class="t-line"><span class="t-out"># FIX: the tool is not installed</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">sudo apt install docker.io -y</span></div>
+            <div class="t-line"><span class="t-comment"># Or follow the proper install steps in the Docker page</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head">
+        <span class="step-num sn-orange">ERR 03</span>
+        <span class="step-title">No such file or directory</span>
+        <span class="step-chevron">›</span>
+      </div>
+      <div class="step-body">
+        <div class="terminal"><div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">cd projects/taskapi</span></div>
+            <div class="t-line"><span class="t-err">bash: cd: projects/taskapi: No such file or directory</span></div>
+            <div class="t-line"><span class="t-out"># FIX: check where you are and what exists</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">pwd</span></div>
+            <div class="t-line"><span class="t-path">/home/akshay</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">ls</span></div>
+            <div class="t-line"><span class="t-out">downloads  notes.txt</span>  <span class="t-comment">  # projects doesn't exist!</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">mkdir -p projects/taskapi</span>  <span class="t-comment">  # create it first</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head">
+        <span class="step-num sn-orange">ERR 04</span>
+        <span class="step-title">sudo: command not found / must be run as root</span>
+        <span class="step-chevron">›</span>
+      </div>
+      <div class="step-body">
+        <div class="terminal"><div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">apt install nginx</span></div>
+            <div class="t-line"><span class="t-err">E: Could not open lock file - are you root?</span></div>
+            <div class="t-line"><span class="t-out"># FIX: prefix with sudo (super user do)</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">sudo apt install nginx -y</span></div>
+            <div class="t-line"><span class="t-ok">Setting up nginx... Done</span></div>
+          </div>
+        </div>
+        <div class="info-box"><span class="box-icon">💡</span><div><b>sudo</b> means "do this as admin". You'll add it before any command that touches system files. On GCP VMs your user already has sudo access.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════
+     INTERVIEW Q&A
+═══════════════════════════════════ -->
+<section class="section" id="interview">
+  <div class="section-label">// crack the interview</div>
+  <div class="section-title">Linux Interview Questions — With Perfect Answers</div>
+  <div class="section-sub">Click any question to reveal the answer + what to say in your interview.</div>
+
+  <div class="qa-list stagger-children">
+    <div class="qa-card">
+      <div class="qa-q"><span class="qa-q-num">Q1</span><span class="qa-q-text">What is the difference between a process and a thread?</span><span class="qa-diff diff-m">Medium</span></div>
+      <div class="qa-a">A <b>process</b> is an independent program running in memory with its own memory space — like a Docker container. A <b>thread</b> is a lightweight unit of execution within a process — multiple threads share the same memory of their parent process. Processes are isolated (crash of one doesn't affect others). Threads are faster to create but share memory (one bad thread can corrupt others). In DevOps: each Docker container is typically one process. When your app handles 1000 concurrent requests, it uses threads (or async I/O) internally.
+        <div class="qa-tip">🎯 Say: "Process = isolated worker with own memory. Thread = sub-worker sharing memory. I always check running processes with ps aux and htop when debugging performance on Linux servers."</div>
+      </div>
+    </div>
+    <div class="qa-card">
+      <div class="qa-q"><span class="qa-q-num">Q2</span><span class="qa-q-text">What does chmod 755 mean?</span><span class="qa-diff diff-e">Easy</span></div>
+      <div class="qa-a">chmod 755 sets permissions using octal notation: <b>7 (rwx) for owner</b> — full read+write+execute. <b>5 (r-x) for group</b> — read and execute, no write. <b>5 (r-x) for others</b> — read and execute, no write. In practice: scripts and executables get 755 (everyone can run it, only owner can modify). Private files like SSH keys get 600 (only owner reads/writes, nobody else can touch).
+        <div class="qa-tip">🎯 Say: "I use 755 for scripts, 644 for regular files, 600 for private keys. chmod +x is the quickest way to make something executable."</div>
+      </div>
+    </div>
+    <div class="qa-card">
+      <div class="qa-q"><span class="qa-q-num">Q3</span><span class="qa-q-text">How do you find which process is using port 8080?</span><span class="qa-diff diff-e">Easy</span></div>
+      <div class="qa-a">Two ways: <b>lsof -i :8080</b> — lists open files, filtered to port 8080. Shows the process name, PID, and user. <b>ss -tlnp | grep 8080</b> — socket statistics, faster than netstat. Once you have the PID, use <b>kill -9 PID</b> to stop it, or <b>kill PID</b> for a graceful stop.
+        <div class="qa-tip">🎯 Say: "lsof -i :PORT is my first command when I get 'address already in use' errors. Then kill -9 the conflicting process."</div>
+      </div>
+    </div>
+    <div class="qa-card">
+      <div class="qa-q"><span class="qa-q-num">Q4</span><span class="qa-q-text">What is the difference between soft link and hard link?</span><span class="qa-diff diff-m">Medium</span></div>
+      <div class="qa-a">A <b>hard link</b> creates another name pointing to the same data on disk. If you delete the original file, the hard link still works — data only deleted when all hard links are removed. A <b>soft link (symlink)</b> is like a shortcut — points to the file path, not the data. If original is deleted, symlink breaks. In DevOps: symlinks are used everywhere — /usr/bin/python → /usr/bin/python3.11. Configuration files often symlinked from /etc/nginx/sites-enabled/ to sites-available/.
+        <div class="qa-tip">🎯 Say: "ln -s source dest creates a symlink. I use symlinks for config management and to switch between versions without changing every script that references a path."</div>
+      </div>
+    </div>
+    <div class="qa-card">
+      <div class="qa-q"><span class="qa-q-num">Q5</span><span class="qa-q-text">How do you check disk space and what do you do when it's full?</span><span class="qa-diff diff-e">Easy</span></div>
+      <div class="qa-a"><b>df -h</b> shows disk usage per filesystem (h = human readable GB/MB). <b>du -sh /*</b> shows which directories are largest. When disk is full: first run <b>df -h</b> to confirm, then <b>du -sh /var/log/*</b> to find big log files (biggest culprit), then <b>docker system prune</b> to clean up old Docker images/containers, then <b>journalctl --vacuum-size=100M</b> to trim system logs.
+        <div class="qa-tip">🎯 Say: "In production I set up Prometheus alerts at 80% disk usage so I know before it hits 100%. df -h + du -sh are my first diagnostic commands."</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- NEXT PAGE -->
+<section class="section">
+  <div class="section-label">// you're ready for the next tool</div>
+  <div class="section-title">What's Next?</div>
+  <div class="card-grid stagger-children">
+    <a href="git.html" class="card" style="text-decoration:none;">
+      <div style="font-size:1.5rem;margin-bottom:10px;">🐙</div>
+      <div style="font-weight:700;margin-bottom:4px;">Git + GitHub →</div>
+      <div style="font-size:13px;color:var(--text-secondary);">Save your code. Collaborate. Version control. The foundation of CI/CD.</div>
+      <div style="margin-top:12px;"><span class="badge badge-blue">Next Chapter</span></div>
+    </a>
+    <a href="docker.html" class="card" style="text-decoration:none;">
+      <div style="font-size:1.5rem;margin-bottom:10px;">🐳</div>
+      <div style="font-weight:700;margin-bottom:4px;">Docker →</div>
+      <div style="font-size:13px;color:var(--text-secondary);">Pack your app. Run anywhere. The most important skill.</div>
+    </a>
+    <a href="../30day-challenge.html" class="card" style="text-decoration:none;">
+      <div style="font-size:1.5rem;margin-bottom:10px;">📅</div>
+      <div style="font-weight:700;margin-bottom:4px;">30-Day Challenge →</div>
+      <div style="font-size:13px;color:var(--text-secondary);">Follow the structured daily plan and build everything together.</div>
+    </a>
+  </div>
+</section>
+
+<footer>
+  My DevOps Portal · 🐧 Linux Guide ·
+  <a href="../index.html">Home</a> ·
+  <a href="../devops-bible.html">Bible</a> ·
+  <a href="git.html">Next: Git →</a>
+</footer>
+
+<script src="../script.js"></script>
+</body>
+</html>
