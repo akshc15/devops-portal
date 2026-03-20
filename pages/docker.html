@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Docker — My DevOps Portal</title>
+<link rel="stylesheet" href="../style.css">
+<style>
+.docker-arch {
+  display: grid;
+  grid-template-columns: 1fr 80px 1fr 80px 1fr;
+  align-items: center;
+  gap: 0;
+  margin: 20px 0;
+}
+.arch-box {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px 16px;
+  text-align: center;
+}
+.arch-box .ab-icon { font-size: 2rem; margin-bottom: 8px; }
+.arch-box .ab-name { font-weight: 700; font-size: 14px; margin-bottom: 6px; }
+.arch-box .ab-desc { font-size: 11px; color: var(--text-tertiary); line-height: 1.5; }
+.arch-arrow {
+  text-align: center;
+  font-size: 1.5rem;
+  color: var(--text-tertiary);
+}
+
+.layer-stack {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 3px;
+  margin: 16px 0;
+}
+.layer {
+  padding: 12px 20px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.layer-base    { background: rgba(10,132,255,0.12); border: 1px solid rgba(10,132,255,0.2); color: var(--blue); }
+.layer-sys     { background: rgba(90,200,250,0.1);  border: 1px solid rgba(90,200,250,0.2);  color: var(--cyan); }
+.layer-deps    { background: rgba(48,209,88,0.1);   border: 1px solid rgba(48,209,88,0.2);   color: var(--green); }
+.layer-app     { background: rgba(255,214,10,0.1);  border: 1px solid rgba(255,214,10,0.2);  color: var(--yellow); }
+.layer-write   { background: rgba(191,90,242,0.1);  border: 1px solid rgba(191,90,242,0.2);  color: var(--purple); }
+.layer-tag {
+  font-size: 10px;
+  opacity: 0.7;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.compose-services {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 10px;
+  margin: 16px 0;
+}
+.svc-card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  text-align: center;
+  font-size: 12px;
+}
+.svc-icon { font-size: 1.6rem; margin-bottom: 6px; }
+.svc-name { font-weight: 700; margin-bottom: 4px; }
+.svc-port { font-family: var(--font-mono); font-size: 11px; color: var(--green); }
+.svc-img  { font-family: var(--font-mono); font-size: 10px; color: var(--text-tertiary); margin-top: 4px; }
+
+.img-vs-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 16px 0;
+}
+.ivc-card {
+  background: var(--bg-elevated);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  text-align: center;
+}
+.ivc-icon { font-size: 2.5rem; margin-bottom: 10px; }
+.ivc-name { font-weight: 700; font-size: 16px; margin-bottom: 8px; }
+.ivc-points { text-align: left; }
+.ivc-point {
+  font-size: 12px;
+  color: var(--text-secondary);
+  padding: 4px 0;
+  display: flex;
+  align-items: start;
+  gap: 6px;
+  border-bottom: 1px solid var(--border);
+  line-height: 1.5;
+}
+.ivc-point:last-child { border-bottom: none; }
+.ivc-point::before { content: '→'; color: var(--blue); flex-shrink: 0; font-family: var(--font-mono); font-size: 11px; margin-top: 2px; }
+</style>
+</head>
+<body>
+
+<!-- SHARED BANNER -->
+<div class="site-banner">
+  <div class="brand"><span class="dot"></span><span>My DevOps Portal</span></div>
+  <nav class="banner-nav">
+    <a href="../index.html">🏠 Home</a>
+    <a href="linux.html">🐧 Linux</a>
+    <a href="git.html">🐙 Git</a>
+    <a href="docker.html" class="active">🐳 Docker</a>
+    <a href="kubernetes.html">☸️ K8s</a>
+  </nav>
+</div>
+
+<!-- PAGE NAV -->
+<div class="page-nav">
+  <span class="page-nav-title">🐳 Docker — Complete Guide</span>
+  <div class="page-nav-links">
+    <a href="#story">Story</a>
+    <a href="#concepts">Concepts</a>
+    <a href="#install">Install</a>
+    <a href="#firstcontainer">First Container</a>
+    <a href="#dockerfile">Dockerfile</a>
+    <a href="#commands">Commands</a>
+    <a href="#compose">Compose</a>
+    <a href="#networking">Networking</a>
+    <a href="#volumes">Volumes</a>
+    <a href="#security">Security</a>
+    <a href="#errors">Errors</a>
+    <a href="#interview">Interview</a>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="page-hero" id="story">
+  <div class="hero-eyebrow">Chapter 03 · Containerisation</div>
+  <h1 class="hero-title">🐳 Docker<br><span class="accent">Pack Once.</span><br><span class="accent-green">Run Anywhere.</span></h1>
+  <p class="hero-sub">Docker is the most important skill in modern DevOps. It solves the oldest problem in software — "it works on my machine". After this chapter, you will containerise anything.</p>
+</div>
+
+<!-- ═══════════════════════════════════
+     THE STORY
+═══════════════════════════════════ -->
+<section class="section" id="story">
+  <div class="section-label">// the problem docker solved</div>
+  <div class="section-title">The Story — "It Works On My Machine"</div>
+
+  <div class="story-box animate-fade-up">
+    <span class="story-icon">😤</span>
+    <strong>The year is 2012. A developer named Alex pushes code to production.</strong><br><br>
+    On Alex's laptop: Python 3.9, library version 2.1.4, Ubuntu 18. Works perfectly.<br>
+    On the server: Python 3.6, library version 1.8.0, CentOS 7. Crashes instantly.<br><br>
+    The ops team spends 3 days figuring out why. The answer: the environment is different. This happened <strong>every single time</strong> anyone deployed anything. Teams had a saying — the saddest words in software: <em>"But it works on my machine!"</em><br><br>
+    <strong>Docker launched in 2013</strong> with one radical idea: what if you packaged not just the code, but <strong>the entire environment</strong> — the OS, runtime, libraries, config — everything — into one sealed unit that runs identically everywhere? A container.<br><br>
+    Today Docker has 20 million developers. Every cloud, every CI/CD pipeline, every Kubernetes cluster uses it. If you know one thing in DevOps, make it Docker.
+  </div>
+
+  <div class="analogy-box animate-fade-up-1">
+    <div class="analogy-label">🧒 Explain Like I'm 5</div>
+    <p>Think about shipping containers on cargo ships. Before containers existed, every ship was loaded differently — boxes, barrels, random shapes. Loading took weeks. Things got damaged. <b>Shipping containers standardised everything</b> — same box, same size, fits any ship, any truck, any crane. Docker does the same for software. Your app goes in a <b>standard container</b> that runs on any laptop, any server, any cloud — the same way, every time.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════
+     CORE CONCEPTS
+═══════════════════════════════════ -->
+<section class="section" id="concepts">
+  <div class="section-label">// understand before installing</div>
+  <div class="section-title">3 Core Concepts — Image, Container, Registry</div>
+  <div class="section-sub">Everything in Docker comes down to these three things. Understand them and every command makes sense.</div>
+
+  <!-- IMAGE VS CONTAINER -->
+  <div class="img-vs-container reveal">
+    <div class="ivc-card">
+      <div class="ivc-icon">📸</div>
+      <div class="ivc-name" style="color:var(--blue);">Image</div>
+      <div class="ivc-points">
+        <div class="ivc-point">A read-only blueprint — like a recipe or a class in code</div>
+        <div class="ivc-point">Built from a Dockerfile with <code>docker build</code></div>
+        <div class="ivc-point">Stored in a registry (Docker Hub)</div>
+        <div class="ivc-point">Never changes once built</div>
+        <div class="ivc-point">One image → unlimited containers</div>
+      </div>
+    </div>
+    <div class="ivc-card">
+      <div class="ivc-icon">📦</div>
+      <div class="ivc-name" style="color:var(--green);">Container</div>
+      <div class="ivc-points">
+        <div class="ivc-point">A running instance of an image — like an object from a class</div>
+        <div class="ivc-point">Created with <code>docker run</code></div>
+        <div class="ivc-point">Has its own isolated filesystem, network, processes</div>
+        <div class="ivc-point">Ephemeral — stop it, data is gone (unless you use volumes)</div>
+        <div class="ivc-point">10 containers can run from 1 image simultaneously</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DOCKER ARCHITECTURE -->
+  <div style="margin-bottom:24px;" class="reveal">
+    <div style="font-size:14px;font-weight:700;margin-bottom:14px;color:var(--text-secondary);">How Docker Works — The Architecture</div>
+    <div class="docker-arch">
+      <div class="arch-box">
+        <div class="ab-icon">⌨️</div>
+        <div class="ab-name">Docker CLI</div>
+        <div class="ab-desc">You type <code>docker run</code>. CLI sends command to the daemon.</div>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-box" style="border-color:var(--blue);">
+        <div class="ab-icon">🧠</div>
+        <div class="ab-name" style="color:var(--blue);">Docker Daemon</div>
+        <div class="ab-desc">The engine running in background. Builds images, manages containers, handles networking.</div>
+      </div>
+      <div class="arch-arrow">→</div>
+      <div class="arch-box">
+        <div class="ab-icon">🏪</div>
+        <div class="ab-name">Registry</div>
+        <div class="ab-desc">Docker Hub stores images. Daemon pulls from here or pushes your images to here.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- IMAGE LAYERS -->
+  <div class="reveal">
+    <div style="font-size:14px;font-weight:700;margin-bottom:12px;color:var(--text-secondary);">Docker Images are Made of Layers</div>
+    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;line-height:1.7;">Each instruction in your Dockerfile creates a new layer. Layers are cached — if layer 3 didn't change, Docker reuses it from cache. This makes rebuilds fast.</p>
+    <div class="layer-stack">
+      <div class="layer layer-base"><span>FROM python:3.11-slim</span><span class="layer-tag">Layer 1 — Base OS</span></div>
+      <div class="layer layer-sys"><span>RUN apt-get update</span><span class="layer-tag">Layer 2 — System packages</span></div>
+      <div class="layer layer-deps"><span>COPY requirements.txt + RUN pip install</span><span class="layer-tag">Layer 3 — Dependencies ← cache this!</span></div>
+      <div class="layer layer-app"><span>COPY app/ ./app/</span><span class="layer-tag">Layer 4 — Your code (changes most often)</span></div>
+      <div class="layer layer-write"><span>Container writable layer</span><span class="layer-tag">Layer 5 — Runtime writes (lost on stop)</span></div>
+    </div>
+    <div class="tip-box"><span class="box-icon">💡</span><div><b>Order matters in Dockerfile.</b> Put things that change rarely (apt install, pip install) BEFORE things that change often (COPY app code). This maximises cache hits and makes rebuilds much faster.</div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════
+     INSTALL
+═══════════════════════════════════ -->
+<section class="section" id="install">
+  <div class="section-label">// get docker running</div>
+  <div class="section-title">Install Docker — On Your Cloud VM</div>
+
+  <div class="steps stagger-children">
+    <div class="step-card">
+      <div class="step-head">
+        <span class="step-num sn-blue">STEP 1</span>
+        <span class="step-title">Install Docker on Ubuntu (GCP VM)</span>
+        <span class="step-chevron">›</span>
+      </div>
+      <div class="step-body">
+        <p>The official install script is the easiest way. One command installs everything.</p>
+        <div class="terminal">
+          <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">install docker — GCP VM</span><button class="terminal-copy">Copy</button></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-comment"># Official Docker install script — installs latest version</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">curl -fsSL https://get.docker.com | sudo sh</span></div>
+            <div class="t-line"><span class="t-out">...Installing Docker...</span></div>
+            <div class="t-line"><span class="t-ok">Docker version 25.0.4 has been installed!</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-comment"># Add your user to docker group (avoid typing sudo every time)</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">sudo usermod -aG docker $USER</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-comment"># Apply group change without logging out</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">newgrp docker</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-comment"># Verify Docker works</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">docker --version</span></div>
+            <div class="t-line"><span class="t-ok">Docker version 25.0.4, build f2a4580</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">docker run hello-world</span></div>
+            <div class="t-line"><span class="t-ok">Hello from Docker!</span></div>
+            <div class="t-line"><span class="t-ok">This message shows Docker is installed correctly.</span></div>
+          </div>
+        </div>
+        <div class="success-box"><span class="box-icon">✓</span><div>If you see "Hello from Docker!" — Docker is working perfectly. You just ran your first container!</div></div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head">
+        <span class="step-num sn-blue">STEP 2</span>
+        <span class="step-title">Install Docker Desktop — On Your Laptop (Mac/Windows)</span>
+        <span class="step-chevron">›</span>
+      </div>
+      <div class="step-body">
+        <p>Docker Desktop gives you a GUI + the docker command in your local terminal. Optional — you can do everything on the cloud VM.</p>
+        <div class="info-box"><span class="box-icon">🖱️</span>
+          <div>
+            <b>Mac:</b> Go to <b>docker.com/products/docker-desktop</b> → Download for Mac → Open the .dmg → Drag Docker to Applications → Open Docker from Applications → Wait for the whale icon to stop animating in menu bar ✓<br><br>
+            <b>Windows:</b> Same URL → Download for Windows → Run installer → Enable WSL 2 when asked → Restart PC → Open Docker Desktop ✓
+          </div>
+        </div>
+        <div class="terminal">
+          <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">verify on laptop terminal</span><button class="terminal-copy">Copy</button></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">docker --version</span></div>
+            <div class="t-line"><span class="t-ok">Docker version 25.0.4</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">docker ps</span></div>
+            <div class="t-line"><span class="t-ok">CONTAINER ID   IMAGE   COMMAND   STATUS   PORTS   NAMES</span></div>
+            <div class="t-line"><span class="t-comment">← empty list = Docker running, no containers yet. Perfect.</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════
+     FIRST CONTAINER
+═══════════════════════════════════ -->
+<section class="section" id="firstcontainer">
+  <div class="section-label">// run your first container</div>
+  <div class="section-title">Your First Containers — Understand Every Part</div>
+  <div class="section-sub">Every flag, every option explained. No black boxes.</div>
+
+  <div class="terminal reveal">
+    <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">docker run — anatomy of the command</span><button class="terminal-copy">Copy</button></div>
+    <div class="terminal-body">
+      <div class="t-line"><span class="t-comment"># Full command with every flag explained below:</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">docker run -d -p 8080:80 --name my-nginx --restart unless-stopped nginx</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment">  docker run          = create and start a container</span></div>
+      <div class="t-line"><span class="t-comment">  -d                  = detached (run in background, get terminal back)</span></div>
+      <div class="t-line"><span class="t-comment">  -p 8080:80          = port mapping: host:container</span></div>
+      <div class="t-line"><span class="t-comment">                        traffic to YOUR port 8080 → container's port 80</span></div>
+      <div class="t-line"><span class="t-comment">  --name my-nginx     = give container a name (easier than random IDs)</span></div>
+      <div class="t-line"><span class="t-comment">  --restart unless-stopped = auto-restart if it crashes (but not if you stop it)</span></div>
+      <div class="t-line"><span class="t-comment">  nginx               = image name (pulled from Docker Hub automatically)</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-ok">Unable to find image 'nginx:latest' locally</span></div>
+      <div class="t-line"><span class="t-ok">latest: Pulling from library/nginx</span></div>
+      <div class="t-line"><span class="t-ok">Digest: sha256:abc123...</span></div>
+      <div class="t-line"><span class="t-ok">Status: Downloaded newer image for nginx:latest</span></div>
+      <div class="t-line"><span class="t-ok">a1b2c3d4e5f6  ← container ID</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment"># Verify it's running</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">docker ps</span></div>
+      <div class="t-line"><span class="t-out">CONTAINER ID  IMAGE  COMMAND    STATUS         PORTS                  NAMES</span></div>
+      <div class="t-line"><span class="t-ok">a1b2c3d4e5f6  nginx  nginx -g…  Up 3 seconds   0.0.0.0:8080->80/tcp   my-nginx</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment"># Test it — nginx is now serving on port 8080</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">curl localhost:8080</span></div>
+      <div class="t-line"><span class="t-ok">&lt;!DOCTYPE html&gt;&lt;h1&gt;Welcome to nginx!&lt;/h1&gt;</span></div>
+    </div>
+  </div>
+
+  <div class="terminal reveal" style="margin-top:12px;">
+    <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">useful run variations</span><button class="terminal-copy">Copy</button></div>
+    <div class="terminal-body">
+      <div class="t-line"><span class="t-comment"># Run interactively (get shell inside container)</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">docker run -it ubuntu bash</span></div>
+      <div class="t-line"><span class="t-ok">root@a1b2c3:/# </span>  <span class="t-comment">← you're now INSIDE Ubuntu container</span></div>
+      <div class="t-line"><span class="t-prompt">root@a1b2c3:/# </span><span class="t-cmd">exit</span>  <span class="t-comment">← to get out</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment"># Pass environment variables</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">docker run -e DATABASE_URL=postgres://localhost -e APP_ENV=prod myapp</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment"># Mount a folder from your machine into the container</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">docker run -v /home/akshay/data:/app/data myapp</span></div>
+      <div class="t-line"><span class="t-comment">         host path ↑               ↑ container path</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment"># Remove container automatically when it stops (for one-off tasks)</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">docker run --rm python:3.11 python -c "print('hello')"</span></div>
+      <div class="t-line"><span class="t-ok">hello</span></div>
+      <div class="t-line"><span class="t-comment">← container deleted immediately after running</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════
+     DOCKERFILE
+═══════════════════════════════════ -->
+<section class="section" id="dockerfile">
+  <div class="section-label">// build your own image</div>
+  <div class="section-title">Dockerfile — Build TaskAPI Image From Scratch</div>
+  <div class="section-sub">A Dockerfile is a recipe for building your image. Every instruction creates a layer. Every line explained below.</div>
+
+  <div class="steps stagger-children">
+    <div class="step-card">
+      <div class="step-head">
+        <span class="step-num sn-blue">PART 1</span>
+        <span class="step-title">Create the TaskAPI App First</span>
+        <span class="step-chevron">›</span>
+      </div>
+      <div class="step-body">
+        <p>We need an app to containerise. Create this structure on your VM:</p>
+        <div class="terminal">
+          <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">create project structure</span><button class="terminal-copy">Copy</button></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">mkdir -p taskapi/app taskapi/tests</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">cd taskapi</span></div>
+          </div>
+        </div>
+        <div class="terminal">
+          <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">app/main.py — the API we will containerise</span><button class="terminal-copy">Copy</button></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-comment"># app/main.py</span></div>
+            <div class="t-line"><span class="t-cmd">from fastapi import FastAPI, HTTPException</span></div>
+            <div class="t-line"><span class="t-cmd">from pydantic import BaseModel</span></div>
+            <div class="t-line"><span class="t-cmd">from typing import List</span></div>
+            <div class="t-line"><span class="t-cmd">import uuid</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-cmd">app = FastAPI(title="TaskAPI", version="1.0.0")</span></div>
+            <div class="t-line"><span class="t-cmd">tasks_db = {}</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-cmd">class Task(BaseModel):</span></div>
+            <div class="t-line"><span class="t-cmd">    title: str</span></div>
+            <div class="t-line"><span class="t-cmd">    done: bool = False</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-cmd">@app.get("/health")</span></div>
+            <div class="t-line"><span class="t-cmd">def health(): return {"status": "ok", "version": "1.0.0"}</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-cmd">@app.get("/tasks")</span></div>
+            <div class="t-line"><span class="t-cmd">def list_tasks(): return list(tasks_db.values())</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-cmd">@app.post("/tasks", status_code=201)</span></div>
+            <div class="t-line"><span class="t-cmd">def create_task(task: Task):</span></div>
+            <div class="t-line"><span class="t-cmd">    tid = str(uuid.uuid4())</span></div>
+            <div class="t-line"><span class="t-cmd">    tasks_db[tid] = {"id": tid, **task.dict()}</span></div>
+            <div class="t-line"><span class="t-cmd">    return tasks_db[tid]</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-cmd">@app.delete("/tasks/{task_id}", status_code=204)</span></div>
+            <div class="t-line"><span class="t-cmd">def delete_task(task_id: str):</span></div>
+            <div class="t-line"><span class="t-cmd">    if task_id not in tasks_db: raise HTTPException(404)</span></div>
+            <div class="t-line"><span class="t-cmd">    del tasks_db[task_id]</span></div>
+          </div>
+        </div>
+        <div class="terminal">
+          <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">requirements.txt</span><button class="terminal-copy">Copy</button></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-cmd">fastapi==0.111.0</span></div>
+            <div class="t-line"><span class="t-cmd">uvicorn==0.29.0</span></div>
+            <div class="t-line"><span class="t-cmd">pydantic==2.7.0</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head">
+        <span class="step-num sn-blue">PART 2</span>
+        <span class="step-title">Write the Dockerfile — Every Line Explained</span>
+        <span class="step-chevron">›</span>
+      </div>
+      <div class="step-body">
+        <div class="terminal">
+          <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">Dockerfile — save as "Dockerfile" (no extension)</span><button class="terminal-copy">Copy</button></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-comment"># FROM — which base image to start from</span></div>
+            <div class="t-line"><span class="t-comment"># python:3.11-slim = Python 3.11 on minimal Debian</span></div>
+            <div class="t-line"><span class="t-comment"># -slim = stripped down, smaller image (~50MB vs 900MB for full)</span></div>
+            <div class="t-line"><span class="t-cmd">FROM python:3.11-slim</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-comment"># WORKDIR — set working directory INSIDE the container</span></div>
+            <div class="t-line"><span class="t-comment"># All following commands run from /app</span></div>
+            <div class="t-line"><span class="t-comment"># If /app doesn't exist, Docker creates it</span></div>
+            <div class="t-line"><span class="t-cmd">WORKDIR /app</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-comment"># COPY requirements BEFORE the app code — CRITICAL for caching</span></div>
+            <div class="t-line"><span class="t-comment"># If requirements.txt didn't change → pip install is SKIPPED on rebuild</span></div>
+            <div class="t-line"><span class="t-comment"># If app code changes → only the last COPY re-runs (super fast rebuilds)</span></div>
+            <div class="t-line"><span class="t-cmd">COPY requirements.txt .</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-comment"># RUN — executes commands during BUILD (not runtime)</span></div>
+            <div class="t-line"><span class="t-comment"># --no-cache-dir = don't store pip download cache in image</span></div>
+            <div class="t-line"><span class="t-comment"># This makes the image smaller</span></div>
+            <div class="t-line"><span class="t-cmd">RUN pip install --no-cache-dir -r requirements.txt</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-comment"># Copy app code (changes most often → last layer)</span></div>
+            <div class="t-line"><span class="t-cmd">COPY app/ ./app/</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-comment"># EXPOSE — documents which port the app uses</span></div>
+            <div class="t-line"><span class="t-comment"># WARNING: this does NOT publish the port to the host!</span></div>
+            <div class="t-line"><span class="t-comment"># You still need -p 8000:8000 in docker run to access from outside</span></div>
+            <div class="t-line"><span class="t-cmd">EXPOSE 8000</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-comment"># SECURITY: never run as root inside containers</span></div>
+            <div class="t-line"><span class="t-comment"># If attacker breaks in, they get "appuser" not root</span></div>
+            <div class="t-line"><span class="t-cmd">RUN adduser --disabled-password --gecos '' appuser</span></div>
+            <div class="t-line"><span class="t-cmd">USER appuser</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-comment"># CMD — command to run when container STARTS</span></div>
+            <div class="t-line"><span class="t-comment"># Use array format (exec form) — not string (shell form)</span></div>
+            <div class="t-line"><span class="t-comment"># --host 0.0.0.0 = listen on all interfaces (not just localhost)</span></div>
+            <div class="t-line"><span class="t-comment"># Without 0.0.0.0 you can't reach the app from outside the container!</span></div>
+            <div class="t-line"><span class="t-cmd">CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]</span></div>
+          </div>
+        </div>
+        <div class="warn-box"><span class="box-icon">⚠️</span><div><b>Most common beginner mistake:</b> Forgetting <code>--host 0.0.0.0</code> in the CMD. Your app starts fine but you can't reach it because it only listens on localhost INSIDE the container. Always use 0.0.0.0 in containers.</div></div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head">
+        <span class="step-num sn-green">PART 3</span>
+        <span class="step-title">Build, Run and Test the Container</span>
+        <span class="step-chevron">›</span>
+      </div>
+      <div class="step-body">
+        <div class="terminal">
+          <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">build and run taskapi</span><button class="terminal-copy">Copy</button></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-comment"># Build the image</span></div>
+            <div class="t-line"><span class="t-comment"># -t = tag (name:version), . = use Dockerfile in current directory</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">docker build -t taskapi:v1 .</span></div>
+            <div class="t-line"><span class="t-out">Step 1/8 : FROM python:3.11-slim</span></div>
+            <div class="t-line"><span class="t-out">Step 2/8 : WORKDIR /app</span></div>
+            <div class="t-line"><span class="t-out">Step 3/8 : COPY requirements.txt .</span></div>
+            <div class="t-line"><span class="t-out">Step 4/8 : RUN pip install --no-cache-dir -r requirements.txt</span></div>
+            <div class="t-line"><span class="t-out">Step 5/8 : COPY app/ ./app/</span></div>
+            <div class="t-line"><span class="t-out">Step 6/8 : EXPOSE 8000</span></div>
+            <div class="t-line"><span class="t-out">Step 7/8 : RUN adduser...</span></div>
+            <div class="t-line"><span class="t-out">Step 8/8 : CMD...</span></div>
+            <div class="t-line"><span class="t-ok">Successfully built a1b2c3d4e5f6</span></div>
+            <div class="t-line"><span class="t-ok">Successfully tagged taskapi:v1</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-comment"># Verify image was created</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">docker images</span></div>
+            <div class="t-line"><span class="t-out">REPOSITORY  TAG    IMAGE ID      SIZE</span></div>
+            <div class="t-line"><span class="t-ok">taskapi     v1     a1b2c3d4e5f6  125MB</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-comment"># Run the container</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">docker run -d -p 8000:8000 --name taskapi taskapi:v1</span></div>
+            <div class="t-line"><span class="t-ok">f9e8d7c6b5a4</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-comment"># Test the running API</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">curl localhost:8000/health</span></div>
+            <div class="t-line"><span class="t-ok">{"status":"ok","version":"1.0.0"}</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">curl -X POST localhost:8000/tasks \</span></div>
+            <div class="t-line"><span class="t-cmd">  -H "Content-Type: application/json" \</span></div>
+            <div class="t-line"><span class="t-cmd">  -d '{"title": "Learn Docker"}'</span></div>
+            <div class="t-line"><span class="t-ok">{"id":"abc-123","title":"Learn Docker","done":false}</span></div>
+          </div>
+        </div>
+        <div class="success-box"><span class="box-icon">🎉</span><div>Your app is running in a Docker container. The same container will work identically on any server, any cloud, anywhere in the world.</div></div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head">
+        <span class="step-num sn-yellow">PART 4</span>
+        <span class="step-title">Push Your Image to Docker Hub</span>
+        <span class="step-chevron">›</span>
+      </div>
+      <div class="step-body">
+        <p>Push your image to Docker Hub so Kubernetes can pull it during deployment.</p>
+        <div class="terminal">
+          <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">push to docker hub</span><button class="terminal-copy">Copy</button></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-comment"># Login to Docker Hub</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">docker login</span></div>
+            <div class="t-line"><span class="t-out">Username: akshc15</span></div>
+            <div class="t-line"><span class="t-out">Password: ••••••••</span></div>
+            <div class="t-line"><span class="t-ok">Login Succeeded</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-comment"># Tag image with your Docker Hub username</span></div>
+            <div class="t-line"><span class="t-comment"># Format: username/imagename:tag</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">docker tag taskapi:v1 akshc15/taskapi:v1</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">docker tag taskapi:v1 akshc15/taskapi:latest</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-comment"># Push to Docker Hub</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">docker push akshc15/taskapi:v1</span></div>
+            <div class="t-line"><span class="t-out">The push refers to repository [docker.io/akshc15/taskapi]</span></div>
+            <div class="t-line"><span class="t-ok">v1: digest: sha256:abc123... size: 1234</span></div>
+            <div class="t-line"> </div>
+            <div class="t-line"><span class="t-comment"># Anyone can now pull your image</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">docker pull akshc15/taskapi:v1</span></div>
+          </div>
+        </div>
+        <div class="tip-box"><span class="box-icon">💡</span><div>In production, use <b>commit SHA tags</b> instead of <code>:latest</code>. Example: <code>akshc15/taskapi:a3f2c91</code>. This way you always know exactly which version is running. <code>:latest</code> is ambiguous — nobody knows which version "latest" is.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════
+     COMMANDS REFERENCE
+═══════════════════════════════════ -->
+<section class="section" id="commands">
+  <div class="section-label">// your daily docker toolkit</div>
+  <div class="section-title">Essential Docker Commands — Full Reference</div>
+
+  <div class="tab-container">
+    <div class="tabs">
+      <button class="tab-btn" data-tab="containers">📦 Containers</button>
+      <button class="tab-btn" data-tab="images">📸 Images</button>
+      <button class="tab-btn" data-tab="debug">🔍 Debug</button>
+      <button class="tab-btn" data-tab="clean">🧹 Cleanup</button>
+    </div>
+
+    <div class="tab-panel" data-panel="containers">
+      <table class="cmd-table">
+        <tr><th>Command</th><th>What it does</th></tr>
+        <tr><td>docker run -d -p 8000:8000 myapp</td><td>Run container in background, map port</td></tr>
+        <tr><td>docker ps</td><td>List running containers</td></tr>
+        <tr><td>docker ps -a</td><td>List ALL containers including stopped</td></tr>
+        <tr><td>docker stop myapp</td><td>Stop container gracefully (SIGTERM)</td></tr>
+        <tr><td>docker start myapp</td><td>Start a stopped container</td></tr>
+        <tr><td>docker restart myapp</td><td>Stop then start</td></tr>
+        <tr><td>docker rm myapp</td><td>Delete a stopped container</td></tr>
+        <tr><td>docker rm -f myapp</td><td>Force delete even if running</td></tr>
+        <tr><td>docker exec -it myapp sh</td><td>Open shell inside running container</td></tr>
+        <tr><td>docker stats</td><td>Live CPU/memory usage of all containers</td></tr>
+        <tr><td>docker inspect myapp</td><td>Full JSON details about container</td></tr>
+      </table>
+    </div>
+
+    <div class="tab-panel" data-panel="images">
+      <table class="cmd-table">
+        <tr><th>Command</th><th>What it does</th></tr>
+        <tr><td>docker build -t myapp:v1 .</td><td>Build image from Dockerfile in current dir</td></tr>
+        <tr><td>docker build --no-cache -t myapp .</td><td>Build ignoring cache (fresh build)</td></tr>
+        <tr><td>docker images</td><td>List all local images</td></tr>
+        <tr><td>docker pull python:3.11-slim</td><td>Download image from registry</td></tr>
+        <tr><td>docker push user/myapp:v1</td><td>Upload image to Docker Hub</td></tr>
+        <tr><td>docker tag myapp:v1 user/myapp:v1</td><td>Create alias for an image</td></tr>
+        <tr><td>docker rmi myapp:v1</td><td>Delete an image</td></tr>
+        <tr><td>docker history myapp</td><td>Show all layers in an image</td></tr>
+        <tr><td>docker save myapp &gt; app.tar</td><td>Export image to file</td></tr>
+        <tr><td>docker load &lt; app.tar</td><td>Import image from file</td></tr>
+      </table>
+    </div>
+
+    <div class="tab-panel" data-panel="debug">
+      <table class="cmd-table">
+        <tr><th>Command</th><th>What it does</th></tr>
+        <tr><td>docker logs myapp</td><td>Show container logs</td></tr>
+        <tr><td>docker logs -f myapp</td><td>Follow logs live (like tail -f)</td></tr>
+        <tr><td>docker logs --tail 50 myapp</td><td>Last 50 lines of logs</td></tr>
+        <tr><td>docker logs --since 10m myapp</td><td>Logs from last 10 minutes</td></tr>
+        <tr><td>docker exec -it myapp sh</td><td>Shell inside running container</td></tr>
+        <tr><td>docker exec myapp env</td><td>See environment variables in container</td></tr>
+        <tr><td>docker exec myapp cat /app/config.py</td><td>Read a file inside container</td></tr>
+        <tr><td>docker stats myapp</td><td>Live CPU, memory, network usage</td></tr>
+        <tr><td>docker inspect myapp | grep IPAddress</td><td>Get container's IP address</td></tr>
+        <tr><td>docker cp myapp:/app/log.txt ./log.txt</td><td>Copy file OUT of container</td></tr>
+      </table>
+    </div>
+
+    <div class="tab-panel" data-panel="clean">
+      <div class="terminal">
+        <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">cleanup commands — run when disk is full</span><button class="terminal-copy">Copy</button></div>
+        <div class="terminal-body">
+          <div class="t-line"><span class="t-comment"># Remove all stopped containers</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">docker container prune</span></div>
+          <div class="t-line"> </div>
+          <div class="t-line"><span class="t-comment"># Remove all unused images</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">docker image prune -a</span></div>
+          <div class="t-line"> </div>
+          <div class="t-line"><span class="t-comment"># Remove everything unused at once (containers, images, networks, cache)</span></div>
+          <div class="t-line"><span class="t-comment"># Run this when disk space is low — frees GBs</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">docker system prune -a</span></div>
+          <div class="t-line"><span class="t-warn">WARNING! This will remove all unused data.</span></div>
+          <div class="t-line"><span class="t-out">Are you sure you want to continue? [y/N] y</span></div>
+          <div class="t-line"><span class="t-ok">Deleted containers: 3</span></div>
+          <div class="t-line"><span class="t-ok">Deleted images: 12</span></div>
+          <div class="t-line"><span class="t-ok">Total reclaimed space: 4.2GB</span></div>
+          <div class="t-line"> </div>
+          <div class="t-line"><span class="t-comment"># Check disk usage by Docker</span></div>
+          <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">docker system df</span></div>
+          <div class="t-line"><span class="t-out">TYPE          SIZE      RECLAIMABLE</span></div>
+          <div class="t-line"><span class="t-out">Images        2.4GB     1.8GB</span></div>
+          <div class="t-line"><span class="t-out">Containers    12MB      0B</span></div>
+          <div class="t-line"><span class="t-out">Volumes       800MB     400MB</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════
+     DOCKER COMPOSE
+═══════════════════════════════════ -->
+<section class="section" id="compose">
+  <div class="section-label">// run multiple containers together</div>
+  <div class="section-title">Docker Compose — Your Local Dev Environment</div>
+  <div class="section-sub">Real apps need multiple services — app + database + cache + queue. Compose runs them all together with one command.</div>
+
+  <div class="analogy-box reveal">
+    <div class="analogy-label">🧒 Explain Like I'm 5</div>
+    <p>Running one container is like making one dish. But a real meal needs 4 dishes cooking at the same time. Docker Compose is the <b>full recipe book</b> — it says "start the app dish, start the database dish, start the cache dish, make sure they can all talk to each other, all at once".</p>
+  </div>
+
+  <div class="compose-services reveal">
+    <div class="svc-card" style="border-color:rgba(10,132,255,0.3);">
+      <div class="svc-icon">🐍</div>
+      <div class="svc-name" style="color:var(--blue);">app</div>
+      <div class="svc-port">:8000</div>
+      <div class="svc-img">built from ./</div>
+    </div>
+    <div class="svc-card" style="border-color:rgba(48,209,88,0.3);">
+      <div class="svc-icon">🐘</div>
+      <div class="svc-name" style="color:var(--green);">db</div>
+      <div class="svc-port">:5432</div>
+      <div class="svc-img">postgres:15</div>
+    </div>
+    <div class="svc-card" style="border-color:rgba(255,69,58,0.3);">
+      <div class="svc-icon">🔴</div>
+      <div class="svc-name" style="color:var(--red);">redis</div>
+      <div class="svc-port">:6379</div>
+      <div class="svc-img">redis:7-alpine</div>
+    </div>
+  </div>
+
+  <div class="terminal reveal">
+    <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">docker-compose.yml — complete annotated example</span><button class="terminal-copy">Copy</button></div>
+    <div class="terminal-body">
+      <div class="t-line"><span class="t-cmd">version: "3.9"</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-cmd">services:</span></div>
+      <div class="t-line"><span class="t-comment">  # ── App Service ─────────────────────────────────────</span></div>
+      <div class="t-line"><span class="t-cmd">  app:</span></div>
+      <div class="t-line"><span class="t-cmd">    build: .</span>                  <span class="t-comment">  # build from Dockerfile in current dir</span></div>
+      <div class="t-line"><span class="t-cmd">    container_name: taskapi</span></div>
+      <div class="t-line"><span class="t-cmd">    ports:</span></div>
+      <div class="t-line"><span class="t-cmd">      - "8000:8000"</span>           <span class="t-comment">  # host:container</span></div>
+      <div class="t-line"><span class="t-cmd">    environment:</span></div>
+      <div class="t-line"><span class="t-cmd">      - APP_ENV=development</span></div>
+      <div class="t-line"><span class="t-cmd">      - DATABASE_URL=postgresql://taskuser:taskpass@db:5432/taskdb</span></div>
+      <div class="t-line"><span class="t-comment">                               # ↑ "db" = service name, not localhost!</span></div>
+      <div class="t-line"><span class="t-cmd">      - REDIS_URL=redis://redis:6379</span></div>
+      <div class="t-line"><span class="t-cmd">    volumes:</span></div>
+      <div class="t-line"><span class="t-cmd">      - ./app:/app/app</span>        <span class="t-comment">  # live reload — code changes reflect instantly</span></div>
+      <div class="t-line"><span class="t-cmd">    depends_on:</span></div>
+      <div class="t-line"><span class="t-cmd">      db:</span></div>
+      <div class="t-line"><span class="t-cmd">        condition: service_healthy</span>  <span class="t-comment">  # wait for db to be ready</span></div>
+      <div class="t-line"><span class="t-cmd">    restart: unless-stopped</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment">  # ── Database Service ─────────────────────────────────</span></div>
+      <div class="t-line"><span class="t-cmd">  db:</span></div>
+      <div class="t-line"><span class="t-cmd">    image: postgres:15-alpine</span>  <span class="t-comment">  # pull from Docker Hub, don't build</span></div>
+      <div class="t-line"><span class="t-cmd">    container_name: postgres</span></div>
+      <div class="t-line"><span class="t-cmd">    environment:</span></div>
+      <div class="t-line"><span class="t-cmd">      POSTGRES_USER: taskuser</span></div>
+      <div class="t-line"><span class="t-cmd">      POSTGRES_PASSWORD: taskpass</span></div>
+      <div class="t-line"><span class="t-cmd">      POSTGRES_DB: taskdb</span></div>
+      <div class="t-line"><span class="t-cmd">    volumes:</span></div>
+      <div class="t-line"><span class="t-cmd">      - pg_data:/var/lib/postgresql/data</span>  <span class="t-comment">  # persist data!</span></div>
+      <div class="t-line"><span class="t-cmd">    healthcheck:</span></div>
+      <div class="t-line"><span class="t-cmd">      test: ["CMD-SHELL", "pg_isready -U taskuser"]</span></div>
+      <div class="t-line"><span class="t-cmd">      interval: 10s</span></div>
+      <div class="t-line"><span class="t-cmd">      timeout: 5s</span></div>
+      <div class="t-line"><span class="t-cmd">      retries: 5</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment">  # ── Redis Cache ──────────────────────────────────────</span></div>
+      <div class="t-line"><span class="t-cmd">  redis:</span></div>
+      <div class="t-line"><span class="t-cmd">    image: redis:7-alpine</span></div>
+      <div class="t-line"><span class="t-cmd">    container_name: redis</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-cmd">volumes:</span></div>
+      <div class="t-line"><span class="t-cmd">  pg_data:</span>                   <span class="t-comment">  # named volume — data persists between restarts</span></div>
+    </div>
+  </div>
+
+  <div class="terminal reveal" style="margin-top:12px;">
+    <div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div><span class="terminal-title">docker compose commands</span><button class="terminal-copy">Copy</button></div>
+    <div class="terminal-body">
+      <div class="t-line"><span class="t-comment"># Start everything in background</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">docker-compose up -d</span></div>
+      <div class="t-line"><span class="t-ok">Creating network "taskapi_default"</span></div>
+      <div class="t-line"><span class="t-ok">Creating postgres ... done</span></div>
+      <div class="t-line"><span class="t-ok">Creating redis    ... done</span></div>
+      <div class="t-line"><span class="t-ok">Creating taskapi  ... done</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment"># See all services status</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">docker-compose ps</span></div>
+      <div class="t-line"><span class="t-out">NAME      IMAGE     STATUS         PORTS</span></div>
+      <div class="t-line"><span class="t-ok">taskapi   taskapi   Up 5 seconds   0.0.0.0:8000->8000/tcp</span></div>
+      <div class="t-line"><span class="t-ok">postgres  postgres  Up 5 seconds   5432/tcp</span></div>
+      <div class="t-line"><span class="t-ok">redis     redis     Up 5 seconds   6379/tcp</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment"># View logs from all services</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">docker-compose logs -f</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment"># View logs from just app</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">docker-compose logs -f app</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment"># Rebuild and restart (after Dockerfile changes)</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">docker-compose up -d --build</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment"># Stop everything (keeps data in volumes)</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">docker-compose stop</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment"># Stop AND delete containers + networks (keeps volumes)</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">docker-compose down</span></div>
+      <div class="t-line"> </div>
+      <div class="t-line"><span class="t-comment"># Stop AND delete EVERYTHING including volumes (data gone!)</span></div>
+      <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">docker-compose down -v</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════
+     ERRORS
+═══════════════════════════════════ -->
+<section class="section" id="errors">
+  <div class="section-label">// when containers misbehave</div>
+  <div class="section-title">Common Docker Errors — Exact Fix</div>
+
+  <div class="steps stagger-children">
+    <div class="step-card">
+      <div class="step-head">
+        <span class="step-num sn-orange">ERR 01</span>
+        <span class="step-title">port is already allocated</span>
+        <span class="step-chevron">›</span>
+      </div>
+      <div class="step-body">
+        <div class="terminal"><div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-err">Error: bind: address already in use. Port 8000 is already allocated</span></div>
+            <div class="t-line"><span class="t-comment"># Something else is using port 8000 on your host</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">lsof -i :8000</span>                  <span class="t-comment">  # find what's using it</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">docker ps</span>                       <span class="t-comment">  # maybe another container</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">docker stop old-container</span>       <span class="t-comment">  # stop the old one</span></div>
+            <div class="t-line"><span class="t-comment"># Or use a different host port:</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">docker run -p 8001:8000 taskapi</span> <span class="t-comment">  # map to 8001 instead</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head">
+        <span class="step-num sn-orange">ERR 02</span>
+        <span class="step-title">Container starts then immediately exits</span>
+        <span class="step-chevron">›</span>
+      </div>
+      <div class="step-body">
+        <div class="terminal"><div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">docker ps</span>  <span class="t-comment">  ← container not showing</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">docker ps -a</span>  <span class="t-comment">  ← shows it as Exited(1)</span></div>
+            <div class="t-line"><span class="t-out">taskapi  Exited (1) 3 seconds ago</span></div>
+            <div class="t-line"><span class="t-comment"># Check the logs to see why it crashed</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">docker logs taskapi</span></div>
+            <div class="t-line"><span class="t-err">ModuleNotFoundError: No module named 'fastapi'</span></div>
+            <div class="t-line"><span class="t-comment"># FIX: requirements.txt missing or not copied in Dockerfile</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head">
+        <span class="step-num sn-orange">ERR 03</span>
+        <span class="step-title">Cannot connect to Docker daemon</span>
+        <span class="step-chevron">›</span>
+      </div>
+      <div class="step-body">
+        <div class="terminal"><div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">docker ps</span></div>
+            <div class="t-line"><span class="t-err">Cannot connect to the Docker daemon. Is the docker daemon running?</span></div>
+            <div class="t-line"><span class="t-comment"># FIX on Linux:</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">sudo systemctl start docker</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">sudo systemctl enable docker</span>  <span class="t-comment">  # start on boot</span></div>
+            <div class="t-line"><span class="t-comment"># Also check if you're in the docker group:</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">groups</span>  <span class="t-comment">  ← should show "docker" in the list</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">newgrp docker</span>  <span class="t-comment">  ← apply group without logout</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-head">
+        <span class="step-num sn-orange">ERR 04</span>
+        <span class="step-title">App running but can't reach it in browser</span>
+        <span class="step-chevron">›</span>
+      </div>
+      <div class="step-body">
+        <div class="terminal"><div class="terminal-bar"><div class="t-btn t-red"></div><div class="t-btn t-yellow"></div><div class="t-btn t-green"></div></div>
+          <div class="terminal-body">
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">docker ps</span>  <span class="t-comment">  ← shows container running</span></div>
+            <div class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">curl localhost:8000</span>  <span class="t-comment">  ← works from VM</span></div>
+            <div class="t-line"><span class="t-comment"># But browser can't reach it</span></div>
+            <div class="t-line"><span class="t-comment"># FIX: GCP firewall rule needs to allow port 8000</span></div>
+            <div class="t-line"><span class="t-comment"># GCP Console → VPC Network → Firewall → Create rule</span></div>
+            <div class="t-line"><span class="t-comment"># OR: check app listens on 0.0.0.0 not 127.0.0.1</span></div>
+            <div class="t-line"><span class="t-comment"># Wrong: uvicorn app.main:app --host 127.0.0.1</span></div>
+            <div class="t-line"><span class="t-ok"># Right: uvicorn app.main:app --host 0.0.0.0</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════
+     INTERVIEW Q&A
+═══════════════════════════════════ -->
+<section class="section" id="interview">
+  <div class="section-label">// crack the interview</div>
+  <div class="section-title">Docker Interview Questions — Perfect Answers</div>
+
+  <div class="qa-list stagger-children">
+    <div class="qa-card">
+      <div class="qa-q"><span class="qa-q-num">Q1</span><span class="qa-q-text">What is the difference between a VM and a Docker container?</span><span class="qa-diff diff-e">Easy</span></div>
+      <div class="qa-a">A <b>VM (Virtual Machine)</b> virtualises the entire hardware — it has its own OS kernel, its own memory, its own disk. Boots in minutes. Heavy — typically 1–5GB. Good isolation.<br><br>A <b>Docker container</b> shares the host OS kernel. It only packages the app and its dependencies — not the kernel. Starts in milliseconds. Lightweight — typically 50–500MB. Uses less RAM.<br><br>Analogy: VM = buying a whole house. Container = renting a room in a shared house. Same security for the room but sharing the foundation.
+        <div class="qa-tip">🎯 Say: "I use containers for application packaging and deployment because they're lightweight and start fast. VMs are useful when you need full OS isolation or a different kernel."</div>
+      </div>
+    </div>
+    <div class="qa-card">
+      <div class="qa-q"><span class="qa-q-num">Q2</span><span class="qa-q-text">What is a multi-stage Docker build and why use it?</span><span class="qa-diff diff-m">Medium</span></div>
+      <div class="qa-a"><b>Problem:</b> Build tools (compilers, npm, test frameworks) are needed during build but not at runtime. Without multi-stage builds, your production image contains all build tools = bloated, insecure.<br><br><b>Solution:</b> Multi-stage build uses multiple FROM statements. Stage 1 (builder) installs everything and compiles. Stage 2 (runtime) copies ONLY the final artifact — no build tools included.<br><br><b>Result:</b> Image 5–10× smaller. Fewer packages = fewer vulnerabilities. Faster pulls, faster K8s pod starts.
+        <div class="qa-tip">🎯 Say: "I use multi-stage builds for all production images. For our Python app, the builder stage installs dev dependencies and runs tests. The runtime stage copies only the app code and prod dependencies — image went from 890MB to 85MB."</div>
+      </div>
+    </div>
+    <div class="qa-card">
+      <div class="qa-q"><span class="qa-q-num">Q3</span><span class="qa-q-text">How do containers communicate with each other in Docker?</span><span class="qa-diff diff-m">Medium</span></div>
+      <div class="qa-a">By default, each container has its own network namespace — completely isolated. There are 3 ways to connect them:<br><br><b>1. Docker networks (recommended):</b> Create a shared network. Containers on the same network reach each other by service name. In Docker Compose, this is automatic — all services share a network. Your app connects to postgres via <code>db:5432</code> not <code>localhost:5432</code>.<br><br><b>2. Port mapping:</b> <code>-p 8000:8000</code> exposes a container port to the host. Containers on different networks reach each other via host IP + port.<br><br><b>3. --network host:</b> Container shares host network. No isolation. Use only in specific cases.
+        <div class="qa-tip">🎯 Say: "In Docker Compose, every service is on the same default network automatically. I reference other services by their service name — db, redis — not localhost. This is a classic interview trap question."</div>
+      </div>
+    </div>
+    <div class="qa-card">
+      <div class="qa-q"><span class="qa-q-num">Q4</span><span class="qa-q-text">What happens to data when a Docker container is deleted?</span><span class="qa-diff diff-e">Easy</span></div>
+      <div class="qa-a">Containers are <b>ephemeral by default</b>. The writable layer (everything written during runtime) is destroyed when the container is removed with <code>docker rm</code>. Any data written inside the container — database records, uploaded files, logs — is permanently gone.<br><br><b>Solution: Volumes.</b> A named volume (<code>docker run -v mydata:/var/lib/postgresql/data</code>) stores data on the host filesystem outside the container lifecycle. When you delete and recreate the container, it reattaches to the same volume — data survives.<br><br>Bind mounts (<code>-v /host/path:/container/path</code>) mount a host directory into the container — useful for development (live code reload).
+        <div class="qa-tip">🎯 Say: "I always use named volumes for databases and user-uploaded files. For development, I use bind mounts so code changes reflect instantly without rebuilding."</div>
+      </div>
+    </div>
+    <div class="qa-card">
+      <div class="qa-q"><span class="qa-q-num">Q5</span><span class="qa-q-text">How do you reduce Docker image size?</span><span class="qa-diff diff-m">Medium</span></div>
+      <div class="qa-a">5 techniques in order of impact:<br><br><b>1. Use slim/alpine base images:</b> python:3.11-slim (50MB) vs python:3.11 (900MB). Alpine is even smaller but uses musl libc — can cause issues with some packages.<br><b>2. Multi-stage builds:</b> Don't include build tools in final image.<br><b>3. Layer ordering + cache:</b> Copy requirements before code — cache pip install layer.<br><b>4. Combine RUN commands:</b> Each RUN = 1 layer. <code>RUN apt-get update && apt-get install -y pkg && rm -rf /var/lib/apt/lists/*</code> in one command + cleanup in same layer.<br><b>5. .dockerignore file:</b> Exclude .git, tests, docs, node_modules from the build context.
+        <div class="qa-tip">🎯 Say: "My standard approach: slim base → multi-stage → combine RUN commands → .dockerignore → verify with docker history. Our TaskAPI image is under 130MB."</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- NEXT -->
+<section class="section">
+  <div class="section-label">// ready for orchestration</div>
+  <div class="section-title">What's Next?</div>
+  <div class="card-grid stagger-children">
+    <a href="kubernetes.html" class="card" style="text-decoration:none;">
+      <div style="font-size:1.5rem;margin-bottom:10px;">☸️</div>
+      <div style="font-weight:700;margin-bottom:4px;">Kubernetes →</div>
+      <div style="font-size:13px;color:var(--text-secondary);">Run your Docker containers at scale. Auto-healing. Auto-scaling. Zero-downtime deploys.</div>
+      <div style="margin-top:12px;"><span class="badge badge-blue">Next Chapter</span></div>
+    </a>
+    <a href="git.html" class="card" style="text-decoration:none;">
+      <div style="font-size:1.5rem;margin-bottom:10px;">🐙</div>
+      <div style="font-weight:700;margin-bottom:4px;">← Git</div>
+      <div style="font-size:13px;color:var(--text-secondary);">Revisit Git to understand how code changes trigger Docker builds in CI/CD.</div>
+    </a>
+    <a href="../30day-challenge.html" class="card" style="text-decoration:none;">
+      <div style="font-size:1.5rem;margin-bottom:10px;">📅</div>
+      <div style="font-weight:700;margin-bottom:4px;">30-Day Plan →</div>
+      <div style="font-size:13px;color:var(--text-secondary);">Docker is Week 2 — Days 8–14. Follow the structured daily plan.</div>
+    </a>
+  </div>
+</section>
+
+<footer>
+  My DevOps Portal · 🐳 Docker Guide ·
+  <a href="../index.html">Home</a> ·
+  <a href="git.html">← Git</a> ·
+  <a href="kubernetes.html">Next: Kubernetes →</a>
+</footer>
+
+<script src="../script.js"></script>
+</body>
+</html>
